@@ -27,7 +27,7 @@ app.use((error, req, res, next) => {
 mongoose
     .connect('mongodb+srv://lulin:19960529@trivialcomputeapi.r8hlvkx.mongodb.net/Trivia?retryWrites=true&w=majority')
     .then(() => {
-        app.listen(3000, () => {
+        app.listen(5000, () => {
             console.log('Connected to MongoDB successfully.')
         });
     })

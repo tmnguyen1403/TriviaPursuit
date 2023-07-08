@@ -5,11 +5,14 @@ const HttpError = require('../models/http-error');
 
 const createQuestion = async(req, res, next) => {
     try {
-        const {category, question, answer, createdAt} = req.body;
+        const {category, type, question, answer, link, user_id} = req.body;
         const createdQuestion = new Question({
             category,
+            type,
             question,
             answer,
+            link,
+            user_id,
             createdAt: new Date()
         })
         await createdQuestion.save();
@@ -34,7 +37,7 @@ const getQuestionById = async(req, res, next) => {
         return next(error);
     }
 
-    res.json(obtainedQuestion);
+    res.status(201).json(obtainedQuestion);
 }
 
 const deleteQuestion = async(req, res, next) => {
@@ -61,11 +64,41 @@ const deleteQuestion = async(req, res, next) => {
         return next(error);
     };
 
-    res.json({message: 'Question deleted successfully.'});
+    res.status(200).json({message: 'Question deleted successfully.'});
 }
 
 const updateQuestion = async(req, res, next) => {
-    
+    const {category, type, question, answer, link, user_id} = req.body;
+    const questionId = req.params.qid;
+    let obtainedQuestion;
+
+    try {
+        obtainedQuestion = await Question.findById(questionId);
+    }catch (err) {
+        const error = new HttpError('Something went wrong, could not update the question.', 500);
+        return next(error);
+    } 
+
+    if (!obtainedQuestion) {
+        const error = new HttpError('Question not found in database.', 404);
+        return next(error);
+    }
+
+    obtainedQuestion.category = category;
+    obtainedQuestion.type = type;
+    obtainedQuestion.question = question;
+    obtainedQuestion.answer = answer;
+    obtainedQuestion.link = link;
+    obtainedQuestion.user_id = user_id;
+    try {
+        await obtainedQuestion.save();
+    } catch (err) {
+        const error = new HttpError('Something went wrong, could not update the question.', 500);
+        return next(error);
+    };
+
+    // res.status(200).json({message: 'Question updated successfully.'});
+    res.status(201).json(obtainedQuestion);
 }
 
 exports.createQuestion = createQuestion;

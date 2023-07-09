@@ -60,6 +60,25 @@ class Question:
 }
 
 '''
+'''
+Game screens: [landing_screen, in_game]
+
+Game screen: [in_game]
+Game state: [player_movement, showing_question, answering, showing_answer, determine_correctness]
+
+[game screen, game state] : [in_game, showing_question]
+click on button --> 
+  display question --> how? Which questions to display?
+  QuestionManager:
+     question objects?  
+  QuestionRenderer:
+    draw(question)
+  
+  new_question = question_manager.get_question()
+  question_renderer.draw(new_question)
+
+
+'''
 
 class Button:
     def __init__(self, position, size, color, text, text_color, action):

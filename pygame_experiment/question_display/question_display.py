@@ -81,12 +81,27 @@ def toggle_answer():
     global show_answer
     show_answer = not show_answer 
 
+def accept_answer():
+    print("Reveal answer")
+    global show_question
+    global show_answer
+    show_answer = False
+    show_question = False
+
 from button import Button, ButtonRenderer, ButtonManager
 show_question_button = Button((button_x, button_y),(button_width, button_height),(0, 255, 0), "show question",(255, 255, 255) ,toggle_question)
 show_answer_button = Button((button_x, button_y+100),(button_width, button_height),(0, 255, 255), "Show Answer",(255, 255, 255) , toggle_answer)
+accept_answer_button = Button((button_x-200, button_y+100),(button_width, button_height),(80, 120, 255), "Accept Answer",(255, 255, 255) , accept_answer)
 
 button_renderer = ButtonRenderer(pygame)
 button_manager = ButtonManager([show_question_button, show_answer_button])
+button_manager.add_button(accept_answer_button)
+
+print("show in: ", show_question_button in button_manager.buttons)
+print("show in: ", show_answer_button in button_manager.buttons)
+print("position: ", button_manager.buttons.index(show_question_button))
+print("position: ", button_manager.buttons.index(show_answer_button))
+
 # Question Manager - manage the question database, get next question based on category
 '''
 category: [question]
@@ -118,14 +133,18 @@ while running:
     #screen = pygame.display.set_mode((screen_width, screen_height), pygame.DOUBLEBUF)
     screen.fill("purple")
     if not show_question:
+        if button_manager.is_disable(show_question_button):
+            button_manager.enable(show_question_button)
         button_renderer.draw(screen, show_question_button, font)
     if show_question:
+        button_manager.disable(show_question_button)
         message_text = font.render(question.question_text, True, text_color)
         screen.blit(message_text, (question_position["x"],question_position["y"] - 100))
         button_renderer.draw(screen, show_answer_button, font)
         if show_answer:
             answer_text = font.render(question.answer, True, text_color)
             screen.blit(answer_text, (question_position["x"],question_position["y"] - 50))
+            button_renderer.draw(screen, accept_answer_button, font)
 
     # Render game here
     pygame.display.flip()

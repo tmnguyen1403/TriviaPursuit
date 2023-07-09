@@ -40,26 +40,7 @@ def is_point_inside_rect(point, rect):
     return rect_x <= x <= rect_x + rect_width and rect_y <= y <= rect_y + rect_height
 button_text_rect = None 
 
-#Question object
-class Question:
-    def __init__(self):
-        self.text = "What is your name?"
-        self.type = "text" #text, audio, video question
-        self.source = None # Use for audio/video question
-        self.answer = "My name is KK" # Store correct answer
-        self.category = "Geology" #
-'''
-{
-    question_id(object_id): "",
-    question: "",
-    type: "",
-    answer: "",
-    link: "link_to_audio/link_to_video" #Optional,
-    category: "",
-    user_id: dummy_userID
-}
 
-'''
 '''
 Game screens: [landing_screen, in_game]
 
@@ -76,64 +57,55 @@ click on button -->
   
   new_question = question_manager.get_question()
   question_renderer.draw(new_question)
-
-
 '''
 
-class Button:
-    def __init__(self, position, size, color, text, text_color, action):
-        self.position = position
-        self.size = size
-        self.color = color
-        self.text = text
-        self.text_color = text_color
-        self.action = action
-    def get_rect(self):
-        return self.position + self.size
-    def on_click(self):
-        self.action()
 
-class ButtonRenderer:
-    def __init__(self,engine):
-        self.engine = engine
-    def draw(self, screen, button, font):
-        button_rect = button.get_rect()
-        self.engine.draw.rect(screen, button.color, button_rect)
-        button_text = font.render(button.text, True, button.text_color)
-        x,y,w,h = button_rect
-        button_text_rect = button_text.get_rect(center=(x + w // 2, y + h // 2))
-        screen.blit(button_text, button_text_rect)
-
-class ButtonManager:
-    def __init__(self, buttons = None):
-        self.buttons = buttons
-        if self.buttons is None:
-          self.buttons = []
-    def add_button(self, button):
-        self.buttons.append(button)
-    def is_point_inside_rect(self, point, rect):
-      x, y = point
-      rect_x, rect_y, rect_width, rect_height = rect
-      return rect_x <= x <= rect_x + rect_width and rect_y <= y <= rect_y + rect_height
-    def on_click(self, mouse_pos):
-        for button in self.buttons:
-          if self.is_point_inside_rect(mouse_pos, button.get_rect()):
-              button.on_click()
-              print("Click on button")
-              break
     
-      
-show_question_button = Button((button_x, button_y),(button_width, button_height),(0, 255, 0), "show question",(255, 255, 255) ,lambda: print("Question"))
+
+'''
+Gameround:
+1. active player roll the dice
+2. 
+2. active player moves according to the number of dice roll (player choose the direction to move)
+
+'''
+show_question = False
+def toggle_question():
+    print("Toggle question")
+    global show_question
+    show_question = not show_question
+
+show_answer = False
+def toggle_answer():
+    print("Reveal answer")
+    global show_answer
+    show_answer = not show_answer 
+
+from button import Button, ButtonRenderer, ButtonManager
+show_question_button = Button((button_x, button_y),(button_width, button_height),(0, 255, 0), "show question",(255, 255, 255) ,toggle_question)
+show_answer_button = Button((button_x, button_y+100),(button_width, button_height),(0, 255, 255), "Show Answer",(255, 255, 255) , toggle_answer)
+
 button_renderer = ButtonRenderer(pygame)
-button_manager = ButtonManager([show_question_button])
+button_manager = ButtonManager([show_question_button, show_answer_button])
+# Question Manager - manage the question database, get next question based on category
+'''
+category: [question]
+get_question(category)
+
+'''
 # Question Renderer
   #Display question based on type (text, audio, video)
   #Display based on input type (textbox, multiple choice)
 # Answer Renderer
   #Display answer based on type (text, audio, video)
-
-question = Question()
+from question import Question
+question = Question(("1+1=?","text",None,"2","Math"))
 question_position = {"x": screen_width//2, "y": screen_height//2}
+from question_manager import QuestionManager
+categories = ["Math"]
+questions = {"Math": [question]}
+question_manager = QuestionManager(categories=categories, questions=questions)
+
 #
 while running:
     for event in pygame.event.get():
@@ -145,9 +117,16 @@ while running:
               button_manager.on_click(mouse_pos)
     #screen = pygame.display.set_mode((screen_width, screen_height), pygame.DOUBLEBUF)
     screen.fill("purple")
-    button_renderer.draw(screen, show_question_button, font)
-    #message_text = font.render(question.text, True, text_color)
-    #screen.blit(message_text, (question_position["x"],question_position["y"]))
+    if not show_question:
+        button_renderer.draw(screen, show_question_button, font)
+    if show_question:
+        message_text = font.render(question.question_text, True, text_color)
+        screen.blit(message_text, (question_position["x"],question_position["y"] - 100))
+        button_renderer.draw(screen, show_answer_button, font)
+        if show_answer:
+            answer_text = font.render(question.answer, True, text_color)
+            screen.blit(answer_text, (question_position["x"],question_position["y"] - 50))
+
     # Render game here
     pygame.display.flip()
     #clock tick is called at the end to maintain the desire frame rate (create delay if frame rate update is too)

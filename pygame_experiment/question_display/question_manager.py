@@ -1,13 +1,27 @@
 from typing import Dict, List, Optional
 from question import Question
-class QuestionManager:
-    def __init__(self, categories : List[str], questions : Dict[str, List[Question]]) -> None:
-        self.categories = categories
-        self.questions = questions
+from interfaces import CategorySubscriber
+from database import Database
+class QuestionManager(CategorySubscriber):
+    def __init__(self, database: Database) -> None:
+        self.database = database
+        self.renderer = None
+    def update(self, category) -> bool:
+        if category not in self.database.categories:
+            print(f"question manager does not have category: {category}")
+            return False
+        question = self.get_question(category)
+        if question is None:
+            print(f"question manager cannot get question of category: {category}")
+            return False
+        print(f"New question is here: {question.question_text}")
+        self.render(question)
+    def render(self, question):
+        return None
     def get_question(self, category : str) -> Optional[Question]:
-        if category not in self.categories:
+        if category not in self.database.categories:
             return None
-        category_questions = self.questions[category]
+        category_questions = self.database.questions[category]
         if len(category_questions) > 0:
             return category_questions.pop()
         return None

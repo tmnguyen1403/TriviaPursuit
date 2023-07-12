@@ -113,25 +113,63 @@ get_question(category)
   #Display based on input type (textbox, multiple choice)
 # Answer Renderer
   #Display answer based on type (text, audio, video)
+class QuestionRenderer:
+    def __init__(self, screen, position, text_color, background_color = None):
+        self.screen = screen
+        self.position = position
+        self.text_color = text_color
+        self.background_color = background_color
+    def render(self, question):
+        print("Hello question rendere")
+        message_text = font.render(question.question_text, True, self.text_color, self.background_color)
+        screen.blit(message_text, (self.position["x"],self.position["y"] - 100))
+
 from question import Question
 question = Question(("1+1=?","text",None,"2","Math"))
 question_position = {"x": screen_width//2, "y": screen_height//2}
-from question_manager import QuestionManager
-categories = ["Math"]
-questions = {"Math": [question]}
-question_manager = QuestionManager(categories=categories, questions=questions)
 
-#
+from database import Database, dummy_database
+from question_manager import QuestionManager
+from game_board import GameBoard
+
+database = dummy_database()
+board = GameBoard(database=database)
+question_renderer = QuestionRenderer(screen=screen, position=question_position, text_color=text_color)
+question_manager = QuestionManager(database=database)
+board.subscribe(question_manager)
+
+# Quick state transition
+states = ["player_move","show_question"]
+state = states[0]
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-          if event.button == 1:
-              mouse_pos = pygame.mouse.get_pos()
-              button_manager.on_click(mouse_pos)
+            if event.button == 1:
+                print("State: ", state)
+                state = states[1]
+                mouse_pos = pygame.mouse.get_pos()
+                #board.move()
+                #button_manager.on_click(mouse_pos)
     #screen = pygame.display.set_mode((screen_width, screen_height), pygame.DOUBLEBUF)
     screen.fill("purple")
+    if state == states[1]:
+        print("in state: ", state)
+        print("current question: ", question_manager.current_question)
+        if question_manager.current_question is None:
+            print("moving board")
+            board.move()
+            current_question = question_manager.get_current_question()
+            question_renderer.render(current_question)
+        else:
+            current_question = question_manager.get_current_question()
+            question_renderer.render(current_question)
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_n]:#up
+        print("Getting next question")
+        state = states[0]
+        question_manager.clear_question()
     if not show_question:
         if button_manager.is_disable(show_question_button):
             button_manager.enable(show_question_button)

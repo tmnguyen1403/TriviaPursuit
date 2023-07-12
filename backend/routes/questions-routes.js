@@ -1,11 +1,13 @@
 const express = require('express');
 
-const questionsControllers = require('../controllers/questions-controller');
+const questionsController = require('../controllers/questions-controller');
 const router = express.Router();
 
-router.post('/', questionsControllers.createQuestion);
-router.get('/:qid', questionsControllers.getQuestionById);
-router.delete('/:qid', questionsControllers.deleteQuestion);
-router.patch('/:qid', questionsControllers.updateQuestion);
+router.post('/', questionsController.createQuestion);
+router.get('/:qid', questionsController.getQuestionById);
+router.get('/user/:uid', questionsController.getQuestionByUserId);
+router.get('/category/:cid', questionsController.getQuestionByCategory);
+router.delete('/:qid', questionsController.deleteQuestion);
+router.patch('/:qid', questionsController.updateQuestion);
 
 module.exports = router;

@@ -34,5 +34,7 @@ You can now start developing
 
 3. You will need to install some packages to run the backend. They are "body-parser", "express", "express-validator", "mongoose", "nodemon" and "mongoose-unique-validator". Run the following commands to install:
 ```npm install --save express body-parser```
+
 ```npm install --save-dev nodemon```
+
 ```git status```

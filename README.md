@@ -30,11 +30,13 @@ You can now start developing
 # How to run backend
 1. Install Node.js to your computer using [this link](https://nodejs.org/en). Download the version recommended for most users and install it.
 
-2. Sign up for MongoDB using gmail with [this link](https://account.mongodb.com/account/login?signedOut=true). Let me know your email you used to create the account once you register successfully. I will try to grant you access to the database. 
+2. Download Postman App using [this link](https://www.postman.com/downloads/) and sign up for free.
 
-3. Download LinBranch and navigate to the backend file using Linux command in your VS code terminal. The frontend is not ready yet so you can ignore it.
+3. Sign up for MongoDB using gmail with [this link](https://account.mongodb.com/account/login?signedOut=true). Let me know your email you used to create the account once you register successfully. I will try to grant you access to the database. I have configured the network access to allow all the IP addresses to access the database so you should be able to connect to the database sufccessfully with the conncetion link in the code. It is possible that you will only be able to interact with database by sending requests, meaning you can't directly see the database from MongoDB website. Again, you don't need the database access for this step. Continue to the following steps to set up the environment.
 
-4. You will need to install some packages to run the backend. They are "body-parser", "express", "express-validator", "mongoose", "nodemon" and "mongoose-unique-validator". Run the following commands to install:
+4. Download LinBranch and navigate to the backend file using Linux command in your VS code terminal. The frontend is not ready yet so you can ignore it.
+
+5. You will need to install some packages to run the backend. They are "body-parser", "express", "express-validator", "mongoose", "nodemon" and "mongoose-unique-validator". Run the following commands to install:
    
    ```npm install --save express body-parser```
 
@@ -46,6 +48,6 @@ You can now start developing
 
    ```npm install --save mongoose-unique-validator```
 
-5. To run the backend, run the following command. Your terminal should show this message "Connected to MongoDB successfully." If it reports error, it means that you haven't had access to database. Let me know if it reports erros.
+6. To run the backend, run the following command. Your terminal should show this message "Connected to MongoDB successfully." If it reports error, it means that you haven't had access to database. Let me know if it reports errors.
 
    ```npm start```

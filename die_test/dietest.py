@@ -1,6 +1,6 @@
 # Import and initialize the pygame library
 import pygame
-import random
+from dice import Dice, DiceRenderer
 
 pygame.init()
 
@@ -15,7 +15,6 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode([screen_width, screen_height])
 
 # Die
-roll_number = random.randint(1, 6)
 die_width = 100
 die_height = 100
 die_x = (screen_width - die_width) // 4
@@ -41,6 +40,9 @@ def is_point_inside_rect(point, rect):
     return rect_x <= x <= rect_x + rect_width and rect_y <= y <= rect_y + rect_height
 
 
+dice = Dice((die_x, die_y), (die_width, die_height), die_color, die_text_color)
+dice_renderer = DiceRenderer(pygame)
+
 # Run until the user asks to quit
 running = True
 while running:
@@ -55,8 +57,8 @@ while running:
                 if is_point_inside_rect(mouse_pos, (roll_button_x, roll_button_y, roll_button_width, roll_button_height)
                                         ):
                     print("Button is clicked. Rolling die")
-                    roll_number = random.randint(1, 6)
-                    print("Number rolled is " + str(roll_number) + ".")
+                    dice.roll()
+                    print("Number rolled is " + str(dice.get_value()) + ".")
 
     # Fill the background with white
     screen.fill((255, 255, 255))
@@ -69,10 +71,7 @@ while running:
     screen.blit(button_text, button_text_rect)
 
     # Draw die
-    pygame.draw.rect(screen, die_color, (die_x, die_y, die_width, die_height))
-    die_text = die_font.render(str(roll_number), True, die_text_color)
-    die_text_rect = die_text.get_rect(center=(die_x + die_width // 2, die_y + die_height // 2))
-    screen.blit(die_text, die_text_rect)
+    dice_renderer.draw(screen, dice, die_font)
 
     # Render game
     pygame.display.flip()

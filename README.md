@@ -29,4 +29,7 @@ You can now start developing
 
 # How to run backend
 1. Sign up for MongoDB using gmail with [this link](https://account.mongodb.com/account/login?signedOut=true). I will try to grant you access to the database.
-2. 
+
+2. Download my branch and navigate to the backend file using Linux command in your VS code terminal. The frontend is not ready yet so you can ignore it.
+
+3. 

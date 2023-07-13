@@ -48,7 +48,7 @@ You can now start developing
 
    ```npm install --save mongoose-unique-validator```
 
-6. To run the backend, run the following command. Your terminal should show this message "Connected to MongoDB successfully." If it reports error, it means that you haven't had access to database. Let me know if it reports errors.
+6. To run the backend, run the following command. Your terminal should show this message "Connected to MongoDB successfully." If it reports an error, it means that you are not connected to the database. Let me know if it reports errors.
 
    ```npm start```
 

@@ -26,3 +26,7 @@ TriviaPursuit is the game project for Foundation of SWE class
     ```git push ``` # Push/upload your changes to the remote git repository () 
 
 You can now start developing 
+
+# How to run backend
+1. Sign up for MongoDB using gmail with [this link](https://account.mongodb.com/account/login?signedOut=true). I will try to grant you access to the database.
+2. 

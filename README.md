@@ -30,7 +30,7 @@ You can now start developing
 # How to run backend
 1. Install Node.js to your computer using [this link](https://nodejs.org/en). Download the version recommended for most users and install it.
 
-2. Download Postman App using [this link](https://www.postman.com/downloads/) and sign up for free.
+2. Download Postman App using [this link](https://www.postman.com/downloads/) and sign up for free. I created a team workspace called "Trivial Compute" in Postman. Click [this link](https://app.getpostman.com/join-team?invite_code=1a9d64a74e6f67652ce43fd7b19e9c91&target_code=6e99ce5265d2a7031e7fa67a03dd5be4) to join the team. I created a copy of all the requests in the team workspace.
 
 3. Sign up for MongoDB using gmail with [this link](https://account.mongodb.com/account/login?signedOut=true). Let me know your email you used to create the account once you register successfully. I will try to grant you access to the database. I have configured the network access to allow all the IP addresses to access the database so you should be able to connect to the database sufccessfully with the conncetion link in the code. It is possible that you will only be able to interact with database by sending requests, meaning you can't directly see the database from MongoDB website. Again, you don't need the database access for this step. Continue to the following steps to set up the environment.
 

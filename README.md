@@ -30,7 +30,7 @@ You can now start developing
 # How to run backend
 1. Install Node.js to your computer using [this link](https://nodejs.org/en). Download the version recommended for most users and install it.
 
-2. Sign up for MongoDB using gmail with [this link](https://account.mongodb.com/account/login?signedOut=true). Let me know your eamil you used to create the account once you register successfully. I will try to grant you access to the database. 
+2. Sign up for MongoDB using gmail with [this link](https://account.mongodb.com/account/login?signedOut=true). Let me know your email you used to create the account once you register successfully. I will try to grant you access to the database. 
 
 3. Download LinBranch and navigate to the backend file using Linux command in your VS code terminal. The frontend is not ready yet so you can ignore it.
 

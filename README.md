@@ -28,11 +28,13 @@ TriviaPursuit is the game project for Foundation of SWE class
 You can now start developing 
 
 # How to run backend
-1. Sign up for MongoDB using gmail with [this link](https://account.mongodb.com/account/login?signedOut=true). I will try to grant you access to the database.
+1. Install Node.js to your computer using [this link](https://nodejs.org/en). Download the version recommended for most users and install it.
 
-2. Download my branch and navigate to the backend file using Linux command in your VS code terminal. The frontend is not ready yet so you can ignore it.
+2. Sign up for MongoDB using gmail with [this link](https://account.mongodb.com/account/login?signedOut=true). Let me know your eamil you used to create the account once you register successfully. I will try to grant you access to the database. 
 
-3. You will need to install some packages to run the backend. They are "body-parser", "express", "express-validator", "mongoose", "nodemon" and "mongoose-unique-validator". Run the following commands to install:
+3. Download LinBranch and navigate to the backend file using Linux command in your VS code terminal. The frontend is not ready yet so you can ignore it.
+
+4. You will need to install some packages to run the backend. They are "body-parser", "express", "express-validator", "mongoose", "nodemon" and "mongoose-unique-validator". Run the following commands to install:
    
    ```npm install --save express body-parser```
 
@@ -43,3 +45,7 @@ You can now start developing
    ```npm install --save mongoose```
 
    ```npm install --save mongoose-unique-validator```
+
+5. To run the backend, run the following command. Your terminal should show this message "Connected to MongoDB successfully." If it reports error, it means that you haven't had access to database.
+
+   ```npm start```

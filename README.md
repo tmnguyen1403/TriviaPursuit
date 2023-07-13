@@ -33,8 +33,8 @@ You can now start developing
 2. Download my branch and navigate to the backend file using Linux command in your VS code terminal. The frontend is not ready yet so you can ignore it.
 
 3. You will need to install some packages to run the backend. They are "body-parser", "express", "express-validator", "mongoose", "nodemon" and "mongoose-unique-validator". Run the following commands to install:
-```npm install --save express body-parser```
+    ```npm install --save express body-parser```
 
-```npm install --save-dev nodemon```
+    ```npm install --save-dev nodemon```
 
-```git status```
+    ```git status```

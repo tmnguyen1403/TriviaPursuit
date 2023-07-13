@@ -51,3 +51,16 @@ You can now start developing
 6. To run the backend, run the following command. Your terminal should show this message "Connected to MongoDB successfully." If it reports error, it means that you haven't had access to database. Let me know if it reports errors.
 
    ```npm start```
+
+# API
+1. User sign up: ```http://localhost:5000/api/users/signup```
+2. User login: ```http://localhost:5000/api/users/login```
+3. Get all users: ```http://localhost:5000/api/users```
+4. Create a question: ```http://localhost:5000/api/questions```
+5. Update a question: ```http://localhost:5000/api/questions/{question id}```
+6. Delete a question: ```http://localhost:5000/api/questions/{question id}```
+7. Get a question by id: ```http://localhost:5000/api/questions/{question id}```
+8. Get questions by user id: ```http://localhost:5000/api/questions/user/{user id}```
+9. Get questions by category: ```http://localhost:5000/api/questions/category/{category}```
+
+For more details, join the postman team.

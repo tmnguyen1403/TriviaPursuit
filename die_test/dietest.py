@@ -57,7 +57,10 @@ while running:
                 if is_point_inside_rect(mouse_pos, (roll_button_x, roll_button_y, roll_button_width, roll_button_height)
                                         ):
                     print("Button is clicked. Rolling die")
-                    dice.roll()
+                    for i in range(1, 1000):
+                        dice.roll()
+                        dice_renderer.draw(screen, dice, die_font)
+                        pygame.display.flip()
                     print("Number rolled is " + str(dice.get_value()) + ".")
 
     # Fill the background with white

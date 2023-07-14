@@ -12,6 +12,9 @@ class MyRequestHandler(http.server.SimpleHTTPRequestHandler):
 # Set the server address and port
 server_address = ('', 8000)
 
+
+
+
 # Create an instance of the HTTP server
 httpd = socketserver.TCPServer(server_address, MyRequestHandler)
 

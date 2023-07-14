@@ -25,6 +25,16 @@ TriviaPursuit is the game project for Foundation of SWE class
 
     ```git push ``` # Push/upload your changes to the remote git repository () 
 
+2. If you want to merge the features of another branch to your branch:  
+
+    ```git fetch -p```  
+    ```git merge origin/<branch_name>```    
+For example, if I want to merge branch **drewf**:
+    ```git fetch -p```  
+    ```git merge origin/drewf```  
+If merge successfully in the terminal, an editor will popup with message. If it is a vim editor, you can type ```:wq``` to write and save the merge commit.  
+If there is a merge conflict, please Google or contact me to learn how to resolve the conflicts.  
+
 You can now start developing 
 
 # How to run backend
@@ -34,33 +44,28 @@ You can now start developing
 
 3. Sign up for MongoDB using gmail with [this link](https://account.mongodb.com/account/login?signedOut=true). Let me know your email you used to create the account once you register successfully. I will try to grant you access to the database. I have configured the network access to allow all the IP addresses to access the database so you should be able to connect to the database sufccessfully with the conncetion link in the code. It is possible that you will only be able to interact with database by sending requests, meaning you can't directly see the database from MongoDB website. Again, you don't need the database access for this step. Continue to the following steps to set up the environment.
 
-4. Download LinBranch and navigate to the backend file using Linux command in your VS code terminal. The frontend is not ready yet so you can ignore it.
+4. Download LinBranch and navigate to the backend file using Linux command in your VS code terminal. The frontend is not ready yet so you can ignore it.  
+```Navigate to your TriviaPursuit folder, open the terminal```   
+```git fetch -p```  
+```git checkout ```  
 
-5. You will need to install some packages to run the backend. They are "body-parser", "express", "express-validator", "mongoose", "nodemon" and "mongoose-unique-validator". Run the following commands to install:
-   
-   ```npm install --save express body-parser```
+5. Install backend dependency packages:  
+   ```cd backend ```  
+   ```npm install --save-dev```  
 
-   ```npm install --save-dev nodemon```
-
-   ```npm install --save express-validator```
-
-   ```npm install --save mongoose```
-
-   ```npm install --save mongoose-unique-validator```
-
-6. To run the backend, run the following command. Your terminal should show this message "Connected to MongoDB successfully." If it reports an error, it means that you are not connected to the database. Let me know if it reports errors.
-
+6. At the backend, run the below command to start the backend server. Your terminal should show this message "Connected to MongoDB successfully."  
    ```npm start```
 
+You can use the following APIs on Postman to test the running servers
 # API
-1. User sign up: ```http://localhost:5000/api/users/signup```
-2. User login: ```http://localhost:5000/api/users/login```
-3. Get all users: ```http://localhost:5000/api/users```
-4. Create a question: ```http://localhost:5000/api/questions```
-5. Update a question: ```http://localhost:5000/api/questions/{question id}```
-6. Delete a question: ```http://localhost:5000/api/questions/{question id}```
-7. Get a question by id: ```http://localhost:5000/api/questions/{question id}```
-8. Get questions by user id: ```http://localhost:5000/api/questions/user/{user id}```
-9. Get questions by category: ```http://localhost:5000/api/questions/category/{category}```
+1. User sign up: ```http://localhost:9000/api/users/signup```
+2. User login: ```http://localhost:9000/api/users/login```
+3. Get all users: ```http://localhost:9000/api/users```
+4. Create a question: ```http://localhost:9000/api/questions```
+5. Update a question: ```http://localhost:9000/api/questions/{question id}```
+6. Delete a question: ```http://localhost:9000/api/questions/{question id}```
+7. Get a question by id: ```http://localhost:9000/api/questions/{question id}```
+8. Get questions by user id: ```http://localhost:9000/api/questions/user/{user id}```
+9. Get questions by category: ```http://localhost:9000/api/questions/category/{category}```
 
 For more details, join the postman team.

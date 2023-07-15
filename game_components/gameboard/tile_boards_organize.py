@@ -1,5 +1,4 @@
 import pygame
-from tile import Tile
 from tile_generator import TileGenerator
 # Initialize Pygame
 pygame.init()

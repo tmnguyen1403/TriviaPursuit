@@ -1,5 +1,4 @@
 from interface import CategoryPublisher
-from .move_calculator import MoveCalculator
 from typing import List
 '''
 Applying Observer (Publisher Subscriber pattern) to handle category from gameboard
@@ -7,13 +6,13 @@ Applying Observer (Publisher Subscriber pattern) to handle category from gameboa
 '''
 
 class GameBoard(CategoryPublisher):
-    def __init__(self, database: 'Database', board_matrix: List[List[int]], cant_move=-1):
+    def __init__(self, database: 'Database', board_matrix: List[List[int]], move_calculator: 'MoveCalculator'):
         self.titles = list(list())
         self.subscribers = list()
         self.category = None
         self.database = database
         self.matrix = board_matrix
-        self.move_calculator = MoveCalculator(cant_move=cant_move)
+        self.move_calculator = move_calculator
         self.center = (len(board_matrix)//2, len(board_matrix[0])//2)
     
     def get_center(self):

@@ -8,11 +8,25 @@ class Dice:
         self.color = color
         self.roll_number = random.randint(1, 6)
         self.text_color = text_color
-
+        self.animation_start_time_second = 0
+        self.animation_duration_second = 1
+        self.transition_duration_second = 0.13
+        self.current_frame = -1
+    #Handle Animation
     def roll(self):
         self.roll_number = random.randint(1, 6)
         return self.roll_number
-
+    def clear_animation(self):
+        self.animation_start_time_second = 0
+        self.current_frame = -1
+    def update_animation_time_second(self, duration):
+        self.animation_start_time_second += duration
+    def should_transition(self):
+        next_frame = int(self.animation_start_time_second // self.transition_duration_second)
+        return next_frame > self.current_frame
+    def should_stop_roll(self):
+        return self.animation_start_time_second >= self.animation_duration_second
+    
     def get_rect(self):
         return self.position + self.size
 
@@ -24,16 +38,3 @@ class Dice:
 
     def get_text_color(self):
         return self.text_color
-
-
-class DiceRenderer:
-    def __init__(self, engine):
-        self.engine = engine
-
-    def draw(self, screen, dice, font):
-        dice_rect = dice.get_rect()
-        self.engine.draw.rect(screen, dice.get_color(), dice_rect)
-        dice_text = font.render(str(dice.get_value()), True, dice.get_text_color())
-        x, y, w, h = dice_rect
-        dice_text_rect = dice_text.get_rect(center=(x + w // 2, y + h // 2))
-        screen.blit(dice_text, dice_text_rect)

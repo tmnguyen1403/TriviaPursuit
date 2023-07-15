@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional
 from question import Question
-from interfaces import CategorySubscriber
+from interface import CategorySubscriber
 from database import Database
 class QuestionManager(CategorySubscriber):
     def __init__(self, database: Database) -> None:

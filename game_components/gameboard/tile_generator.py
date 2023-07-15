@@ -1,5 +1,4 @@
-from interfaces import CategoryPublisher
-from tile import Tile
+from .tile import Tile
 
 class TileGenerator:
     def __init__(self, categories, tile_matrix, colors, tile_types, board_rect):

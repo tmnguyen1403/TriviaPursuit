@@ -1,6 +1,5 @@
-from interfaces import CategoryPublisher
-from question_manager import QuestionManager
-from database import dummy_database, Database
+from interface import CategoryPublisher
+from database import Database
 '''
 Applying Observer (Publisher Subscriber pattern) to handle category from gameboard
 
@@ -26,12 +25,14 @@ class GameBoard(CategoryPublisher):
         for subscriber in self.subscribers:
             subscriber.update(self.category)
 
-if __name__ == "__main__":
-    database = dummy_database()
-    board = GameBoard(database)
-    question_manager = QuestionManager(database=database)
-    board.subscribe(question_manager)
-    board.move()
-    board.move()
-    board.move()
+# if __name__ == "__main__":
+#     from question import QuestionManager
+#     from database import dummy_database, Database
+#     database = dummy_database()
+#     board = GameBoard(database)
+#     question_manager = QuestionManager(database=database)
+#     board.subscribe(question_manager)
+#     board.move()
+#     board.move()
+#     board.move()
 

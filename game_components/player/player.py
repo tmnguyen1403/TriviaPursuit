@@ -11,3 +11,5 @@ class Player:
         return 0
     def update(self, new_position):
         self.position = new_position
+    def get_position(self):
+        return self.position

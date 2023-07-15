@@ -1,9 +1,10 @@
+
 class DiceRenderer:
-    def __init__(self, engine, font):
+    def __init__(self, engine: 'pygame', font):
         self.engine = engine
         self.font = font
 
-    def draw(self, screen, dice):
+    def draw(self, screen, dice: 'Dice'):
         dice_rect = dice.get_rect()
         self.engine.draw.rect(screen, dice.get_color(), dice_rect)
         dice_text = self.font.render(str(dice.get_value()), True, dice.get_text_color())

@@ -9,7 +9,7 @@ parrent_dir = os.path.dirname(current_dir)
 question_folder_path = os.path.join(parrent_dir, 'question_display')
 sys.path.append(question_folder_path)
 
-from question_manager import QuestionManager
+from question import QuestionManager
 from database import dummy_database
 import copy
 class TestQuestionManager(unittest.TestCase):

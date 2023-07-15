@@ -1,9 +1,6 @@
 import random
-from dice import Dice
-from dice_renderer import DiceRenderer
-
 class DiceManager:
-    def __init__(self, dice: Dice, dice_renderer: DiceRenderer):
+    def __init__(self, dice: 'Dice', dice_renderer: 'DiceRenderer'):
         self.dice = dice
         self.dice_renderer = dice_renderer
     #Handle Animation
@@ -20,6 +17,9 @@ class DiceManager:
         
         dice.clear_animation()
         print("Number rolled is " + str(dice.get_value()) + ".")
+    def roll_value(self):
+        return self.dice.get_value()
+    
     def draw(self, screen):
         self.dice_renderer.draw(screen, self.dice)
         

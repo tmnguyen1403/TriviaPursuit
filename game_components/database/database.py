@@ -1,5 +1,4 @@
 from typing import Dict, List, Optional
-from question import Question
 
 '''
 This singleton pattern is created by chatGPT
@@ -19,7 +18,7 @@ There can be only one instance of database
 '''
 @singleton
 class Database:
-    def __init__(self, categories : List[str], questions : Dict[str, List[Question]]) -> None:
+    def __init__(self, categories : List[str], questions : Dict[str, List["Question"]]) -> None:
         self.categories = categories
         self.questions = questions
     
@@ -30,6 +29,7 @@ class Database:
         return self.categories
 
 def dummy_database():
+    from question import Question
     categories = ["Math", "Science", "Chemistry", "Movie"]
     questions = dict()
     questions["Math"] = []

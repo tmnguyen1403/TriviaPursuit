@@ -1,1 +1,1 @@
-from .database import Database, dummy_database
+from .database import Database, dummy_database, create_with_online_database

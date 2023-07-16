@@ -1,6 +1,6 @@
 import pygame
-
-from database import dummy_database
+import asyncio
+from database import dummy_database, create_with_online_database
 from player import Player, PlayerManager
 from gameboard import Tile, TileGenerator, Gameboard, MoveCalculator, GameBoardRenderer
 from dice import Dice, DiceManager, DiceRenderer
@@ -45,7 +45,7 @@ tile_matrix = [[0,2,1,4,3,2,1,4,0],
                 [1,-1,-1,-1,4,-1,-1,-1,1],
                 [0,2,3,4,1,2,3,4,0]]
 colors = {0: Color.WHITE.value, 1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value, 5: Color.SPECIAL.value}
-categories = {0: "", 1: "Math", 2: "Science", 3: "Chemistry", 4: "Movie", 5: "Random"}
+categories = {0: "", 1: "Math", 2: "Sport", 3: "History", 4: "Movie", 5: "Random"}
 action_types = {0: "", 1: "", 2: "", 3: "", 4: "", 5: "Special"}
 board_x = 100
 board_y = 100
@@ -55,7 +55,18 @@ board_rect = (board_x, board_y, board_width, board_height)
 tile_generator = TileGenerator(categories=categories, tile_matrix=tile_matrix,colors=colors, tile_types=action_types, board_rect=board_rect)
 tile_objects, tile_map = tile_generator.generate()
 
-question_database = dummy_database()
+#question_database = dummy_database()
+category_list = []
+for  key, category in categories.items():
+    if category == "Random" or category == "":
+        continue
+    category_list.append(category)
+async def main_database(category_list):
+    print(f"Main database: {category_list}")
+    result = await create_with_online_database(categories=category_list)
+    return result
+question_database = asyncio.run(main_database(category_list))
+
 move_calculator = MoveCalculator(-1)
 tile_info = (tile_matrix, tile_map, tile_objects)
 gameboard = Gameboard(question_database, tile_info, move_calculator)
@@ -97,14 +108,12 @@ running = True
 roll = False
 game_manager = GameManager()
 
-database = dummy_database()
-
 # Init Question
 question_position = {"x": board_x + board_width, "y": 150}
 question_text_color = (0,0,0)
 question_font = pygame.font.Font(None, 64)
 question_renderer = QuestionRenderer(screen=screen, position=question_position, text_color=question_text_color)
-question_manager = QuestionManager(database=database)
+question_manager = QuestionManager(database=question_database)
 
 #Init Answer
 answer_font  = pygame.font.Font(None, 50)

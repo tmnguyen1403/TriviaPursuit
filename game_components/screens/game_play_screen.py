@@ -5,7 +5,8 @@ from player import Player, PlayerManager
 from gameboard import Tile, TileGenerator, Gameboard, MoveCalculator, GameBoardRenderer
 from dice import Dice, DiceManager, DiceRenderer
 from game_manager import GameManager, GameState
-from question import Question, QuestionManager, QuestionRenderer
+from question import Question, QuestionManager, QuestionRenderer, AnswerRenderer
+from buttons import Button, ButtonManager,ButtonRenderer
 from utils import Color
 pygame.init()
 clock = pygame.time.Clock()
@@ -92,16 +93,47 @@ roll = False
 game_manager = GameManager()
 
 database = dummy_database()
-question_position = {"x": board_x + board_width, "y": screen_height//2}
+
+# Init Question
+question_position = {"x": board_x + board_width, "y": 150}
 question_text_color = (0,0,0)
 question_font = pygame.font.Font(None, 64)
 question_renderer = QuestionRenderer(screen=screen, position=question_position, text_color=question_text_color)
 question_manager = QuestionManager(database=database)
 
+#Init Answer
+answer_font  = pygame.font.Font(None, 50)
+answer_position  = (question_position["x"], question_position["y"]+ 200)
+answer_color = (0,0,255)
+answer_renderer = AnswerRenderer(position=answer_position, text_color=answer_color)
+# Button creator
+def toggle_answer():
+    print("Reveal answer")
+    global game_manager
+    game_manager.next_state()
+def accept_answer():
+    global game_manager
+    game_manager.next_state()
+
+button_x = board_x + board_width
+button_y = screen_height//3
+button_width = 200
+button_height = 50
+button_color = (0, 255, 0)
+hover_color = (0, 200, 0)
+button_font = pygame.font.Font(None, 32)
+
+show_answer_button = Button((button_x, button_y),(button_width, button_height),(0, 255, 255), "Show Answer",(255, 255, 255) , toggle_answer)
+accept_answer_button = Button((button_x-200, button_y+100),(button_width, button_height),(80, 120, 255), "Accept Answer",(255, 255, 255) , accept_answer)
+
+button_renderer = ButtonRenderer(pygame)
+button_manager = ButtonManager([show_answer_button])
+button_manager.add_button(accept_answer_button)
+
 gameboard.subscribe(question_manager)
 displaying_question = False
 already_shown = False
-update_board = False
+update_board = True
 while running:
     #Without doing pygame.event.get(), the game will not be rendered
     for event in pygame.event.get():
@@ -125,13 +157,16 @@ while running:
                     update_board = True
                     print(f"Move success {move_success}")
                     print("Update the player position, reset tile state")
+                elif current_state == GameState.WAIT_PLAYER_ANSWER:
+                    button_manager.on_click(mouse_pos=mouse_pos)
+                elif current_state == GameState.PLAYER_VOTE:
+                    button_manager.on_click(mouse_pos=mouse_pos)
 
     if not already_shown:
         screen.fill((125,125,125))
         already_shown = True
         dice_manager.draw(screen=screen)
         pygame.draw.rect(screen, WHITE, (board_x,board_y,board_width,board_height))
-        gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
     if update_board:
         gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
         update_board = False
@@ -141,8 +176,17 @@ while running:
         current_question = question_manager.get_current_question()
         print("current_question: ", current_question)
         question_renderer.render(question=current_question, font=question_font)
+        for button in button_manager.buttons:
+            button_renderer.draw(screen=screen, button=button, font=button_font)
         game_manager.next_state()
-
+    elif current_state == GameState.ANSWER_REVEAL:
+        current_question = question_manager.get_current_question()
+        answer_renderer.render(screen=screen, text=current_question.answer, font=answer_font)
+        game_manager.next_state()
+    elif current_state == GameState.PLAYER_SELECTION:
+        already_shown = False
+        update_board = True
+        game_manager.reset()
     pygame.display.flip()
     clock.tick(60)
 pygame.quit()

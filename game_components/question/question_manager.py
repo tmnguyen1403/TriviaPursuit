@@ -23,13 +23,18 @@ class QuestionManager(TileSubscriber):
         return self.current_question
     def clear_question(self):
         self.current_question = None
-
+    def set_question(self, category: str):
+        self.current_question = self.get_question(category=category)
+        if self.current_question == None:
+            print(f"QuestionManager is out of question from category: {category}")
     def get_question(self, category : str) -> Optional['Question']:
+        return_question = None
         if category not in self.database.categories:
             print(f"No category {category} in database")
             return None
         category_questions = self.database.questions[category]
         print(f"questions: {category_questions}")
         if len(category_questions) > 0:
-            return category_questions.pop()
-        return None
+            return_question = category_questions.pop()
+            category_questions.append(return_question)
+        return return_question

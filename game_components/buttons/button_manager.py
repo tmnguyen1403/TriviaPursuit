@@ -2,6 +2,7 @@ from .button import Button
 from typing import List, Dict
 from utils import is_point_inside_rect
 class ButtonManager:
+    # Change buttons to dictionary for easy lookup
     def __init__(self, buttons = List[Button]):
         self.buttons = buttons
         self.disable_buttons : Dict[int, bool] = {} #disable button indices 

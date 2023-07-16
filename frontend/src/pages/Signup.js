@@ -1,37 +1,58 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 const Signup = () => {
-
-    return (
-        <div className="container">
-            <h2 className="text-center">Trivial Compute</h2>
-            <h3 className="text-center">Create Account</h3>
-            <form>
-            <div className="form-group">
-                <label className="form-label" for="username">Full Name:</label>
-                <input type="text" className="form-control" id="name" name="name" required />
+  return (
+    <div class="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-sm-6">
+          <div className="card">
+            <div className="card-body">
+              <h3 className="card-title text-center">Create your account</h3>
+              <form>
+                <div className="mb-3">
+                  <label for="username">Username</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="username"
+                    placeholder="Enter your username"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label for="email">Email</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="email"
+                    placeholder="Enter your email"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label for="password">Password</label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    id="password"
+                    placeholder="Enter your password"
+                  />
+                </div>
+                <div className="mb-3 d-grid gap-2 col-4 mx-auto">
+                  <button type="submit" className="btn btn-primary btn-block rounded-pill">
+                    Sign Up
+                  </button>
+                </div>
+              </form>
             </div>
-            <div className="form-group">
-                <label className="form-label" for="username">Username:</label>
-                <input type="text" className="form-control" id="username" name="username" required />
+            <div class="card-footer text-center">
+              <p>
+                Already have an account? <Link to="/login">Login here</Link>
+              </p>
             </div>
-            <div className="form-group">
-                <label className="form-label" for="username">Email:</label>
-                <input type="email" className="form-control" id="email" name="email" required />
-            </div>
-            <div className="form-group">
-                <label className="form-label" for="password">Password:</label>
-                <input type="password" className="form-control" id="password" name="password" required />
-            </div>
-            <div class="col-12">
-                <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
-            </div>
-            
-            </form>
-            
-            <h4 className="text-center">Already have an account? <Link to="/login">Log in</Link></h4>
+          </div>
         </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
 export default Signup;

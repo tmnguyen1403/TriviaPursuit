@@ -22,17 +22,12 @@ const Navbar = () => {
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <Link className="nav-link active" to="/">
-                Dashboard
+                Home
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/questions">
                 Questions
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/sign-up">
-                Sign up
               </Link>
             </li>
             <li className="nav-item">

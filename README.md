@@ -26,3 +26,41 @@ TriviaPursuit is the game project for Foundation of SWE class
     ```git push ``` # Push/upload your changes to the remote git repository () 
 
 You can now start developing 
+
+# How to run backend
+1. Install Node.js to your computer using [this link](https://nodejs.org/en). Download the version recommended for most users and install it.
+
+2. Download Postman App using [this link](https://www.postman.com/downloads/) and sign up for free. I created a team workspace called "Trivial Compute" in Postman. Click [this link](https://app.getpostman.com/join-team?invite_code=1a9d64a74e6f67652ce43fd7b19e9c91&target_code=6e99ce5265d2a7031e7fa67a03dd5be4) to join the team. I created a copy of all the requests in the team workspace.
+
+3. Sign up for MongoDB using gmail with [this link](https://account.mongodb.com/account/login?signedOut=true). Let me know your email you used to create the account once you register successfully. I will try to grant you access to the database. I have configured the network access to allow all the IP addresses to access the database so you should be able to connect to the database sufccessfully with the conncetion link in the code. It is possible that you will only be able to interact with database by sending requests, meaning you can't directly see the database from MongoDB website. Again, you don't need the database access for this step. Continue to the following steps to set up the environment.
+
+4. Download LinBranch and navigate to the backend file using Linux command in your VS code terminal. The frontend is not ready yet so you can ignore it.
+
+5. You will need to install some packages to run the backend. They are "body-parser", "express", "express-validator", "mongoose", "nodemon" and "mongoose-unique-validator". Run the following commands to install:
+   
+   ```npm install --save express body-parser```
+
+   ```npm install --save-dev nodemon```
+
+   ```npm install --save express-validator```
+
+   ```npm install --save mongoose```
+
+   ```npm install --save mongoose-unique-validator```
+
+6. To run the backend, run the following command. Your terminal should show this message "Connected to MongoDB successfully." If it reports an error, it means that you are not connected to the database. Let me know if it reports errors.
+
+   ```npm start```
+
+# API
+1. User sign up: ```http://localhost:5000/api/users/signup```
+2. User login: ```http://localhost:5000/api/users/login```
+3. Get all users: ```http://localhost:5000/api/users```
+4. Create a question: ```http://localhost:5000/api/questions```
+5. Update a question: ```http://localhost:5000/api/questions/{question id}```
+6. Delete a question: ```http://localhost:5000/api/questions/{question id}```
+7. Get a question by id: ```http://localhost:5000/api/questions/{question id}```
+8. Get questions by user id: ```http://localhost:5000/api/questions/user/{user id}```
+9. Get questions by category: ```http://localhost:5000/api/questions/category/{category}```
+
+For more details, join the postman team.

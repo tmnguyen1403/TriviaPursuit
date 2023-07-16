@@ -19,6 +19,13 @@ RED =(255,0,0)
 board_width = 600
 board_height = 600
 
+#get the size for the tiles, and the border sizes
+square_size = board_width // 10
+border_size = square_size //10
+
+#calculate the size of the qhite squares separating the spokes
+w_square_size = (3*square_size)+ (2*border_size)
+
 #create matrix to represent where game board rectangles should be and their colors
 
 tile_matrix = [[1,1,1,1,1,1,1,1,1],
@@ -56,31 +63,33 @@ while running:
     # Fill the board surface with white color
     board_surface.fill(WHITE)
 
+    #draw big black square to act as borders
+    pygame.draw.rect(board_surface, BLACK, (350, 250, board_height, board_width))
+
+    # draw 4 white squares to separate the spokes and outside borders
+    for i in range(2):
+        for j in range(2):
+            w_square_x = 350 + (((2* border_size)+ square_size) * (i+1)) + (w_square_size*i)
+            w_square_y = 250 + (((2* border_size)+ square_size) * (j+1)) + (w_square_size*j)
+
+            pygame.draw.rect(board_surface, WHITE, (w_square_x, w_square_y, 
+                                                    w_square_size, w_square_size))
+
+
     # Draw the game board
     for row in range(9):
         for col in range(9):
             # Calculate the coordinates of each square on the board
-            square_size = board_width // 9
-            x = 350 + (col * square_size)
-            y = 250 + (row * square_size)
 
-            border_size = 5
-            inner_x = x + border_size
-            inner_y = y + border_size
-            inner_size = square_size - border_size * 2
+            x = 350 + ((col+1) * border_size) + (col * square_size)
+            y = 250 + ((row+1) * border_size) + (row * square_size)
 
             #draw the game board rectangles
             if tile_matrix[row][col] == 1:
                 #color the squares
                 square_color = colors[color_matrix[row][col]]
-                
 
-                # Draw initial black square on the board
-
-
-                pygame.draw.rect(board_surface, BLACK, (x, y, square_size, square_size))
-                #draw smaller colored square inside of black square 
-                pygame.draw.rect(board_surface, square_color, (inner_x, inner_y, inner_size, inner_size))
+                pygame.draw.rect(board_surface, square_color, (x, y, square_size, square_size))
 
 
 

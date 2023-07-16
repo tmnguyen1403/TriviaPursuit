@@ -1,9 +1,9 @@
 # TriviaPursuit
 TriviaPursuit is the game project for Foundation of SWE class 
 
-## Demo Progress
+## Demo Progress  
 
-![Dice Roll Demo](./gif/dice_roll_move.gif)
+![Dice Roll Demo](./gif/dice_rolll_move.gif)
 # Development setup
 1. Require git to be installed on machine   
     https://git-scm.com/book/en/v2/Getting-Started-Installing-Git

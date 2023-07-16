@@ -4,7 +4,7 @@ import requests
 from buttons import Button, ButtonRenderer, ButtonManager
 from database import dummy_database
 from question_manager import QuestionManager
-from gameboard import GameBoard
+from gameboard import Gameboard
 
 #setup
 pygame.init()
@@ -134,7 +134,7 @@ question_position = {"x": screen_width//2, "y": screen_height//2}
 
 
 database = dummy_database()
-board = GameBoard(database=database)
+board = Gameboard(database=database)
 question_renderer = QuestionRenderer(screen=screen, position=question_position, text_color=text_color)
 question_manager = QuestionManager(database=database)
 board.subscribe(question_manager)

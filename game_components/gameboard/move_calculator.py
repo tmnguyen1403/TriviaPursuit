@@ -27,6 +27,7 @@ class MoveCalculator:
     def next_moves(self, board_matrix: List[List[int]], player_pos:Tuple[int,int], dice_value: int, check_move=True):
         moves = []
         row, col = player_pos
+        print(f"player pos: {row},{col}")
         for h in range(dice_value+1):
             v = dice_value - h
             for sign_h in [1,-1]:

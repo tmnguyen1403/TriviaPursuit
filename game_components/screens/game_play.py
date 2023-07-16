@@ -2,8 +2,9 @@ import pygame
 
 from database import dummy_database
 from player import Player, PlayerManager
-from gameboard import Tile, TileGenerator, GameBoard, MoveCalculator, GameBoardRenderer
+from gameboard import Tile, TileGenerator, Gameboard, MoveCalculator, GameBoardRenderer
 from dice import Dice, DiceManager, DiceRenderer
+from game_manager import GameManager, GameState
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -45,18 +46,19 @@ board_width = 600
 board_height = 600
 board_rect = (board_x, board_y, board_width, board_height)
 tile_generator = TileGenerator(categories=categories, tile_matrix=tile_matrix,colors=colors, tile_types=action_types, board_rect=board_rect)
-tile_objects = tile_generator.generate()
+tile_objects, tile_map = tile_generator.generate()
 
 question_database = dummy_database()
 move_calculator = MoveCalculator(-1)
-gameboard = GameBoard(question_database, tile_matrix, move_calculator)
+tile_info = (tile_matrix, tile_map, tile_objects)
+gameboard = Gameboard(question_database, tile_info, move_calculator)
 gameboard_renderer = GameBoardRenderer()
 
 # Die
 die_width = 100
 die_height = 100
-die_x = (screen_width - die_width) // 4
-die_y = (screen_width - die_height) // 4
+die_x = board_x + board_width +20
+die_y = board_y + board_height // 2
 die_color = (0, 0, 0)
 die_text_color = (255, 255, 255)
 die_font = pygame.font.Font(None, 64)
@@ -75,9 +77,9 @@ print("Dice value: ", dice_manager.roll_value())
 dice_value = dice_manager.roll_value()
 player_manager.update_all(gameboard.get_center())
 player_pos = player_manager.get_player_position()
-possible_moves = gameboard.get_moves(player_pos=player_pos, dice_value=dice_value)
-print("Player position: ", player_pos)
-print("Possible moves:", possible_moves)
+#possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
+#print("Player position: ", player_pos)
+#print("Possible moves:", possible_moves)
 #
 
 #Can only have one screen, create another screen will overide existing screen
@@ -85,24 +87,38 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 # Create the game board surface
 pygame.display.set_caption("Board Game Board")
 running = True
+roll = False
+game_manager = GameManager()
+
 while running:
     #Without doing pygame.event.get(), the game will not be rendered
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                current_state = game_manager.get_state()
+                mouse_pos = pygame.mouse.get_pos()
+                if current_state == GameState.WAIT_ROLL:
+                    dice_manager.animate(screen=screen,pygame=pygame,clock=clock)
+                    dice_value = dice_manager.roll_value()
+                    possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
+                    print(possible_moves)
+                    game_manager.next_state()
+                elif current_state == GameState.MOVE_SELECTION:
+                    move_success = gameboard.move(mouse_pos=mouse_pos)
+                    print(f"Move success {move_success}")
+                    print("Update the player position, reset tile state")
+
+                
     screen.fill((125,125,125))
+    dice_manager.draw(screen=screen)
+        #possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
+        #roll = True
     # # Draw the game board
+    # if game_manager.get_state() == GameState.MOVE_SELECTION:
     pygame.draw.rect(screen, WHITE, (board_x,board_y,board_width,board_height))
     gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
-    # for tile in tile_objects:
-    #     x,y,width,height = tile.rect
-    #     border_size = 5
-    #     inner_x = x + border_size
-    #     inner_y = y + border_size
-    #     inner_width = width - border_size * 2
-    #     inner_height = height - border_size * 2
-    #     pygame.draw.rect(screen, BLACK, (x, y, width, height))
-    #     pygame.draw.rect(screen, tile.color, (inner_x, inner_y, inner_width, inner_height))
     pygame.display.flip()
     clock.tick(60)
 pygame.quit()

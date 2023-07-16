@@ -1,2 +1,3 @@
-from .question import Question
+from .question import Question, QuestionType
 from .question_manager import QuestionManager
+from .question_renderer import QuestionRenderer

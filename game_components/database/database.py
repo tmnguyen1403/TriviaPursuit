@@ -29,18 +29,21 @@ class Database:
         return self.categories
 
 def dummy_database():
-    from question import Question
+    from question import Question, QuestionType
     categories = ["Math", "Science", "Chemistry", "Movie"]
     questions = dict()
     questions["Math"] = []
-    questions["Math"].append(Question(("1+1=?","text",None,"2","Math")))
-    questions["Math"].append(Question(("2+2=?","text",None,"4","Math")))
+    questions["Math"].append(Question(("1+1=?",QuestionType.TEXT,None,"2","Math")))
+    questions["Math"].append(Question(("2+2=?",QuestionType.TEXT,None,"4","Math")))
 
     questions["Science"] = []
-
+    questions["Science"].append(Question(("what is science?",QuestionType.TEXT,None,"I don't know","Science")))
+    questions["Science"].append(Question(("monte carlo method?",QuestionType.TEXT,None,"I don't know","Science")))
     questions["Chemistry"] = []
+    questions["Chemistry"].append(Question(("Name of NaCl?",QuestionType.TEXT,None,"2","Chemistry")))
+    questions["Chemistry"].append(Question(("Name of H2O?",QuestionType.TEXT,None,"4","Chemistry")))
     
     questions["Movie"] = []
-    questions["Movie"].append(Question(("OST Titanic?","text",None,"My heart will go on","Movie")))
-    questions["Movie"].append(Question(("Director of Avatar 2","text",None,"James Cameron","Movie")))
+    questions["Movie"].append(Question(("OST Titanic?",QuestionType.TEXT,None,"My heart will go on","Movie")))
+    questions["Movie"].append(Question(("Director of Avatar 2",QuestionType.TEXT,None,"James Cameron","Movie")))
     return Database(categories,questions)

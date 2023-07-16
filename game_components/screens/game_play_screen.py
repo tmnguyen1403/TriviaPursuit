@@ -5,7 +5,8 @@ from player import Player, PlayerManager
 from gameboard import Tile, TileGenerator, Gameboard, MoveCalculator, GameBoardRenderer
 from dice import Dice, DiceManager, DiceRenderer
 from game_manager import GameManager, GameState
-
+from question import Question, QuestionManager, QuestionRenderer
+from utils import Color
 pygame.init()
 clock = pygame.time.Clock()
 
@@ -37,8 +38,8 @@ tile_matrix = [[0,2,1,4,3,2,1,4,0],
                 [4,-1,-1,-1,3,-1,-1,-1,2],
                 [1,-1,-1,-1,4,-1,-1,-1,1],
                 [0,2,3,4,1,2,3,4,0]]
-colors = {0: WHITE, 1: BLUE, 2: YELLOW, 3: RED, 4: GREEN, 5: SPECIAL}
-categories = {0: "", 1: "Math", 2: "Science", 3: "Sport", 4: "Movie", 5: "Random"}
+colors = {0: Color.WHITE.value, 1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value, 5: Color.SPECIAL.value}
+categories = {0: "", 1: "Math", 2: "Science", 3: "Chemistry", 4: "Movie", 5: "Random"}
 action_types = {0: "", 1: "", 2: "", 3: "", 4: "", 5: "Special"}
 board_x = 100
 board_y = 100
@@ -90,6 +91,17 @@ running = True
 roll = False
 game_manager = GameManager()
 
+database = dummy_database()
+question_position = {"x": board_x + board_width, "y": screen_height//2}
+question_text_color = (0,0,0)
+question_font = pygame.font.Font(None, 64)
+question_renderer = QuestionRenderer(screen=screen, position=question_position, text_color=question_text_color)
+question_manager = QuestionManager(database=database)
+
+gameboard.subscribe(question_manager)
+displaying_question = False
+already_shown = False
+update_board = False
 while running:
     #Without doing pygame.event.get(), the game will not be rendered
     for event in pygame.event.get():
@@ -106,20 +118,31 @@ while running:
                         possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
                         print(possible_moves)
                         game_manager.next_state()
+                        update_board = True
                 elif current_state == GameState.MOVE_SELECTION:
                     move_success = gameboard.move(mouse_pos=mouse_pos)
+                    game_manager.next_state()
+                    update_board = True
                     print(f"Move success {move_success}")
                     print("Update the player position, reset tile state")
 
-                
-    screen.fill((125,125,125))
-    dice_manager.draw(screen=screen)
-        #possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
-        #roll = True
-    # # Draw the game board
-    # if game_manager.get_state() == GameState.MOVE_SELECTION:
-    pygame.draw.rect(screen, WHITE, (board_x,board_y,board_width,board_height))
-    gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
+    if not already_shown:
+        screen.fill((125,125,125))
+        already_shown = True
+        dice_manager.draw(screen=screen)
+        pygame.draw.rect(screen, WHITE, (board_x,board_y,board_width,board_height))
+        gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
+    if update_board:
+        gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
+        update_board = False
+    #Handle question
+    current_state = game_manager.get_state()
+    if current_state == GameState.QUESTION_SELECTION:
+        current_question = question_manager.get_current_question()
+        print("current_question: ", current_question)
+        question_renderer.render(question=current_question, font=question_font)
+        game_manager.next_state()
+
     pygame.display.flip()
     clock.tick(60)
 pygame.quit()

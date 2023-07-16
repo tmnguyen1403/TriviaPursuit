@@ -1,1 +1,1 @@
-from .interfaces import CategoryPublisher, CategorySubscriber
+from .interfaces import TilePublisher, TileSubscriber

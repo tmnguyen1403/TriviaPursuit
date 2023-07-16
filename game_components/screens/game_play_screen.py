@@ -78,7 +78,7 @@ _Gameboard take in player position and dice value
 print("Dice value: ", dice_manager.roll_value())
 dice_value = dice_manager.roll_value()
 player_manager.update_all(gameboard.get_center())
-player_pos = player_manager.get_player_position()
+player_pos = player_manager.get_current_player_position()
 #possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
 #print("Player position: ", player_pos)
 #print("Possible moves:", possible_moves)
@@ -131,6 +131,7 @@ button_manager = ButtonManager([show_answer_button])
 button_manager.add_button(accept_answer_button)
 
 gameboard.subscribe(question_manager)
+gameboard.subscribe(player_manager)
 displaying_question = False
 already_shown = False
 update_board = True
@@ -147,6 +148,7 @@ while running:
                     if dice_manager.can_roll(mouse_pos=mouse_pos):
                         dice_manager.animate(screen=screen,pygame=pygame,clock=clock)
                         dice_value = dice_manager.roll_value()
+                        player_pos = player_manager.get_current_player_position()
                         possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
                         print(possible_moves)
                         game_manager.next_state()

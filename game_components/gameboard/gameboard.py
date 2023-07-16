@@ -1,12 +1,11 @@
-from interface import CategoryPublisher
+from interface import TilePublisher
 from typing import List, Tuple
 from utils import is_point_inside_rect
 '''
 Applying Observer (Publisher Subscriber pattern) to handle category from gameboard
 
 '''
-
-class Gameboard(CategoryPublisher):
+class Gameboard(TilePublisher):
     def __init__(self, database: 'Database', tile_info, move_calculator: 'MoveCalculator'):
         board_matrix, tile_map, tile_objects = tile_info
         self.titles = tile_objects
@@ -19,6 +18,8 @@ class Gameboard(CategoryPublisher):
         self.center = (len(board_matrix)//2, len(board_matrix[0])//2)
         self.candidate_tiles = dict()
         self.candidate_color = (125,125,125)
+        self.selected_tile = None
+        self.matrix_tile_position = None
     def get_center(self):
         return self.center
     def subscribe(self, subscriber):
@@ -35,37 +36,28 @@ class Gameboard(CategoryPublisher):
                 print(f"Tile at {move} is selected. Updating player position")
                 self.category = tile.get_category()
                 has_move = True
+                self.selected_tile = tile
+                self.matrix_tile_position = move
                 break
-        if has_move:
-            self.reset_tiles()
+        if self.selected_tile:
             self.notify()
+            self.reset_tiles()
         return has_move
 
     def reset_tiles(self):
         for move, tile in self.candidate_tiles.items():
             tile.reset()
         self.candidate_tiles = dict()
+        self.selected_tile = None
+        self.matrix_tile_position = None
     def get_possible_moves(self, player_pos, dice_value):
         possible_moves = self.move_calculator.next_moves(self.matrix, player_pos, dice_value)
         for move in possible_moves:
-           # print(f"Gameboard move: {move}")
             tile = self.tile_map[move]
             tile.set_move_candidate(candidate_color = self.candidate_color)
             self.candidate_tiles[move] = tile
-            #self.tile_map[move].
         return possible_moves
     def notify(self):
         for subscriber in self.subscribers:
-            subscriber.update(self.category)
-
-# if __name__ == "__main__":
-#     from question import QuestionManager
-#     from database import dummy_database, Database
-#     database = dummy_database()
-#     board = Gameboard(database)
-#     question_manager = QuestionManager(database=database)
-#     board.subscribe(question_manager)
-#     board.move()
-#     board.move()
-#     board.move()
+            subscriber.update(self.selected_tile, self.matrix_tile_position)
 

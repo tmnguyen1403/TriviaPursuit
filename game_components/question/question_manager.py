@@ -1,11 +1,12 @@
 from typing import Dict, List, Optional
-from interface import CategorySubscriber
-class QuestionManager(CategorySubscriber):
+from interface import TileSubscriber
+class QuestionManager(TileSubscriber):
     def __init__(self, database: 'Database') -> None:
         self.database = database
         self.current_question = None
         self.curent_category = None
-    def update(self, category) -> bool:
+    def update(self, tile: 'Tile', matrix_position) -> bool:
+        category = tile.category
         if category not in self.database.categories:
             print(f"question manager does not have category: {category}")
             #Handle special case, this is probably the center tile

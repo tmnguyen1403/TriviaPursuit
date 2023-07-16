@@ -1,5 +1,6 @@
 import pygame
-
+from tile import Tile
+from tile_generator import TileGenerator
 # Initialize Pygame
 pygame.init()
 
@@ -37,6 +38,11 @@ color_matrix = [[0,2,1,4,3,2,1,4,0],
                 [4,-1,-1,-1,3,-1,-1,-1,2],
                 [1,-1,-1,-1,4,-1,-1,-1,1],
                 [0,2,3,4,1,2,3,4,0]]
+tile_object = []
+
+for row in len(tile_matrix):
+    tile_row = []
+    for col in len(tile_matrix[0]):
 
 # Create the game board surface
 board_surface = pygame.display.set_mode((board_width, board_height))

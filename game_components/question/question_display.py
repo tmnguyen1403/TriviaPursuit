@@ -1,6 +1,11 @@
 import pygame
 import requests
 
+from buttons import Button, ButtonRenderer, ButtonManager
+from database import dummy_database
+from question_manager import QuestionManager
+from gameboard import Gameboard
+
 #setup
 pygame.init()
 screen_width = 1280
@@ -88,7 +93,6 @@ def accept_answer():
     show_answer = False
     show_question = False
 
-from button import Button, ButtonRenderer, ButtonManager
 show_question_button = Button((button_x, button_y),(button_width, button_height),(0, 255, 0), "show question",(255, 255, 255) ,toggle_question)
 show_answer_button = Button((button_x, button_y+100),(button_width, button_height),(0, 255, 255), "Show Answer",(255, 255, 255) , toggle_answer)
 accept_answer_button = Button((button_x-200, button_y+100),(button_width, button_height),(80, 120, 255), "Accept Answer",(255, 255, 255) , accept_answer)
@@ -128,12 +132,9 @@ from question import Question
 question = Question(("1+1=?","text",None,"2","Math"))
 question_position = {"x": screen_width//2, "y": screen_height//2}
 
-from database import Database, dummy_database
-from question_manager import QuestionManager
-from game_board import GameBoard
 
 database = dummy_database()
-board = GameBoard(database=database)
+board = Gameboard(database=database)
 question_renderer = QuestionRenderer(screen=screen, position=question_position, text_color=text_color)
 question_manager = QuestionManager(database=database)
 board.subscribe(question_manager)

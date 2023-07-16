@@ -1,6 +1,9 @@
 # TriviaPursuit
 TriviaPursuit is the game project for Foundation of SWE class 
 
+## Demo Progress
+
+![Dice Roll Demo](./gif/dice_roll_move.gif)
 # Development setup
 1. Require git to be installed on machine   
     https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
@@ -12,6 +15,10 @@ TriviaPursuit is the game project for Foundation of SWE class
 4. Create your own branch  
     ```git checkout -b <branch_name> ```
 
+# Play the game
+
+Run the below command in terminal to setup PythonPath
+```source python_path_setup.sh```
 # Development flow
 1. Whenever your code changes are ready for reviewed
 

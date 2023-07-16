@@ -100,11 +100,12 @@ while running:
                 current_state = game_manager.get_state()
                 mouse_pos = pygame.mouse.get_pos()
                 if current_state == GameState.WAIT_ROLL:
-                    dice_manager.animate(screen=screen,pygame=pygame,clock=clock)
-                    dice_value = dice_manager.roll_value()
-                    possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
-                    print(possible_moves)
-                    game_manager.next_state()
+                    if dice_manager.can_roll(mouse_pos=mouse_pos):
+                        dice_manager.animate(screen=screen,pygame=pygame,clock=clock)
+                        dice_value = dice_manager.roll_value()
+                        possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
+                        print(possible_moves)
+                        game_manager.next_state()
                 elif current_state == GameState.MOVE_SELECTION:
                     move_success = gameboard.move(mouse_pos=mouse_pos)
                     print(f"Move success {move_success}")

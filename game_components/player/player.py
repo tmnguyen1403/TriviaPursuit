@@ -15,3 +15,5 @@ class Player:
         self.position = new_position
     def get_position(self):
         return self.position
+    def get_name(self):
+        return self.name

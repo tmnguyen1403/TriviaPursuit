@@ -15,9 +15,14 @@ clock = pygame.time.Clock()
 screen_width = 1200
 screen_height = 800
 
-player_info = {"position": (0,0), "name": "P1", "token": None, "score": []}
-player1 = Player(player_info)
-player_manager = PlayerManager([player1])
+# Player Dummy Generator
+nb_player = 4
+players = []
+player_font  = pygame.font.Font(None, 32)
+for i in range(4):
+    player_info = {"position": (0,0), "name": f"P{i+1}", "token": None, "score": []}
+    players.append(Player(player_info))
+player_manager = PlayerManager(players=players)
 
 '''
 The below is used to generate
@@ -108,12 +113,16 @@ answer_color = (0,0,255)
 answer_renderer = AnswerRenderer(position=answer_position, text_color=answer_color)
 # Button creator
 def toggle_answer():
-    print("Reveal answer")
     global game_manager
     game_manager.next_state()
 def accept_answer():
     global game_manager
-    game_manager.next_state()
+    if game_manager.current_state == GameState.PLAYER_VOTE:
+        game_manager.set_state(GameState.ACCEPT_ANSWER)
+def reject_answer():
+    global game_manager
+    if game_manager.current_state == GameState.PLAYER_VOTE:
+        game_manager.set_state(GameState.REJECT_ANSWER)
 
 button_x = board_x + board_width
 button_y = screen_height//3
@@ -124,11 +133,16 @@ hover_color = (0, 200, 0)
 button_font = pygame.font.Font(None, 32)
 
 show_answer_button = Button((button_x, button_y),(button_width, button_height),(0, 255, 255), "Show Answer",(255, 255, 255) , toggle_answer)
-accept_answer_button = Button((button_x-200, button_y+100),(button_width, button_height),(80, 120, 255), "Accept Answer",(255, 255, 255) , accept_answer)
+accept_answer_button = Button((button_x-200, button_y+100),(button_width, button_height),(80, 120, 255), "Accept Answer",(0, 0, 255) , accept_answer)
+
+reject_answer_button = Button((button_x+100, button_y+100),(button_width, button_height),(80, 120, 255), "Reject Answer",(255, 0, 0) , reject_answer)
+
 
 button_renderer = ButtonRenderer(pygame)
 button_manager = ButtonManager([show_answer_button])
 button_manager.add_button(accept_answer_button)
+button_manager.add_button(reject_answer_button)
+
 
 gameboard.subscribe(question_manager)
 gameboard.subscribe(player_manager)
@@ -171,6 +185,11 @@ while running:
         pygame.draw.rect(screen, WHITE, (board_x,board_y,board_width,board_height))
     if update_board:
         gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
+        current_player = player_manager.get_current_player()
+        player_name = current_player.get_name()
+        print(f"Current player name {player_name}")
+        player_text = player_font.render(f"Player {player_name}", True, (0,0,0,0))
+        screen.blit(player_text, (board_x + board_width + 50,board_y - 50))
         update_board = False
     #Handle question
     current_state = game_manager.get_state()
@@ -185,6 +204,17 @@ while running:
         current_question = question_manager.get_current_question()
         answer_renderer.render(screen=screen, text=current_question.answer, font=answer_font)
         game_manager.next_state()
+    elif current_state == GameState.ACCEPT_ANSWER:
+        print("Stay on the current player:")
+        already_shown = False
+        update_board = True
+        game_manager.reset()
+    elif current_state == GameState.REJECT_ANSWER:
+        print("Move to the next player")
+        player_manager.next_player()
+        already_shown = False
+        update_board = True
+        game_manager.reset()
     elif current_state == GameState.PLAYER_SELECTION:
         already_shown = False
         update_board = True

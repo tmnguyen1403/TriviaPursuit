@@ -7,6 +7,13 @@ class PlayerManager(TileSubscriber):
         self.test = 0
         self.players = players
         self.current_player = players[0]
+        self.current_index = 0
+    
+    def next_player(self):
+        next_index = (self.current_index + 1)%len(self.players)
+        self.current_player = self.players[next_index]
+        self.current_index = next_index
+        print(f"Next player index: {self.current_index}")
     def update(self, tile ,matrix_position):
         print("Update current player position")
         self.current_player.update(matrix_position)

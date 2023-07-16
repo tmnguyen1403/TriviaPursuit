@@ -94,9 +94,15 @@ while running:
 
 
 
-    players = [Player() for _ in range(4)]
+    players = [Player(_) for _ in range(4)]
     cat_colors = (RED, GREEN, BLUE, YELLOW)
     score_boxes =[]
+
+
+    #draw players onto the game board
+    for index in range(len(players)):
+        pygame.draw.circle(board_surface, BLACK, players[index].curr_pos, 14)
+        pygame.draw.circle(board_surface, cat_colors[index], players[index].curr_pos, 12)
 
 
     #these two lines are to update the player scores, so there are some colored tiles in the example
@@ -104,16 +110,30 @@ while running:
     players[3].update_score(2)
 
 
-    #draw in the scoreboard
+    #create the scoreboard
     for n in range(len(players)):
 
         #calculate x and y coordinates
-        x = 100 + (300 * n)
+        x = 150 + (300 * n)
         y = 25
 
 
         score_boxes += [Score_Box(players[n], (x,y, 90,90), cat_colors)]
 
+
+        #draw the player name next to their score box
+        text = "Player " + str(players[n].name) + ":"
+        font = pygame.font.Font(None, 32)
+        text_surface = font.render(text, True, BLACK)
+        textbox_x = x - 100
+        textbox_width = text_surface.get_width() + 10
+        textbox_height = text_surface.get_height() + 10
+
+        pygame.draw.rect(board_surface, WHITE, (textbox_x, y, textbox_width, textbox_height))
+        board_surface.blit(text_surface, (textbox_x + 5, y + 5))
+
+
+    #draw the score boxes
     for sb in score_boxes: sb.draw(pygame, board_surface)
 
 

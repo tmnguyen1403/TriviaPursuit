@@ -31,6 +31,7 @@ class Gameboard(TilePublisher):
             self.subscribers.pop(index)
     def move(self, mouse_pos):
         has_move = False
+        print("Calling move in gameboard")
         for move, tile in self.candidate_tiles.items():
             if is_point_inside_rect(mouse_pos, tile.get_rect()):
                 print(f"Tile at {move} is selected. Updating player position")

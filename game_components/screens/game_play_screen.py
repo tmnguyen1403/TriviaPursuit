@@ -8,6 +8,7 @@ from game_manager import GameManager, GameState
 from question import Question, QuestionManager, QuestionRenderer, AnswerRenderer
 from buttons import Button, ButtonManager,ButtonRenderer
 from utils import Color
+from question_display_screen import QuestionDisplayScreen
 pygame.init()
 clock = pygame.time.Clock()
 
@@ -28,13 +29,6 @@ player_manager = PlayerManager(players=players)
 The below is used to generate
 '''
 # Define colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-BLUE = (0,0,255)
-YELLOW = (255,255,0)
-RED =(255,0,0)
-SPECIAL = (244,88,20)
 tile_matrix = [[0,2,1,4,3,2,1,4,0],
                 [3,-1,-1,-1,2,-1,-1,-1,3],
                 [4,-1,-1,-1,1,-1,-1,-1,2],
@@ -55,7 +49,6 @@ board_rect = (board_x, board_y, board_width, board_height)
 tile_generator = TileGenerator(categories=categories, tile_matrix=tile_matrix,colors=colors, tile_types=action_types, board_rect=board_rect)
 tile_objects, tile_map = tile_generator.generate()
 
-#question_database = dummy_database()
 category_list = []
 for  key, category in categories.items():
     if category == "Random" or category == "":
@@ -83,22 +76,9 @@ die_font = pygame.font.Font(None, 64)
 dice = Dice((die_x, die_y), (die_width, die_height), die_color, die_text_color)
 dice_renderer = DiceRenderer(pygame, die_font)
 dice_manager = DiceManager(dice=dice,dice_renderer=dice_renderer)
-#dice_manager.animate()
 
-'''
-_Current Player Roll Dice
-_Obtain dice value
-_Gameboard take in player position and dice value 
--->calculate next possible moves
-'''
-print("Dice value: ", dice_manager.roll_value())
-dice_value = dice_manager.roll_value()
+
 player_manager.update_all(gameboard.get_center())
-player_pos = player_manager.get_current_player_position()
-#possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
-#print("Player position: ", player_pos)
-#print("Possible moves:", possible_moves)
-#
 
 #Can only have one screen, create another screen will overide existing screen
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -121,43 +101,20 @@ answer_position  = (question_position["x"], question_position["y"]+ 200)
 answer_color = (0,0,255)
 answer_renderer = AnswerRenderer(position=answer_position, text_color=answer_color)
 # Button creator
-def toggle_answer():
-    global game_manager
-    game_manager.next_state()
-def accept_answer():
-    global game_manager
-    if game_manager.current_state == GameState.PLAYER_VOTE:
-        game_manager.set_state(GameState.ACCEPT_ANSWER)
-def reject_answer():
-    global game_manager
-    if game_manager.current_state == GameState.PLAYER_VOTE:
-        game_manager.set_state(GameState.REJECT_ANSWER)
-
-button_x = board_x + board_width
-button_y = screen_height//3
-button_width = 200
-button_height = 50
-button_color = (0, 255, 0)
-hover_color = (0, 200, 0)
-button_font = pygame.font.Font(None, 32)
-
-show_answer_button = Button((button_x, button_y),(button_width, button_height),(0, 255, 255), "Show Answer",(255, 255, 255) , toggle_answer)
-accept_answer_button = Button((button_x-200, button_y+100),(button_width, button_height),(80, 120, 255), "Accept Answer",(0, 0, 255) , accept_answer)
-
-reject_answer_button = Button((button_x+100, button_y+100),(button_width, button_height),(80, 120, 255), "Reject Answer",(255, 0, 0) , reject_answer)
-
-
-button_renderer = ButtonRenderer(pygame)
-button_manager = ButtonManager([show_answer_button])
-button_manager.add_button(accept_answer_button)
-button_manager.add_button(reject_answer_button)
 
 
 gameboard.subscribe(question_manager)
 gameboard.subscribe(player_manager)
-displaying_question = False
-already_shown = False
+init_board = True
 update_board = True
+def render_efficient_reset():
+    global init_board
+    global update_board
+    init_board = True
+    update_board = True
+#question_screen_display
+question_display_screen = QuestionDisplayScreen()
+#game_manager.set_state(GameState.QUESTION_SELECTION)
 while running:
     #Without doing pygame.event.get(), the game will not be rendered
     for event in pygame.event.get():
@@ -167,31 +124,28 @@ while running:
             if event.button == 1:
                 current_state = game_manager.get_state()
                 mouse_pos = pygame.mouse.get_pos()
+                print("Mouse clicking ", current_state)
                 if current_state == GameState.WAIT_ROLL:
                     if dice_manager.can_roll(mouse_pos=mouse_pos):
                         dice_manager.animate(screen=screen,pygame=pygame,clock=clock)
                         dice_value = dice_manager.roll_value()
                         player_pos = player_manager.get_current_player_position()
                         possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
-                        print(possible_moves)
                         game_manager.next_state()
                         update_board = True
                 elif current_state == GameState.MOVE_SELECTION:
                     move_success = gameboard.move(mouse_pos=mouse_pos)
-                    game_manager.next_state()
-                    update_board = True
-                    print(f"Move success {move_success}")
-                    print("Update the player position, reset tile state")
-                elif current_state == GameState.WAIT_PLAYER_ANSWER:
-                    button_manager.on_click(mouse_pos=mouse_pos)
-                elif current_state == GameState.PLAYER_VOTE:
-                    button_manager.on_click(mouse_pos=mouse_pos)
-
-    if not already_shown:
+                    if move_success:
+                        game_manager.next_state()
+                        update_board = True
+                        print(f"Move success {move_success}")
+                        print("Update the player position, reset tile state")
+    
+    if init_board:
         screen.fill((125,125,125))
-        already_shown = True
+        init_board = False
         dice_manager.draw(screen=screen)
-        pygame.draw.rect(screen, WHITE, (board_x,board_y,board_width,board_height))
+        pygame.draw.rect(screen, Color.WHITE.value, (board_x,board_y,board_width,board_height))
     if update_board:
         gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
         current_player = player_manager.get_current_player()
@@ -200,34 +154,21 @@ while running:
         player_text = player_font.render(f"Player {player_name}", True, (0,0,0,0))
         screen.blit(player_text, (board_x + board_width + 50,board_y - 50))
         update_board = False
-    #Handle question
+    
     current_state = game_manager.get_state()
     if current_state == GameState.QUESTION_SELECTION:
         current_question = question_manager.get_current_question()
-        print("current_question: ", current_question)
-        question_renderer.render(question=current_question, font=question_font)
-        for button in button_manager.buttons:
-            button_renderer.draw(screen=screen, button=button, font=button_font)
-        game_manager.next_state()
-    elif current_state == GameState.ANSWER_REVEAL:
-        current_question = question_manager.get_current_question()
-        answer_renderer.render(screen=screen, text=current_question.answer, font=answer_font)
-        game_manager.next_state()
-    elif current_state == GameState.ACCEPT_ANSWER:
-        print("Stay on the current player:")
-        already_shown = False
-        update_board = True
-        game_manager.reset()
-    elif current_state == GameState.REJECT_ANSWER:
-        print("Move to the next player")
-        player_manager.next_player()
-        already_shown = False
-        update_board = True
-        game_manager.reset()
-    elif current_state == GameState.PLAYER_SELECTION:
-        already_shown = False
-        update_board = True
-        game_manager.reset()
+        print("Current question: ", current_question)
+        question_display_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager, question=current_question)
+    else:
+        if current_state == GameState.ACCEPT_ANSWER:
+            print("Stay on the current player:")
+            game_manager.reset()
+            render_efficient_reset()
+        elif current_state == GameState.REJECT_ANSWER:
+            player_manager.next_player()
+            game_manager.reset()
+            render_efficient_reset()
     pygame.display.flip()
     clock.tick(60)
 pygame.quit()

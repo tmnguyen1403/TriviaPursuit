@@ -62,3 +62,5 @@ class Gameboard(TilePublisher):
         for subscriber in self.subscribers:
             subscriber.update(self.selected_tile, self.matrix_tile_position)
 
+    def get_tile_map(self):
+        return self.tile_map

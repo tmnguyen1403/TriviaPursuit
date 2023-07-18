@@ -7,6 +7,7 @@ class Player:
         self.name = info["name"]
         self.token = info["token"]
         self.score = []
+        self.color = info["color"]
     def move(self):
         return 0
     def update(self, new_position):
@@ -17,3 +18,5 @@ class Player:
         return self.position
     def get_name(self):
         return self.name
+    def get_color(self):
+        return self.color

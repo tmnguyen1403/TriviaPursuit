@@ -24,7 +24,7 @@ class QuestionDisplayScreen:
     def init_screen(self, screen):
         screen_width, screen_height = screen.get_size()
         self.question_position = (screen_width//4, screen_height//4)
-        self.text_color = Color.WHITE.value
+        self.text_color = Color.BLACK.value
         q_w, q_h = self.question_position
         self.category_position = (screen_width//2, q_h - 50)
         self.answer_position = (q_w, 50 + q_h)
@@ -76,7 +76,7 @@ class QuestionDisplayScreen:
                                     return
   
             if self.state == InternalState.SHOW_QUESTION:
-                screen.fill(Color.BLACK.value)
+                screen.fill(Color.WHITE.value)
                 # Render Category
                 category_text = question.get_category()
                 category_source = self.font.render(category_text, True, self.text_color, None)

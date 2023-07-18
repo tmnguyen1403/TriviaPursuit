@@ -20,8 +20,9 @@ screen_height = 800
 nb_player = 4
 players = []
 player_font  = pygame.font.Font(None, 32)
+player_colors = {1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value}
 for i in range(4):
-    player_info = {"position": (0,0), "name": f"P{i+1}", "token": None, "score": []}
+    player_info = {"position": (0,0), "name": f"P{i+1}", "token": None, "score": [], "color": player_colors[i+1]}
     players.append(Player(player_info))
 player_manager = PlayerManager(players=players)
 
@@ -146,8 +147,10 @@ while running:
         init_board = False
         dice_manager.draw(screen=screen)
         pygame.draw.rect(screen, Color.WHITE.value, (board_x,board_y,board_width,board_height))
+
     if update_board:
         gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
+        gameboard_renderer.render_player(gameboard=gameboard, engine=pygame, screen=screen,player_manager=player_manager)
         current_player = player_manager.get_current_player()
         player_name = current_player.get_name()
         print(f"Current player name {player_name}")

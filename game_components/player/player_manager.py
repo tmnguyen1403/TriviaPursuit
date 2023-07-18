@@ -29,4 +29,6 @@ class PlayerManager(TileSubscriber):
         dice_value = dice_manager.dice.get_value()
         print("inside player manager: ", dice_value)
         return None
+    def get_players(self):
+        return self.players
     

@@ -6,13 +6,12 @@ Applying Observer (Publisher Subscriber pattern) to handle category from gameboa
 
 '''
 class Gameboard(TilePublisher):
-    def __init__(self, database: 'Database', tile_info, move_calculator: 'MoveCalculator'):
+    def __init__(self, tile_info, move_calculator: 'MoveCalculator'):
         board_matrix, tile_map, tile_objects = tile_info
         self.titles = tile_objects
         self.tile_map = tile_map
         self.subscribers = list()
         self.category = None
-        self.database = database
         self.matrix = board_matrix
         self.move_calculator = move_calculator
         self.center = (len(board_matrix)//2, len(board_matrix[0])//2)

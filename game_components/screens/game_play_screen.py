@@ -63,7 +63,7 @@ question_database = asyncio.run(main_database(category_list))
 
 move_calculator = MoveCalculator(-1)
 tile_info = (tile_matrix, tile_map, tile_objects)
-gameboard = Gameboard(question_database, tile_info, move_calculator)
+gameboard = Gameboard(tile_info, move_calculator)
 gameboard_renderer = GameBoardRenderer()
 
 # Die

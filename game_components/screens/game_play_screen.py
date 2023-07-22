@@ -133,7 +133,9 @@ def render_efficient_reset():
 #question_screen_display
 question_display_screen = QuestionDisplayScreen()
 #game_manager.set_state(GameState.QUESTION_SELECTION)
-DEBUG = True
+DEBUG = False
+DEBUG_WITH_DICE = True
+dice_debug_value = 0
 while running:
     #Without doing pygame.event.get(), the game will not be rendered
     for event in pygame.event.get():
@@ -154,7 +156,12 @@ while running:
                         render_efficient_reset()
                         continue
                     if move_success:
-                        game_manager.next_state()
+                        selected_tile = gameboard.get_selected_tile()
+                        tile_type = selected_tile.get_type()
+                        if tile_type == TileType.FREEROLL:
+                            print(f"Land on freeroll tile, player roll again")
+                        else:
+                            game_manager.next_state()
                         update_board = True
                         print(f"Move success {move_success}")
                         print("Update the player position, reset tile state")
@@ -162,7 +169,7 @@ while running:
                 else:
                     if current_state == GameState.WAIT_ROLL:
                         if dice_manager.can_roll(mouse_pos=mouse_pos):
-                            dice_manager.animate(screen=screen,pygame=pygame,clock=clock)
+                            dice_manager.animate(screen=screen,pygame=pygame,clock=clock, debug_value=dice_debug_value)
                             dice_value = dice_manager.roll_value()
                             player_pos = player_manager.get_current_player_position()
                             possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
@@ -171,13 +178,28 @@ while running:
                     elif current_state == GameState.MOVE_SELECTION:
                         move_success = gameboard.move(mouse_pos=mouse_pos)
                         if move_success:
-                            game_manager.next_state()
+                            selected_tile = gameboard.get_selected_tile()
+                            tile_type = selected_tile.get_type()
+                            if tile_type == TileType.FREEROLL:
+                                print(f"Land on freeroll tile, player roll again")
+                                game_manager.set_state(GameState.ACCEPT_ANSWER)
+                            else:
+                                game_manager.next_state()
                             update_board = True
                             print(f"Move success {move_success}")
                             print("Update the player position, reset tile state")
              
-
-    
+            # if event.type == pygame.KEYDOWN:
+            #     keys = pygame.key.get_pressed()
+            #     if keys[pygame.K_1]:
+            #         print("Key 1 is pressed")
+    if DEBUG_WITH_DICE:
+        dice_values = [pygame.K_0 + index for index in range(1,10)]
+        keys = pygame.key.get_pressed()
+        for key_code in dice_values:
+            if keys[key_code]:
+                dice_debug_value = key_code - pygame.K_0
+                print(f"Key {dice_debug_value} is pressed")
     if init_board:
         screen.fill(Color.DEFAULT_SCREEN.value)
         init_board = False

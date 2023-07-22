@@ -48,11 +48,14 @@ class Gameboard(TilePublisher):
             self.reset_tiles()
         return has_move
 
+    def get_selected_tile(self):
+        return self.selected_tile
+    
     def reset_tiles(self):
         for move, tile in self.candidate_tiles.items():
             tile.reset()
         self.candidate_tiles = dict()
-        self.selected_tile = None
+        #self.selected_tile = None
         self.matrix_tile_position = None
 
     def get_possible_moves(self, player_pos, dice_value):

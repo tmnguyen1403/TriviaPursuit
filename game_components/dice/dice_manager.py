@@ -8,11 +8,11 @@ class DiceManager:
     def can_roll(self, mouse_pos):
         return is_point_inside_rect(mouse_pos, self.dice.get_rect())
     #Handle Animation
-    def animate(self, screen, pygame, clock):
+    def animate(self, screen, pygame, clock, debug_value=0):
         dice = self.dice
         while not dice.should_stop_roll():
             if dice.should_transition():
-                dice.roll()
+                dice.roll(debug_value=debug_value)
                 self.draw(screen)
                 pygame.display.flip()
                 dice.current_frame += 1

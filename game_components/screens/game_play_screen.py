@@ -216,15 +216,16 @@ while running:
         gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
         gameboard_renderer.render_player(gameboard=gameboard, engine=pygame, screen=screen,player_manager=player_manager)
         gameboard_renderer.render_player_score(engine=pygame, screen=screen,player_manager=player_manager)
-        
-        # current_player = player_manager.get_current_player()
-        # player_name = current_player.get_name()
-        # print(f"Current player name {player_name}")
-        # player_text = player_font.render(f"Player {player_name}", True, (0,0,0,0))
-        # screen.blit(player_text, (board_x + board_width + 50,board_y - 50))
         update_board = False
     
     current_state = game_manager.get_state()
+    
+    if current_state == GameState.END_GAME:
+
+        #player_manager.current_index
+        #print(f"Current State after mouse event check: {current_state}")
+        print("Render end game state")
+        #continue
     if current_state == GameState.TRIVIA_COMPUTE_SELECTION:
         print("Trivia Compute - waiting to select category")
         if player_manager.player_score_all_category():
@@ -250,10 +251,11 @@ while running:
             
     current_state = game_manager.get_state()
     if current_state == GameState.RESET_STATE:
-        if player_manager.has_winner():
-            print("We has a winner\n")
         game_manager.reset()
         render_efficient_reset()
+        if player_manager.has_winner() and player_manager.is_last_player_move():
+            print("We has a winner\n")
+            game_manager.set_state(GameState.END_GAME)    
 
     pygame.display.flip()
     clock.tick(60)

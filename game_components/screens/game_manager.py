@@ -8,6 +8,7 @@ class GameState(Enum):
     ACCEPT_ANSWER = 4
     REJECT_ANSWER = 5
     RESET_STATE = 6
+    END_GAME = 7
 class GameManager:
     def __init__(self):
         self.current_state = GameState.WAIT_ROLL

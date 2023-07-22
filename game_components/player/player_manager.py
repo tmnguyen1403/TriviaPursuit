@@ -6,16 +6,18 @@ from gameboard import TileType
 class PlayerManager(TileSubscriber):
     """Manage Player to communicate with other system about player position
     """    
-    def __init__(self, players: List['Player']) -> None:
+    def __init__(self, players: List['Player'], start_player = 0) -> None:
         self.test = 0
         self.players = players
+        self.start_player = start_player 
         self.current_player = players[0]
-        self.current_index = 0
+        self.current_index = start_player
         self.player_scores = [None for _ in range(len(self.players))]
         self.current_tile = None
         #This is used to apply special rule for first turn move
         self.first_turn = [True for _ in range(len(self.players))]
-        self.winners = []
+        self.winners = [1]
+        self.last_player_move = False
     def init_player_score(self, category_colors, rect_size):
         index = 0
         sx,sy,sw,sh = rect_size
@@ -30,6 +32,11 @@ class PlayerManager(TileSubscriber):
 
     def next_player(self):
         next_index = (self.current_index + 1)%len(self.players)
+        if next_index == self.start_player:
+            self.last_player_move = True
+        else:
+            self.last_player_move = False
+
         self.current_player = self.players[next_index]
         self.current_index = next_index
         print(f"Next player index: {self.current_index}")
@@ -73,6 +80,9 @@ class PlayerManager(TileSubscriber):
     def has_winner(self):
         return len(self.winners) > 0
     
+    def is_last_player_move(self):
+        return self.last_player_move
+    
     def player_score_all_category(self):
         return self.player_scores[self.current_index].score_all_category()
 
@@ -97,14 +107,17 @@ class PlayerManager(TileSubscriber):
             token_x, token_y = x - 60,y + 50
             if self.current_index == index:
                 engine.draw.circle(screen, "red", (token_x,token_y), 20)
-            if index in self.winners:
-                winner_text = "Winner"
-                winner_font = engine.font.Font(None, 30)
-                winner_surface = winner_font.render(winner_text, True, Color.RED.value)
-                w_x,w_y = token_x - 20, token_y + 20
-                w_width,w_height = textbox_width, textbox_height
-                # engine.draw.rect(screen, Color.DEFAULT_SCREEN.value, (w_x, w_y, w_width, w_height))
-                screen.blit(winner_surface, (w_x, w_y))
+            
+            # Draw Winner
+            if self.is_last_player_move():
+                if index in self.winners:
+                    winner_text = "Winner"
+                    winner_font = engine.font.Font(None, 30)
+                    winner_surface = winner_font.render(winner_text, True, Color.RED.value)
+                    w_x,w_y = token_x - 20, token_y + 20
+                    w_width,w_height = textbox_width, textbox_height
+                    # engine.draw.rect(screen, Color.DEFAULT_SCREEN.value, (w_x, w_y, w_width, w_height))
+                    screen.blit(winner_surface, (w_x, w_y))
 
 
 

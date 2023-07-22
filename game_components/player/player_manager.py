@@ -13,6 +13,8 @@ class PlayerManager(TileSubscriber):
         self.current_index = 0
         self.player_scores = [None for _ in range(len(self.players))]
         self.current_tile = None
+        #This is used to apply special rule for first turn move
+        self.first_turn = [True for _ in range(len(self.players))]
 
     def init_player_score(self, category_colors, rect_size):
         index = 0
@@ -25,6 +27,7 @@ class PlayerManager(TileSubscriber):
             #print(player_id)
             self.player_scores[player_id] = Score_Box(rect, category_colors)
             index += 1
+
     def next_player(self):
         next_index = (self.current_index + 1)%len(self.players)
         self.current_player = self.players[next_index]
@@ -34,7 +37,13 @@ class PlayerManager(TileSubscriber):
     def update(self, tile ,matrix_position):
         print("Update current player position")
         self.current_player.update(matrix_position)
+        if self.is_first_turn():
+            self.first_turn[self.current_index] = False
         self.current_tile = tile
+    
+    def is_first_turn(self):
+        return self.first_turn[self.current_index]
+    
     def update_all(self,new_position):
         for player in self.players:
             player.update(new_position)

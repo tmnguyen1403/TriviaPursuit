@@ -78,7 +78,7 @@ async def main_database(category_list):
 question_database = asyncio.run(main_database(category_list))
 
 move_calculator = MoveCalculator(-1)
-tile_info = (tile_matrix, tile_map, tile_objects)
+tile_info = (tile_matrix, head_quater_map, tile_map, tile_objects)
 gameboard = Gameboard(tile_info, move_calculator)
 gameboard_renderer = GameBoardRenderer()
 score_board_rect = (150,25,90,90)
@@ -171,9 +171,15 @@ while running:
                         if dice_manager.can_roll(mouse_pos=mouse_pos):
                             dice_manager.animate(screen=screen,pygame=pygame,clock=clock, debug_value=dice_debug_value)
                             dice_value = dice_manager.roll_value()
-                            player_pos = player_manager.get_current_player_position()
-                            possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
+
+                            # First turn and roll 6(default special dice value)
+                            if player_manager.is_first_turn() and dice_manager.is_special_value(dice_value=dice_value):
+                                possible_moves = gameboard.get_headquater_moves()
+                            else:
+                                player_pos = player_manager.get_current_player_position()
+                                possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
                             game_manager.next_state()
+
                             update_board = True
                     elif current_state == GameState.MOVE_SELECTION:
                         move_success = gameboard.move(mouse_pos=mouse_pos)

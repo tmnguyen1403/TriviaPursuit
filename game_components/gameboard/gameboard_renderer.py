@@ -5,6 +5,7 @@ class GameBoardRenderer:
     def render(self,tile_objects, engine: 'pygame', screen):
         for tile in tile_objects:
             tile.draw(engine, screen)
+    
     def render_player(self, gameboard, engine: 'pygame', screen, player_manager):
         players = player_manager.get_players()
         tile_map = gameboard.get_tile_map()
@@ -37,4 +38,6 @@ class GameBoardRenderer:
                 engine.draw.circle(screen, color, (px, py),12)
                 player_text = font.render(name,True,Color.BLACK.value, None)
                 screen.blit(player_text,(px-5,py-5))
-
+    
+    def render_player_score(self, engine: 'pygame', screen, player_manager):
+        player_manager.draw_score(engine, screen)

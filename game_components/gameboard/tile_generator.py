@@ -1,7 +1,7 @@
-from .tile import Tile
+from .tile import Tile, TileType
 
 class TileGenerator:
-    def __init__(self, categories, tile_matrix, colors, tile_types, board_rect):
+    def __init__(self, categories, tile_matrix, head_quater_map, colors, tile_types, board_rect):
         """_summary_
 
         Args:
@@ -16,6 +16,7 @@ class TileGenerator:
         self.colors = colors
         self.tile_types = tile_types
         self.board_rect = board_rect
+        self.head_quater_map = head_quater_map
     
     def generate(self):
         nb_rows = len(self.tile_matrix)
@@ -40,5 +41,7 @@ class TileGenerator:
                     tile = Tile(category=self.categories[index], color=self.colors[index],rect=tile_rect, type = self.tile_types[index])
                     tiles.append(tile)
                     tile_map[(row,col)] = tile
+                    if (row,col) in self.head_quater_map:
+                        tile.set_type(tile_type=TileType.HEADQUATER)
         return tiles, tile_map
     

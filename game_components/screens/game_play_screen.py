@@ -1,4 +1,5 @@
 #Set up path to load other modules
+# Set up PYTHONPATH
 import sys
 import os
 import subprocess
@@ -8,23 +9,25 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parrent_dir = os.path.dirname(current_dir)
 sys.path.append(parrent_dir)
 
+#Import dependencies 
 import pygame
 import asyncio
 from database import dummy_database, create_with_online_database
 from player import Player, PlayerManager
-from gameboard import Tile, TileGenerator, Gameboard, MoveCalculator, GameBoardRenderer
+from gameboard import Tile, TileType, TileGenerator, Gameboard, MoveCalculator, GameBoardRenderer
 from dice import Dice, DiceManager, DiceRenderer
 from game_manager import GameManager, GameState
 from question import Question, QuestionManager, QuestionRenderer, AnswerRenderer
 from buttons import Button, ButtonManager,ButtonRenderer
 from utils import Color
 from question_display_screen import QuestionDisplayScreen
+
 pygame.init()
 clock = pygame.time.Clock()
 
 # Set screen size
 screen_width = 1200
-screen_height = 800
+screen_height = 1000
 
 # Player Dummy Generator
 nb_player = 4
@@ -39,7 +42,7 @@ player_manager = PlayerManager(players=players)
 '''
 The below is used to generate
 '''
-# Define colors
+# Define category_colors
 tile_matrix = [[0,2,1,4,3,2,1,4,0],
                 [3,-1,-1,-1,2,-1,-1,-1,3],
                 [4,-1,-1,-1,1,-1,-1,-1,2],
@@ -49,16 +52,19 @@ tile_matrix = [[0,2,1,4,3,2,1,4,0],
                 [4,-1,-1,-1,3,-1,-1,-1,2],
                 [1,-1,-1,-1,4,-1,-1,-1,1],
                 [0,2,3,4,1,2,3,4,0]]
-colors = {0: Color.WHITE.value, 1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value, 5: Color.SPECIAL.value}
+head_quater_map = [(0,4),(4,0),(4,8),(8,4)]
+category_colors = {0: Color.WHITE.value, 1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value, 5: Color.SPECIAL.value}
 categories = {0: "", 1: "Math", 2: "Sport", 3: "History", 4: "Movie", 5: "Random"}
-action_types = {0: "", 1: "", 2: "", 3: "", 4: "", 5: "Special"}
+action_types = {0: TileType.FREEROLL, 1: TileType.NORMAL, 2: TileType.NORMAL, 3: TileType.NORMAL, 4: TileType.NORMAL, 5: TileType.TRIVIA_COMPUTE}
 board_x = 100
-board_y = 100
+board_y = 200
 board_width = 600
 board_height = 600
 board_rect = (board_x, board_y, board_width, board_height)
-tile_generator = TileGenerator(categories=categories, tile_matrix=tile_matrix,colors=colors, tile_types=action_types, board_rect=board_rect)
+tile_generator = TileGenerator(categories=categories, tile_matrix=tile_matrix,colors=category_colors, tile_types=action_types, board_rect=board_rect,
+head_quater_map=head_quater_map)
 tile_objects, tile_map = tile_generator.generate()
+
 
 category_list = []
 for  key, category in categories.items():
@@ -73,9 +79,10 @@ question_database = asyncio.run(main_database(category_list))
 
 move_calculator = MoveCalculator(-1)
 tile_info = (tile_matrix, tile_map, tile_objects)
-gameboard = Gameboard(question_database, tile_info, move_calculator)
+gameboard = Gameboard(tile_info, move_calculator)
 gameboard_renderer = GameBoardRenderer()
-
+score_board_rect = (150,25,90,90)
+player_manager.init_player_score(category_colors=category_colors,rect_size=score_board_rect)
 # Die
 die_width = 100
 die_height = 100
@@ -126,6 +133,7 @@ def render_efficient_reset():
 #question_screen_display
 question_display_screen = QuestionDisplayScreen()
 #game_manager.set_state(GameState.QUESTION_SELECTION)
+DEBUG = True
 while running:
     #Without doing pygame.event.get(), the game will not be rendered
     for event in pygame.event.get():
@@ -136,24 +144,42 @@ while running:
                 current_state = game_manager.get_state()
                 mouse_pos = pygame.mouse.get_pos()
                 print("Mouse clicking ", current_state)
-                if current_state == GameState.WAIT_ROLL:
-                    if dice_manager.can_roll(mouse_pos=mouse_pos):
-                        dice_manager.animate(screen=screen,pygame=pygame,clock=clock)
-                        dice_value = dice_manager.roll_value()
-                        player_pos = player_manager.get_current_player_position()
-                        possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
-                        game_manager.next_state()
-                        update_board = True
-                elif current_state == GameState.MOVE_SELECTION:
+                if DEBUG == True:
+                    print("Debugging, bypass everything")
+                    gameboard.move_debug()
                     move_success = gameboard.move(mouse_pos=mouse_pos)
+                    if player_manager.player_score_all_category() == True:
+                        print("Player score all, move to next player")
+                        player_manager.next_player()
+                        render_efficient_reset()
+                        continue
                     if move_success:
                         game_manager.next_state()
                         update_board = True
                         print(f"Move success {move_success}")
                         print("Update the player position, reset tile state")
+                        game_manager.set_state(GameState.ACCEPT_ANSWER)
+                else:
+                    if current_state == GameState.WAIT_ROLL:
+                        if dice_manager.can_roll(mouse_pos=mouse_pos):
+                            dice_manager.animate(screen=screen,pygame=pygame,clock=clock)
+                            dice_value = dice_manager.roll_value()
+                            player_pos = player_manager.get_current_player_position()
+                            possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
+                            game_manager.next_state()
+                            update_board = True
+                    elif current_state == GameState.MOVE_SELECTION:
+                        move_success = gameboard.move(mouse_pos=mouse_pos)
+                        if move_success:
+                            game_manager.next_state()
+                            update_board = True
+                            print(f"Move success {move_success}")
+                            print("Update the player position, reset tile state")
+             
+
     
     if init_board:
-        screen.fill((125,125,125))
+        screen.fill(Color.DEFAULT_SCREEN.value)
         init_board = False
         dice_manager.draw(screen=screen)
         pygame.draw.rect(screen, Color.WHITE.value, (board_x,board_y,board_width,board_height))
@@ -161,11 +187,13 @@ while running:
     if update_board:
         gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
         gameboard_renderer.render_player(gameboard=gameboard, engine=pygame, screen=screen,player_manager=player_manager)
-        current_player = player_manager.get_current_player()
-        player_name = current_player.get_name()
-        print(f"Current player name {player_name}")
-        player_text = player_font.render(f"Player {player_name}", True, (0,0,0,0))
-        screen.blit(player_text, (board_x + board_width + 50,board_y - 50))
+        gameboard_renderer.render_player_score(engine=pygame, screen=screen,player_manager=player_manager)
+        
+        # current_player = player_manager.get_current_player()
+        # player_name = current_player.get_name()
+        # print(f"Current player name {player_name}")
+        # player_text = player_font.render(f"Player {player_name}", True, (0,0,0,0))
+        # screen.blit(player_text, (board_x + board_width + 50,board_y - 50))
         update_board = False
     
     current_state = game_manager.get_state()
@@ -176,6 +204,7 @@ while running:
     else:
         if current_state == GameState.ACCEPT_ANSWER:
             print("Stay on the current player:")
+            player_manager.update_player_score()
             game_manager.reset()
             render_efficient_reset()
         elif current_state == GameState.REJECT_ANSWER:

@@ -8,3 +8,4 @@ class Color(Enum):
     YELLOW = (255,255,0)
     RED =(255,0,0)
     SPECIAL = (244,88,20)
+    DEFAULT_SCREEN = (125,125,125)

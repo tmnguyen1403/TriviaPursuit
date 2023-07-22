@@ -2,6 +2,7 @@ from typing import List
 from interface import TileSubscriber
 from utils import Color
 from .score_box import Score_Box
+from gameboard import TileType
 class PlayerManager(TileSubscriber):
     """Manage Player to communicate with other system about player position
     """    
@@ -11,6 +12,7 @@ class PlayerManager(TileSubscriber):
         self.current_player = players[0]
         self.current_index = 0
         self.player_scores = [None for _ in range(len(self.players))]
+        self.current_tile = None
 
     def init_player_score(self, category_colors, rect_size):
         index = 0
@@ -32,7 +34,7 @@ class PlayerManager(TileSubscriber):
     def update(self, tile ,matrix_position):
         print("Update current player position")
         self.current_player.update(matrix_position)
-        
+        self.current_tile = tile
     def update_all(self,new_position):
         for player in self.players:
             player.update(new_position)
@@ -51,6 +53,14 @@ class PlayerManager(TileSubscriber):
     def get_players(self):
         return self.players
     
+    def update_player_score(self):
+        if self.current_tile.get_type() == TileType.HEADQUATER:
+            category_color = self.current_tile.get_category_color()
+            self.player_scores[self.current_index].update_score(category_color)
+
+    def player_score_all_category(self):
+        return self.player_scores[self.current_index].score_all_category()
+
     def draw_score(self, engine, screen):
         for index, score_box in enumerate(self.player_scores):
             score_box.draw(engine, screen)

@@ -1,5 +1,6 @@
 from typing import List
 from interface import TileSubscriber
+from utils import Color
 from .score_box import Score_Box
 class PlayerManager(TileSubscriber):
     """Manage Player to communicate with other system about player position
@@ -51,5 +52,24 @@ class PlayerManager(TileSubscriber):
         return self.players
     
     def draw_score(self, engine, screen):
-        for score_box in self.player_scores:
+        for index, score_box in enumerate(self.player_scores):
             score_box.draw(engine, screen)
+        
+            #draw player name next to score_box:
+            x,y,w,h = score_box.get_rect()
+            text = "Player " + str(self.players[index].name) + ":"
+            font = engine.font.Font(None, 32)
+           # surface_color = (125,125,125) #screen.get_at((x,y))
+            text_surface = font.render(text, True, Color.BLACK.value)
+            textbox_x = x - 120
+            textbox_width = text_surface.get_width() + 10
+            textbox_height = text_surface.get_height() + 10
+            
+            engine.draw.rect(screen, Color.DEFAULT_SCREEN.value, (textbox_x, y, textbox_width, textbox_height))
+            screen.blit(text_surface, (textbox_x + 5, y + 5))
+
+            #Draw playing token
+            if self.current_index == index:
+                token_x, token_y = x - 60,y + 50
+                engine.draw.circle(screen, "red", (token_x,token_y), 20)
+

@@ -22,6 +22,9 @@ class Score_Box:
                 self.score_tiles += [Score_Tile(self.cat_colors[k], (ix,iy,width,height))]
                 k +=1
 
+    def get_rect(self):
+        return self.rect
+    
     def draw(self, engine, screen):
         #draw initial black box
         engine.draw.rect(screen, (0,0,0), self.rect)

@@ -155,7 +155,7 @@ while running:
                         print("Update the player position, reset tile state")
     
     if init_board:
-        screen.fill((125,125,125))
+        screen.fill(Color.DEFAULT_SCREEN.value)
         init_board = False
         dice_manager.draw(screen=screen)
         pygame.draw.rect(screen, Color.WHITE.value, (board_x,board_y,board_width,board_height))
@@ -165,11 +165,11 @@ while running:
         gameboard_renderer.render_player(gameboard=gameboard, engine=pygame, screen=screen,player_manager=player_manager)
         gameboard_renderer.render_player_score(engine=pygame, screen=screen,player_manager=player_manager)
         
-        current_player = player_manager.get_current_player()
-        player_name = current_player.get_name()
-        print(f"Current player name {player_name}")
-        player_text = player_font.render(f"Player {player_name}", True, (0,0,0,0))
-        screen.blit(player_text, (board_x + board_width + 50,board_y - 50))
+        # current_player = player_manager.get_current_player()
+        # player_name = current_player.get_name()
+        # print(f"Current player name {player_name}")
+        # player_text = player_font.render(f"Player {player_name}", True, (0,0,0,0))
+        # screen.blit(player_text, (board_x + board_width + 50,board_y - 50))
         update_board = False
     
     current_state = game_manager.get_state()

@@ -24,7 +24,7 @@ clock = pygame.time.Clock()
 
 # Set screen size
 screen_width = 1200
-screen_height = 800
+screen_height = 1000
 
 # Player Dummy Generator
 nb_player = 4
@@ -39,7 +39,7 @@ player_manager = PlayerManager(players=players)
 '''
 The below is used to generate
 '''
-# Define colors
+# Define category_colors
 tile_matrix = [[0,2,1,4,3,2,1,4,0],
                 [3,-1,-1,-1,2,-1,-1,-1,3],
                 [4,-1,-1,-1,1,-1,-1,-1,2],
@@ -49,16 +49,17 @@ tile_matrix = [[0,2,1,4,3,2,1,4,0],
                 [4,-1,-1,-1,3,-1,-1,-1,2],
                 [1,-1,-1,-1,4,-1,-1,-1,1],
                 [0,2,3,4,1,2,3,4,0]]
-colors = {0: Color.WHITE.value, 1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value, 5: Color.SPECIAL.value}
+category_colors = {0: Color.WHITE.value, 1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value, 5: Color.SPECIAL.value}
 categories = {0: "", 1: "Math", 2: "Sport", 3: "History", 4: "Movie", 5: "Random"}
 action_types = {0: "", 1: "", 2: "", 3: "", 4: "", 5: "Special"}
 board_x = 100
-board_y = 100
+board_y = 200
 board_width = 600
 board_height = 600
 board_rect = (board_x, board_y, board_width, board_height)
-tile_generator = TileGenerator(categories=categories, tile_matrix=tile_matrix,colors=colors, tile_types=action_types, board_rect=board_rect)
+tile_generator = TileGenerator(categories=categories, tile_matrix=tile_matrix,colors=category_colors, tile_types=action_types, board_rect=board_rect)
 tile_objects, tile_map = tile_generator.generate()
+
 
 category_list = []
 for  key, category in categories.items():
@@ -75,7 +76,8 @@ move_calculator = MoveCalculator(-1)
 tile_info = (tile_matrix, tile_map, tile_objects)
 gameboard = Gameboard(tile_info, move_calculator)
 gameboard_renderer = GameBoardRenderer()
-
+score_board_rect = (150,25,90,90)
+player_manager.init_player_score(category_colors=category_colors,rect_size=score_board_rect)
 # Die
 die_width = 100
 die_height = 100
@@ -161,6 +163,8 @@ while running:
     if update_board:
         gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
         gameboard_renderer.render_player(gameboard=gameboard, engine=pygame, screen=screen,player_manager=player_manager)
+        gameboard_renderer.render_player_score(engine=pygame, screen=screen,player_manager=player_manager)
+        
         current_player = player_manager.get_current_player()
         player_name = current_player.get_name()
         print(f"Current player name {player_name}")

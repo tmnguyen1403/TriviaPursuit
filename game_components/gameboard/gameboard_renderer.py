@@ -37,4 +37,5 @@ class GameBoardRenderer:
                 engine.draw.circle(screen, color, (px, py),12)
                 player_text = font.render(name,True,Color.BLACK.value, None)
                 screen.blit(player_text,(px-5,py-5))
-
+    def render_player_score(self, engine: 'pygame', screen, player_manager):
+        player_manager.draw_score(engine, screen)

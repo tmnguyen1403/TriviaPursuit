@@ -1,4 +1,4 @@
-from score_tile import Score_Tile
+from .score_tile import Score_Tile
 
 class Score_Box:
     def __init__(self, rect, cat_colors):
@@ -23,12 +23,8 @@ class Score_Box:
                 k +=1
 
     def draw(self, engine, screen):
-       
-
         #draw initial black box
         engine.draw.rect(screen, (0,0,0), self.rect)
 
         #draw the score tiles
         for tile in self.score_tiles: tile.draw(engine, screen)
-
-        

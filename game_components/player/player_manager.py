@@ -1,5 +1,6 @@
 from typing import List
 from interface import TileSubscriber
+import .score_box import Score_box
 class PlayerManager(TileSubscriber):
     """Manage Player to communicate with other system about player position
     """    
@@ -8,7 +9,10 @@ class PlayerManager(TileSubscriber):
         self.players = players
         self.current_player = players[0]
         self.current_index = 0
-    
+        self.player_scores = []
+    def init_player_score(self, cat_colors):
+        for player_id in range(list(self.players)):
+            self.player_scores[player_id] = Score_box(rect, cat_colors)
     def next_player(self):
         next_index = (self.current_index + 1)%len(self.players)
         self.current_player = self.players[next_index]

@@ -15,7 +15,7 @@ class PlayerManager(TileSubscriber):
         self.current_tile = None
         #This is used to apply special rule for first turn move
         self.first_turn = [True for _ in range(len(self.players))]
-
+        self.winners = []
     def init_player_score(self, category_colors, rect_size):
         index = 0
         sx,sy,sw,sh = rect_size
@@ -63,10 +63,16 @@ class PlayerManager(TileSubscriber):
         return self.players
     
     def update_player_score(self):
-        if self.current_tile.get_type() == TileType.HEADQUATER:
+        tile_type = self.current_tile.get_type()
+        if tile_type == TileType.HEADQUATER:
             category_color = self.current_tile.get_category_color()
             self.player_scores[self.current_index].update_score(category_color)
+        elif tile_type == TileType.TRIVIA_COMPUTE and self.player_score_all_category():
+            self.winners.append(self.current_index)
 
+    def has_winner(self):
+        return len(self.winners) > 0
+    
     def player_score_all_category(self):
         return self.player_scores[self.current_index].score_all_category()
 
@@ -88,7 +94,18 @@ class PlayerManager(TileSubscriber):
             screen.blit(text_surface, (textbox_x + 5, y + 5))
 
             #Draw playing token
+            token_x, token_y = x - 60,y + 50
             if self.current_index == index:
-                token_x, token_y = x - 60,y + 50
                 engine.draw.circle(screen, "red", (token_x,token_y), 20)
+            if index in self.winners:
+                winner_text = "Winner"
+                winner_font = engine.font.Font(None, 30)
+                winner_surface = winner_font.render(winner_text, True, Color.RED.value)
+                w_x,w_y = token_x - 20, token_y + 20
+                w_width,w_height = textbox_width, textbox_height
+                # engine.draw.rect(screen, Color.DEFAULT_SCREEN.value, (w_x, w_y, w_width, w_height))
+                screen.blit(winner_surface, (w_x, w_y))
+
+
+
 

@@ -160,6 +160,8 @@ while running:
                         tile_type = selected_tile.get_type()
                         if tile_type == TileType.FREEROLL:
                             print(f"Land on freeroll tile, player roll again")
+                        elif tile_type == TileType.TRIVIA_COMPUTE:
+                            print(f"Land on Trivia Compute")
                         else:
                             game_manager.next_state()
                         update_board = True
@@ -178,7 +180,7 @@ while running:
                             else:
                                 player_pos = player_manager.get_current_player_position()
                                 possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
-                            game_manager.next_state()
+                            game_manager.set_state(GameState.MOVE_SELECTION)
 
                             update_board = True
                     elif current_state == GameState.MOVE_SELECTION:
@@ -188,17 +190,15 @@ while running:
                             tile_type = selected_tile.get_type()
                             if tile_type == TileType.FREEROLL:
                                 print(f"Land on freeroll tile, player roll again")
-                                game_manager.set_state(GameState.ACCEPT_ANSWER)
+                                game_manager.set_state(GameState.RESET_STATE)
+                            elif tile_type == TileType.TRIVIA_COMPUTE:
+                                print(f"Land on Trivia Compute")
+                                game_manager.set_state(GameState.TRIVIA_COMPUTE_SELECTION)
                             else:
-                                game_manager.next_state()
+                                 game_manager.set_state(GameState.QUESTION_SELECTION)
                             update_board = True
                             print(f"Move success {move_success}")
                             print("Update the player position, reset tile state")
-             
-            # if event.type == pygame.KEYDOWN:
-            #     keys = pygame.key.get_pressed()
-            #     if keys[pygame.K_1]:
-            #         print("Key 1 is pressed")
     if DEBUG_WITH_DICE:
         dice_values = [pygame.K_0 + index for index in range(1,10)]
         keys = pygame.key.get_pressed()
@@ -225,7 +225,17 @@ while running:
         update_board = False
     
     current_state = game_manager.get_state()
-    if current_state == GameState.QUESTION_SELECTION:
+    if current_state == GameState.TRIVIA_COMPUTE_SELECTION:
+        print("Trivia Compute - waiting to select category")
+        if player_manager.player_score_all_category():
+            print("Player wait for other player to select category")
+            game_manager.set_state(GameState.QUESTION_SELECTION)
+        else:
+            print("Player can choose your own category")
+            game_manager.set_state(GameState.QUESTION_SELECTION)
+        update_board = True
+
+    elif current_state == GameState.QUESTION_SELECTION:
         current_question = question_manager.get_current_question()
         print("Current question: ", current_question)
         question_display_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager, question=current_question)
@@ -233,12 +243,18 @@ while running:
         if current_state == GameState.ACCEPT_ANSWER:
             print("Stay on the current player:")
             player_manager.update_player_score()
-            game_manager.reset()
-            render_efficient_reset()
+            game_manager.set_state(GameState.RESET_STATE)
         elif current_state == GameState.REJECT_ANSWER:
             player_manager.next_player()
-            game_manager.reset()
-            render_efficient_reset()
+            game_manager.set_state(GameState.RESET_STATE)
+            
+    current_state = game_manager.get_state()
+    if current_state == GameState.RESET_STATE:
+        if player_manager.has_winner():
+            print("We has a winner\n")
+        game_manager.reset()
+        render_efficient_reset()
+
     pygame.display.flip()
     clock.tick(60)
 pygame.quit()

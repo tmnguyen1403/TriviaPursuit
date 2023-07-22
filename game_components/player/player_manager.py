@@ -44,6 +44,9 @@ class PlayerManager(TileSubscriber):
     
     def get_current_player_position(self):
         return self.current_player.get_position()
+
+    def get_current_player_tile(self):
+        return self.current_tile
     
     def move(self, dice_manager: 'DiceManager'):
         dice_value = dice_manager.dice.get_value()

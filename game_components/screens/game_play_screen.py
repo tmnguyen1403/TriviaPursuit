@@ -53,6 +53,7 @@ tile_matrix = [[0,2,1,4,3,2,1,4,0],
                 [1,-1,-1,-1,4,-1,-1,-1,1],
                 [0,2,3,4,1,2,3,4,0]]
 head_quater_map = [(0,4),(4,0),(4,8),(8,4)]
+trivial_compute_map = [(4,4)]
 category_colors = {0: Color.WHITE.value, 1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value, 5: Color.SPECIAL.value}
 categories = {0: "", 1: "Math", 2: "Sport", 3: "History", 4: "Movie", 5: "Random"}
 action_types = {0: TileType.FREEROLL, 1: TileType.NORMAL, 2: TileType.NORMAL, 3: TileType.NORMAL, 4: TileType.NORMAL, 5: TileType.TRIVIA_COMPUTE}
@@ -62,7 +63,7 @@ board_width = 600
 board_height = 600
 board_rect = (board_x, board_y, board_width, board_height)
 tile_generator = TileGenerator(categories=categories, tile_matrix=tile_matrix,colors=category_colors, tile_types=action_types, board_rect=board_rect,
-head_quater_map=head_quater_map)
+head_quater_map=head_quater_map, trivial_compute_map=trivial_compute_map)
 tile_objects, tile_map = tile_generator.generate()
 
 
@@ -154,11 +155,14 @@ while running:
                         render_efficient_reset()
                         continue
                     if move_success:
-                        game_manager.next_state()
-                        update_board = True
-                        print(f"Move success {move_success}")
-                        print("Update the player position, reset tile state")
-                        game_manager.set_state(GameState.ACCEPT_ANSWER)
+                        if player_manager.get_current_player_tile().get_type() == TileType.TRIVIA_COMPUTE:
+                            game_manager.set_state(GameState.TRIVIAL_COMPUTE_SELECTION)
+                        else:
+                            game_manager.next_state()
+                            update_board = True
+                            print(f"Move success {move_success}")
+                            print("Update the player position, reset tile state")
+                            game_manager.set_state(GameState.ACCEPT_ANSWER)
                 else:
                     if current_state == GameState.WAIT_ROLL:
                         if dice_manager.can_roll(mouse_pos=mouse_pos):
@@ -211,6 +215,10 @@ while running:
             player_manager.next_player()
             game_manager.reset()
             render_efficient_reset()
+    if current_state == GameState.TRIVIAL_COMPUTE_SELECTION:
+        print('TRIVIAL COMPUTE')
+        game_manager.reset()
+        render_efficient_reset()
     pygame.display.flip()
     clock.tick(60)
 pygame.quit()

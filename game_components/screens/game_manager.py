@@ -7,6 +7,7 @@ class GameState(Enum):
     ACCEPT_ANSWER = 3
     REJECT_ANSWER = 4
     PLAYER_SELECTION = 5
+    TRIVIAL_COMPUTE_SELECTION = 6
 class GameManager:
     def __init__(self):
         self.current_state = GameState.WAIT_ROLL

@@ -1,0 +1,4 @@
+mypy
+pygame
+requests
+httpx

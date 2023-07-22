@@ -1,3 +1,13 @@
+#Set up path to load other modules
+import sys
+import os
+import subprocess
+
+subprocess.run(["python3 -m pip install $(cat requirements.txt)"], shell=True)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parrent_dir = os.path.dirname(current_dir)
+sys.path.append(parrent_dir)
+
 import pygame
 import asyncio
 from database import dummy_database, create_with_online_database

@@ -137,7 +137,7 @@ question_display_screen = QuestionDisplayScreen()
 trivial_compute_select_screen = TrivialComputeSelectScreen()
 #game_manager.set_state(GameState.QUESTION_SELECTION)
 DEBUG = False
-DEBUG_WITH_DICE = True
+DEBUG_WITH_DICE = False
 dice_debug_value = 0
 while running:
     #Without doing pygame.event.get(), the game will not be rendered
@@ -254,7 +254,7 @@ while running:
                         selected_category_color = category_colors[category]
                         break
                 player_manager.update_player_score(selected_category_color)
-            except:
+            except NameError:
                 player_manager.update_player_score()
             game_manager.set_state(GameState.RESET_STATE)
         elif current_state == GameState.REJECT_ANSWER:
@@ -268,7 +268,7 @@ while running:
         print("Current question: ", current_question)
         question_display_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager,
                                               question=current_question)
-            
+
     current_state = game_manager.get_state()
     if current_state == GameState.RESET_STATE:
         game_manager.reset()

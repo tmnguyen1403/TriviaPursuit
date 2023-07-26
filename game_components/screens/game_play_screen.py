@@ -167,7 +167,6 @@ while running:
                             print(f"Land on Trivia Compute")
                             selected_category = trivial_compute_select_screen.render_screen(pygame=pygame,
                                                                                             screen=screen,
-                                                                                            game_manager=game_manager,
                                                                                             categories=category_list,
                                                                                             current_player=player_manager.get_current_player().get_name(),
                                                                                             all_scored=player_manager.player_score_all_category())
@@ -225,7 +224,7 @@ while running:
     if update_board:
         gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
         gameboard_renderer.render_player(gameboard=gameboard, engine=pygame, screen=screen,player_manager=player_manager)
-        gameboard_renderer.render_player_score(engine=pygame, screen=screen,player_manager=player_manager)
+        gameboard_renderer.render_player_score(engine=pygame, screen=screen, player_manager=player_manager)
         update_board = False
     
     current_state = game_manager.get_state()
@@ -267,8 +266,10 @@ while running:
             game_manager.set_state(GameState.RESET_STATE)
     if current_state == GameState.TRIVIA_COMPUTE_SELECTION:
         print('TRIVIAL COMPUTE')
-        selected_category = trivial_compute_select_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager,
-                                                                        categories=category_list, current_player=player_manager.get_current_player().get_name(), all_scored=player_manager.player_score_all_category())
+        selected_category = trivial_compute_select_screen.render_screen(pygame=pygame, screen=screen,
+                                                                        categories=category_list,
+                                                                        current_player=player_manager.get_current_player().get_name(),
+                                                                        all_scored=player_manager.player_score_all_category())
         question_manager.set_question(selected_category)
         current_question = question_manager.get_current_question()
         print("Current question: ", current_question)

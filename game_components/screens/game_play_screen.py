@@ -136,8 +136,8 @@ def render_efficient_reset():
 question_display_screen = QuestionDisplayScreen()
 trivial_compute_select_screen = TrivialComputeSelectScreen()
 #game_manager.set_state(GameState.QUESTION_SELECTION)
-DEBUG = False
-DEBUG_WITH_DICE = False
+DEBUG = True
+DEBUG_WITH_DICE = True
 dice_debug_value = 0
 while running:
     #Without doing pygame.event.get(), the game will not be rendered
@@ -165,7 +165,10 @@ while running:
                             print(f"Land on freeroll tile, player roll again")
                         elif tile_type == TileType.TRIVIA_COMPUTE:
                             print(f"Land on Trivia Compute")
-                            game_manager.set_state(GameState.TRIVIA_COMPUTE_SELECTION)
+                            selected_category = trivial_compute_select_screen.render_screen(pygame=pygame,
+                                                                                            screen=screen,
+                                                                                            game_manager=game_manager,
+                                                                                            categories=category_list)
                         else:
                             game_manager.next_state()
                         update_board = True

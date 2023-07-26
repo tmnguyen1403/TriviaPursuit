@@ -23,6 +23,8 @@ class TrivialComputeSelectScreen:
         screen_width, screen_height = screen.get_size()
         self.category_position = (screen_width//4, screen_height//4)
         self.text_color = Color.BLACK.value
+        q_w, q_h = self.category_position
+        self.instruction_label_position = (screen_width//2, q_h - 50)
         c_w, c_h = self.category_position
 
         #Button setting
@@ -70,6 +72,11 @@ class TrivialComputeSelectScreen:
   
             if self.state == InternalState.PROMPT_CATEGORY_SELECTION:
                 screen.fill(Color.WHITE.value)
+
+                # Render Instruction Label
+                label_text = 'Select a category for the next question'
+                label_source = self.font.render(label_text, True, self.text_color, None)
+                screen.blit(label_source, self.category_position)
                 
                 # Button render
                 show_buttons = self.buttons.get(0, None)

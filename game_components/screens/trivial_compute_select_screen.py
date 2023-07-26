@@ -46,7 +46,7 @@ class TrivialComputeSelectScreen:
         self.state = new_state
         print(f"New SelectScreen state: {self.state}")
         
-    def render_screen(self, pygame, screen, game_manager, categories):
+    def render_screen(self, pygame, screen, game_manager, categories, current_player, all_scored):
         print("Categories: ", categories)
         if not self.init_object:
             self.init_screen(screen=screen)
@@ -74,7 +74,10 @@ class TrivialComputeSelectScreen:
                 screen.fill(Color.WHITE.value)
 
                 # Render Instruction Label
-                label_text = 'Select a category for the next question'
+                if all_scored:
+                    label_text = 'Other players: select a category for the game winning question'
+                else:
+                    label_text = current_player + ': select a category for the next question'
                 label_source = self.font.render(label_text, True, self.text_color, None)
                 screen.blit(label_source, self.category_position)
                 

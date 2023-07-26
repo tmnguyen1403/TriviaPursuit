@@ -136,7 +136,7 @@ def render_efficient_reset():
 question_display_screen = QuestionDisplayScreen()
 trivial_compute_select_screen = TrivialComputeSelectScreen()
 #game_manager.set_state(GameState.QUESTION_SELECTION)
-DEBUG = True
+DEBUG = False
 DEBUG_WITH_DICE = True
 dice_debug_value = 0
 while running:
@@ -168,7 +168,9 @@ while running:
                             selected_category = trivial_compute_select_screen.render_screen(pygame=pygame,
                                                                                             screen=screen,
                                                                                             game_manager=game_manager,
-                                                                                            categories=category_list)
+                                                                                            categories=category_list,
+                                                                                            current_player=player_manager.get_current_player().get_name(),
+                                                                                            all_scored=player_manager.player_score_all_category())
                         else:
                             game_manager.next_state()
                         update_board = True
@@ -265,7 +267,8 @@ while running:
             game_manager.set_state(GameState.RESET_STATE)
     if current_state == GameState.TRIVIA_COMPUTE_SELECTION:
         print('TRIVIAL COMPUTE')
-        selected_category = trivial_compute_select_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager, categories=category_list)
+        selected_category = trivial_compute_select_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager,
+                                                                        categories=category_list, current_player=player_manager.get_current_player().get_name(), all_scored=player_manager.player_score_all_category())
         question_manager.set_question(selected_category)
         current_question = question_manager.get_current_question()
         print("Current question: ", current_question)

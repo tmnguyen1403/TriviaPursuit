@@ -72,15 +72,13 @@ class PlayerManager(TileSubscriber):
     def get_players(self):
         return self.players
 
-    def update_player_score(self, selected_category_color=Color.WHITE.value):
+    def update_player_score(self):
         tile_type = self.current_tile.get_type()
         if tile_type == TileType.HEADQUATER:
             category_color = self.current_tile.get_category_color()
             self.player_scores[self.current_index].update_score(category_color)
         elif tile_type == TileType.TRIVIA_COMPUTE and self.player_score_all_category():
             self.winners.append(self.current_index)
-        elif tile_type == TileType.TRIVIA_COMPUTE:
-            self.player_scores[self.current_index].update_score(selected_category_color)
 
     def has_winner(self):
         return len(self.winners) > 0

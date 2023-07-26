@@ -252,14 +252,7 @@ while running:
     else:
         if current_state == GameState.ACCEPT_ANSWER:
             print("Stay on the current player:")
-            try:
-                for category in categories:
-                    if categories[category] == selected_category:
-                        selected_category_color = category_colors[category]
-                        break
-                player_manager.update_player_score(selected_category_color)
-            except NameError:
-                player_manager.update_player_score()
+            player_manager.update_player_score()
             game_manager.set_state(GameState.RESET_STATE)
         elif current_state == GameState.REJECT_ANSWER:
             player_manager.next_player()

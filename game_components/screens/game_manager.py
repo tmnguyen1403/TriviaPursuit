@@ -1,6 +1,8 @@
 from enum import Enum
 
 class GameState(Enum):
+    WAIT_ROLL = 0
+    MOVE_SELECTION = 1
     TRIVIA_COMPUTE_SELECTION = 2
     QUESTION_SELECTION = 3
     ACCEPT_ANSWER = 4

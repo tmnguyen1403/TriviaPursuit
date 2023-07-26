@@ -1,13 +1,12 @@
 from enum import Enum
 
 class GameState(Enum):
-    WAIT_ROLL = 0
-    MOVE_SELECTION = 1
-    QUESTION_SELECTION = 2
-    ACCEPT_ANSWER = 3
-    REJECT_ANSWER = 4
-    PLAYER_SELECTION = 5
-    TRIVIAL_COMPUTE_SELECTION = 6
+    TRIVIA_COMPUTE_SELECTION = 2
+    QUESTION_SELECTION = 3
+    ACCEPT_ANSWER = 4
+    REJECT_ANSWER = 5
+    RESET_STATE = 6
+    END_GAME = 7
 class GameManager:
     def __init__(self):
         self.current_state = GameState.WAIT_ROLL

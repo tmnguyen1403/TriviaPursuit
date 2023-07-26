@@ -7,12 +7,13 @@ Applying Observer (Publisher Subscriber pattern) to handle category from gameboa
 '''
 class Gameboard(TilePublisher):
     def __init__(self, tile_info, move_calculator: 'MoveCalculator'):
-        board_matrix, tile_map, tile_objects = tile_info
-        self.titles = tile_objects
+        board_matrix,head_quater_map, tile_map, tile_objects = tile_info
+        self.matrix = board_matrix
+        self.head_quater_map = head_quater_map
         self.tile_map = tile_map
+        self.titles = tile_objects
         self.subscribers = list()
         self.category = None
-        self.matrix = board_matrix
         self.move_calculator = move_calculator
         self.center = (len(board_matrix)//2, len(board_matrix[0])//2)
         self.candidate_tiles = dict()
@@ -48,21 +49,37 @@ class Gameboard(TilePublisher):
             self.reset_tiles()
         return has_move
 
+    def get_selected_tile(self):
+        return self.selected_tile
+    
     def reset_tiles(self):
         for move, tile in self.candidate_tiles.items():
             tile.reset()
         self.candidate_tiles = dict()
-        self.selected_tile = None
+        #self.selected_tile = None
         self.matrix_tile_position = None
 
     def get_possible_moves(self, player_pos, dice_value):
         possible_moves = self.move_calculator.next_moves(self.matrix, player_pos, dice_value)
+        self.set_move_tiles(possible_moves=possible_moves)
+        return possible_moves
+    
+
+    def get_headquater_moves(self):
+        """Use for first turn special rule when player roll 6
+
+        Returns:
+            _type_: _description_
+        """       
+        self.set_move_tiles(self.head_quater_map)
+        return self.head_quater_map
+    
+    def set_move_tiles(self, possible_moves):
         for move in possible_moves:
             tile = self.tile_map[move]
             tile.set_move_candidate(candidate_color = self.candidate_color)
             self.candidate_tiles[move] = tile
-        return possible_moves
-        
+
     def notify(self):
         for subscriber in self.subscribers:
             subscriber.update(self.selected_tile, self.matrix_tile_position)

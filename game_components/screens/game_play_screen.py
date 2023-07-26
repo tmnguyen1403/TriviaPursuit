@@ -21,6 +21,7 @@ from question import Question, QuestionManager, QuestionRenderer, AnswerRenderer
 from buttons import Button, ButtonManager,ButtonRenderer
 from utils import Color
 from question_display_screen import QuestionDisplayScreen
+from trivial_compute_select_screen import TrivialComputeSelectScreen
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -133,6 +134,7 @@ def render_efficient_reset():
     update_board = True
 #question_screen_display
 question_display_screen = QuestionDisplayScreen()
+trivial_compute_select_screen = TrivialComputeSelectScreen()
 #game_manager.set_state(GameState.QUESTION_SELECTION)
 DEBUG = True
 while running:
@@ -175,10 +177,13 @@ while running:
                     elif current_state == GameState.MOVE_SELECTION:
                         move_success = gameboard.move(mouse_pos=mouse_pos)
                         if move_success:
-                            game_manager.next_state()
-                            update_board = True
-                            print(f"Move success {move_success}")
-                            print("Update the player position, reset tile state")
+                            if player_manager.get_current_player_tile().get_type() == TileType.TRIVIA_COMPUTE:
+                                game_manager.set_state(GameState.TRIVIAL_COMPUTE_SELECTION)
+                            else:
+                                game_manager.next_state()
+                                update_board = True
+                                print(f"Move success {move_success}")
+                                print("Update the player position, reset tile state")
              
 
     
@@ -208,7 +213,14 @@ while running:
     else:
         if current_state == GameState.ACCEPT_ANSWER:
             print("Stay on the current player:")
-            player_manager.update_player_score()
+            try:
+                for category in categories:
+                    if categories[category] == selected_category:
+                        selected_category_color = category_colors[category]
+                        break
+                player_manager.update_player_score(selected_category_color)
+            except:
+                player_manager.update_player_score()
             game_manager.reset()
             render_efficient_reset()
         elif current_state == GameState.REJECT_ANSWER:
@@ -217,8 +229,12 @@ while running:
             render_efficient_reset()
     if current_state == GameState.TRIVIAL_COMPUTE_SELECTION:
         print('TRIVIAL COMPUTE')
-        game_manager.reset()
-        render_efficient_reset()
+        selected_category = trivial_compute_select_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager, categories=category_list)
+        question_manager.set_question(selected_category)
+        current_question = question_manager.get_current_question()
+        print("Current question: ", current_question)
+        question_display_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager,
+                                              question=current_question)
     pygame.display.flip()
     clock.tick(60)
 pygame.quit()

@@ -23,7 +23,7 @@ class TileGenerator:
         x_start,y_start,board_width,board_height = self.board_rect
         tile_width = board_width // nb_cols
         tile_height = board_height // nb_rows
-        border_size = tile_width //10
+        border_size = tile_width // nb_cols
         tiles = []
         tile_map = dict() #Use to lookup tile object based on its position in the matrix
         for row in range(nb_rows - 1):

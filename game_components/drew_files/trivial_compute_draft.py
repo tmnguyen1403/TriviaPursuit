@@ -100,9 +100,12 @@ while running:
 
 
     #draw players onto the game board
+    font = pygame.font.Font(None, 24)
     for index in range(len(players)):
         pygame.draw.circle(board_surface, BLACK, players[index].curr_pos, 14)
+        player_number = font.render(str(index), True, (0,0,0), None)
         pygame.draw.circle(board_surface, cat_colors[index], players[index].curr_pos, 12)
+        board_surface.blit(player_number, players[index].curr_pos)
 
 
     #these two lines are to update the player scores, so there are some colored tiles in the example

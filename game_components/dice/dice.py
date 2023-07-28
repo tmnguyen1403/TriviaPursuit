@@ -9,11 +9,14 @@ class Dice:
         self.roll_number = random.randint(1, 6)
         self.text_color = text_color
         self.animation_start_time_second = 0
-        self.animation_duration_second = 1
+        self.animation_duration_second = 0.5
         self.transition_duration_second = 0.13
         self.current_frame = -1
     #Handle Animation
-    def roll(self):
+    def roll(self, debug_value=0):
+        if debug_value > 0:
+            self.roll_number = debug_value
+            return debug_value
         self.roll_number = random.randint(1, 6)
         return self.roll_number
     def clear_animation(self):

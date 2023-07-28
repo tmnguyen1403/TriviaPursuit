@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 
-class CategorySubscriber(ABC):
+class TileSubscriber(ABC):
     @abstractmethod
-    def update(self,category) -> bool:
+    def update(self,tile,matrix_position) -> bool:
         pass
 
-class CategoryPublisher(ABC): 
+class TilePublisher(ABC): 
     @abstractmethod
     def subscribe(self,subscriber):
         pass

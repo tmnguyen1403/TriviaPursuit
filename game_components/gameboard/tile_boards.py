@@ -40,9 +40,11 @@ color_matrix = [[0,2,1,4,3,2,1,4,0],
                 [0,2,3,4,1,2,3,4,0]]
 tile_object = []
 
-for row in len(tile_matrix):
-    tile_row = []
-    for col in len(tile_matrix[0]):
+
+#is this supposed to be here?
+# for row in len(tile_matrix):
+#     tile_row = []
+#     for col in len(tile_matrix[0]):
 
 # Create the game board surface
 board_surface = pygame.display.set_mode((board_width, board_height))

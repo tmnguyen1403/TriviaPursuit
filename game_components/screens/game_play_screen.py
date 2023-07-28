@@ -1,5 +1,7 @@
-import pygame
+import pygame, sys
+print(sys.path)
 
+sys.path.append('c:\\Users\\drewf\\TriviaPursuit\\game_components')
 
 from database import dummy_database
 from player import Player, PlayerManager
@@ -119,7 +121,18 @@ while running:
         #roll = True
     # # Draw the game board
     # if game_manager.get_state() == GameState.MOVE_SELECTION:
-    pygame.draw.rect(screen, WHITE, (board_x,board_y,board_width,board_height))
+    pygame.draw.rect(screen, BLACK, (board_x,board_y,board_width,board_height))
+
+    #draw four white squares to separate spokes
+    w_square_size = (0.32 * board_width)
+    for i in range(2):
+        for j in range(2):
+            w_square_x = board_x + ((0.12 * board_width) * (i+1)) + (w_square_size*i)
+            w_square_y = board_y + ((0.12 * board_width) * (j+1)) + (w_square_size*j)
+
+            pygame.draw.rect(screen, WHITE, (w_square_x, w_square_y, 
+                                                    w_square_size, w_square_size))
+
     gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
     pygame.display.flip()
     clock.tick(60)

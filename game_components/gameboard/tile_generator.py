@@ -26,8 +26,8 @@ class TileGenerator:
         border_size = tile_width //10
         tiles = []
         tile_map = dict() #Use to lookup tile object based on its position in the matrix
-        for row in range(nb_rows):
-            for col in range(nb_cols):
+        for row in range(nb_rows - 1):
+            for col in range(nb_cols - 1):
                 x = x_start + (col * tile_width) + ((col+1) * border_size)
                 y = y_start + (row * tile_height) + ((row+1) * border_size)
                 # Border Drawing

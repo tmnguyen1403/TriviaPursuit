@@ -2,7 +2,7 @@ class Player:
     """Manage Player to communicate with other system about player position
     """    
     def __init__(self, info) -> None:
-        self.test = 0
+        
         self.position = info["position"]
         self.name = info["name"]
         self.token = info["token"]

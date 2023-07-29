@@ -1,15 +1,8 @@
-<<<<<<< HEAD
-import pygame, sys
-print(sys.path)
-
-sys.path.append('c:\\Users\\drewf\\TriviaPursuit\\game_components')
-=======
 #Set up path to load other modules
 # Set up PYTHONPATH
 import sys
 import os
 import subprocess
->>>>>>> integration
 
 subprocess.run(["python3 -m pip install $(cat requirements.txt)"], shell=True)
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -108,7 +101,7 @@ player_manager.update_all(gameboard.get_center())
 #Can only have one screen, create another screen will overide existing screen
 screen = pygame.display.set_mode((screen_width, screen_height))
 # Create the game board surface
-pygame.display.set_caption("Board Game Board")
+pygame.display.set_caption("Trivial Compute Game Board")
 running = True
 roll = False
 game_manager = GameManager()
@@ -217,7 +210,20 @@ while running:
         screen.fill(Color.DEFAULT_SCREEN.value)
         init_board = False
         dice_manager.draw(screen=screen)
-        pygame.draw.rect(screen, Color.WHITE.value, (board_x,board_y,board_width,board_height))
+        # pygame.draw.rect(screen, Color.WHITE.value, (board_x,board_y,board_width,board_height))
+
+         # # Draw the big black box to be the game board
+        pygame.draw.rect(screen, Color.BLACK.value, (board_x,board_y,board_width,board_height))
+
+        #draw four white squares to separate spokes
+        w_square_size = (0.32 * board_width)
+        for i in range(2):
+            for j in range(2):
+                w_square_x = board_x + ((0.12 * board_width) * (i+1)) + (w_square_size*i)
+                w_square_y = board_y + ((0.12 * board_width) * (j+1)) + (w_square_size*j)
+
+                pygame.draw.rect(screen, Color.WHITE.value, (w_square_x, w_square_y, 
+                                                    w_square_size, w_square_size))
 
     if update_board:
         gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
@@ -264,29 +270,11 @@ while running:
             print("We has a winner\n")
             game_manager.set_state(GameState.END_GAME)    
 
-<<<<<<< HEAD
                 
-    screen.fill((125,125,125))
-    dice_manager.draw(screen=screen)
-        #possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)
-        #roll = True
-    # # Draw the game board
-    # if game_manager.get_state() == GameState.MOVE_SELECTION:
-    pygame.draw.rect(screen, BLACK, (board_x,board_y,board_width,board_height))
 
-    #draw four white squares to separate spokes
-    w_square_size = (0.32 * board_width)
-    for i in range(2):
-        for j in range(2):
-            w_square_x = board_x + ((0.12 * board_width) * (i+1)) + (w_square_size*i)
-            w_square_y = board_y + ((0.12 * board_width) * (j+1)) + (w_square_size*j)
+   
 
-            pygame.draw.rect(screen, WHITE, (w_square_x, w_square_y, 
-                                                    w_square_size, w_square_size))
-
-    gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
-=======
->>>>>>> integration
+    
     pygame.display.flip()
     clock.tick(60)
 pygame.quit()

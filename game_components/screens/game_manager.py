@@ -1,6 +1,7 @@
 from enum import Enum
 
 class GameState(Enum):
+    LANDING_SCREEN = -1
     WAIT_ROLL = 0
     MOVE_SELECTION = 1
     TRIVIA_COMPUTE_SELECTION = 2
@@ -11,7 +12,7 @@ class GameState(Enum):
     END_GAME = 7
 class GameManager:
     def __init__(self):
-        self.current_state = GameState.WAIT_ROLL
+        self.current_state = GameState.LANDING_SCREEN
     def next_state(self):
         print("current state: ", self.current_state)
         self.current_state = GameState(self.current_state.value + 1)

@@ -4,7 +4,12 @@ import sys
 import os
 import subprocess
 
-subprocess.run(["python3 -m pip install $(cat requirements.txt)"], shell=True)
+try:
+    import pygame
+except Exception as e:
+    print("Attemp to install packages")
+    subprocess.run(["python3 -m pip install $(cat requirements.txt)"], shell=True)
+# Add Python path to help import 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parrent_dir = os.path.dirname(current_dir)
 sys.path.append(parrent_dir)
@@ -21,6 +26,7 @@ from question import Question, QuestionManager, QuestionRenderer, AnswerRenderer
 from buttons import Button, ButtonManager,ButtonRenderer
 from utils import Color
 from question_display_screen import QuestionDisplayScreen
+from landing_screen import LandingScreen
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -130,12 +136,21 @@ def render_efficient_reset():
     global update_board
     init_board = True
     update_board = True
-#question_screen_display
+
+'''
+Screens Init 
+'''
+landing_screen = LandingScreen()
 question_display_screen = QuestionDisplayScreen()
+
+'''
+Debug 
+'''
 #game_manager.set_state(GameState.QUESTION_SELECTION)
 DEBUG = False
 DEBUG_WITH_DICE = True
 dice_debug_value = 0
+
 while running:
     #Without doing pygame.event.get(), the game will not be rendered
     for event in pygame.event.get():
@@ -199,6 +214,12 @@ while running:
                             update_board = True
                             print(f"Move success {move_success}")
                             print("Update the player position, reset tile state")
+    
+    current_state = game_manager.get_state()
+    if current_state == GameState.LANDING_SCREEN:
+        landing_screen.render_screen(pygame=pygame,screen=screen,game_manager=game_manager,question=None)
+    
+    # DEBUG
     if DEBUG_WITH_DICE:
         dice_values = [pygame.K_0 + index for index in range(1,10)]
         keys = pygame.key.get_pressed()
@@ -206,6 +227,8 @@ while running:
             if keys[key_code]:
                 dice_debug_value = key_code - pygame.K_0
                 print(f"Key {dice_debug_value} is pressed")
+    # End Debug
+
     if init_board:
         screen.fill(Color.DEFAULT_SCREEN.value)
         init_board = False

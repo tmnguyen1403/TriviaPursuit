@@ -1,10 +1,13 @@
 import React from 'react';
-import QuestionEditor from './components/QuestionEditor';
+
+import MyRouter from './router/index';
+import Navbar from './components/Navbar';
 
 const App = () => {
   return (
     <div>
-      <QuestionEditor />
+      <Navbar />
+      <MyRouter />
     </div>
   );
 };

@@ -2,7 +2,7 @@ from enum import Enum
 from utils import Color
 class TileType(Enum):
     NORMAL=1
-    HEADQUATER=2
+    HEADQUARTER=2
     FREEROLL=3
     TRIVIA_COMPUTE=4 
 class Tile:
@@ -40,7 +40,7 @@ class Tile:
         engine.draw.rect(screen, self.color, (inner_x,inner_y,inner_width, inner_height))
 
         # Draw headquater symbol
-        if self.type == TileType.HEADQUATER:
+        if self.type == TileType.HEADQUARTER:
             font = engine.font.Font(None, 32)
             hq_text = font.render("HQ", True, Color.BLACK.value, None)
             screen.blit(hq_text, (inner_x + inner_width//3,inner_y+inner_height//3))

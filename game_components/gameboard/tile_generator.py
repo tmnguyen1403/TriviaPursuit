@@ -42,6 +42,6 @@ class TileGenerator:
                     tiles.append(tile)
                     tile_map[(row,col)] = tile
                     if (row,col) in self.head_quater_map:
-                        tile.set_type(tile_type=TileType.HEADQUATER)
+                        tile.set_type(tile_type=TileType.HEADQUARTER)
         return tiles, tile_map
     

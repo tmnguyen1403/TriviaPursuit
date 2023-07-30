@@ -66,7 +66,7 @@ class PlayerManager(TileSubscriber):
     
     def update_player_score(self):
         tile_type = self.current_tile.get_type()
-        if tile_type == TileType.HEADQUATER:
+        if tile_type == TileType.HEADQUARTER:
             category_color = self.current_tile.get_category_color()
             self.player_scores[self.current_index].update_score(category_color)
         elif tile_type == TileType.TRIVIA_COMPUTE and self.player_score_all_category():

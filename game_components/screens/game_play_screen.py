@@ -191,7 +191,7 @@ while running:
 
                             # First turn and roll 6(default special dice value)
                             if player_manager.is_first_turn() and dice_manager.is_special_value(dice_value=dice_value):
-                                possible_moves = gameboard.get_headquater_moves()
+                                possible_moves = gameboard.get_headquarter_moves()
                             else:
                                 player_pos = player_manager.get_current_player_position()
                                 possible_moves = gameboard.get_possible_moves(player_pos=player_pos, dice_value=dice_value)

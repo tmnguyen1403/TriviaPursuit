@@ -106,48 +106,17 @@ const getQuestionByUserId = async (req, res, next) => {
     res.status(200).json({questionsByUserId: userWithQuestions.map(question => question.toObject({getters: true}))});
 }
 
-// const getQuestionByCategory = async (req, res, next) => {
-//     const questionCategory = req.params.cid;
-//     let categoryWithQuestions;
-//     try {
-//         categoryWithQuestions = await Question.find({category: questionCategory});
-//     } catch (err) {
-//         const error = new HttpError(
-//             'Fetching questions failed, please try again later.', 
-//             500
-//         );
-//         return next(error);
-//     }
-//     if (!categoryWithQuestions || categoryWithQuestions.length === 0) {
-//         return next (new HttpError(
-//             'Could not find the questions for the provided user category.', 
-//             404)
-//         );
-//     }
-
-//     res.status(200).json({questionsByCategory: categoryWithQuestions.map(question => question.toObject({getters: true}))});
-// }
-
 const getQuestionByCategory = async (req, res, next) => {
-    const creatorId = req.params.uid;
     const questionCategory = req.params.cid;
-    let userWithQuestions;
     let categoryWithQuestions;
     try {
-        userWithQuestions = await Question.find({user_id: creatorId});
-        categoryWithQuestions = await userWithQuestions.find({category: questionCategory});
+        categoryWithQuestions = await Question.find({category: questionCategory});
     } catch (err) {
         const error = new HttpError(
             'Fetching questions failed, please try again later.', 
             500
         );
         return next(error);
-    }
-    if (!userWithQuestions || userWithQuestions.length === 0) {
-        return next (new HttpError(
-            'Could not find the questions for the provided user id.', 
-            404)
-        );
     }
     if (!categoryWithQuestions || categoryWithQuestions.length === 0) {
         return next (new HttpError(

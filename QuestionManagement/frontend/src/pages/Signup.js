@@ -3,10 +3,6 @@ import { Link } from "react-router-dom";
  
 const Signup = () => {
 
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
@@ -14,14 +10,13 @@ const Signup = () => {
           <div className="card">
             <div className="card-body">
               <h3 className="card-title text-center">Create your account</h3>
-              <form className='signup' onSubmit={handleSubmit}>
+              <form className='signup'>
                 <div className="mb-3">
                   <label>Username</label>
                   <input
                     type="username"
                     className="form-control"
                     placeholder="Enter your username"
-                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
                 <div className="mb-3">
@@ -30,7 +25,6 @@ const Signup = () => {
                     type="email"
                     className="form-control"
                     placeholder="Enter your email"
-                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 <div className="mb-4">
@@ -39,7 +33,6 @@ const Signup = () => {
                     type="password"
                     className="form-control"
                     placeholder="Enter your password"
-                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
                 <div className="mb-3 d-grid gap-2 col-4 mx-auto">

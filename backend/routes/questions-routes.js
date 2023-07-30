@@ -1,7 +1,9 @@
 const express = require('express');
 
+
 const questionsController = require('../controllers/questions-controller');
 const router = express.Router();
+
 
 router.post('/', questionsController.createQuestion);
 router.get('/:qid', questionsController.getQuestionById);

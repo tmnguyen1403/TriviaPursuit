@@ -60,10 +60,13 @@ class PlayerManager(TileSubscriber):
     
     def get_current_player_position(self):
         return self.current_player.get_position()
+
+    def get_current_player_tile(self):
+        return self.current_tile
     
     def get_players(self):
         return self.players
-    
+
     def update_player_score(self):
         tile_type = self.current_tile.get_type()
         if tile_type == TileType.HEADQUATER:

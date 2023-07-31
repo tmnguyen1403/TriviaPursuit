@@ -38,6 +38,7 @@ const QuestionEdit = () => {
     const data = {
       category: content.category,
       type: content.type,
+      link: content.link,
       question: content.question,
       answer: content.answer,
       user_id: content.user_id,
@@ -80,7 +81,7 @@ const QuestionEdit = () => {
               <div className="card-body">
                 <form onSubmit={updateQuestion}>
                   <div className="mb-3">
-                    <label>Category</label>
+                    <label>Category <span style={{color:'red'}}>*</span></label>
                     <select
                       type="text"
                       name="category"
@@ -98,7 +99,7 @@ const QuestionEdit = () => {
                     </select>
                   </div>
                   <div className="mb-3">
-                    <label>Type</label>
+                    <label>Type <span style={{color:'red'}}>*</span></label>
                     <select
                       type="text"
                       name="type"
@@ -113,7 +114,17 @@ const QuestionEdit = () => {
                     </select>
                   </div>
                   <div className="mb-3">
-                    <label>Question</label>
+                    <label>Link</label>
+                    <input
+                      type="text"
+                      name="link"
+                      value={content.link}
+                      onChange={handleInput}
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label>Question <span style={{color:'red'}}>*</span></label>
                     <input
                       type="text"
                       name="question"
@@ -123,7 +134,7 @@ const QuestionEdit = () => {
                     />
                   </div>
                   <div className="mb-3">
-                    <label>Answer</label>
+                    <label>Answer <span style={{color:'red'}}>*</span></label>
                     <input
                       type="text"
                       name="answer"
@@ -131,6 +142,9 @@ const QuestionEdit = () => {
                       onChange={handleInput}
                       className="form-control"
                     />
+                  </div>
+                  <div>
+                    <p style={{color: 'red', textAlign:'right'}}>* Required</p>
                   </div>
                   <div class="mb-3">
                     <button type="submit" className="btn btn-primary">

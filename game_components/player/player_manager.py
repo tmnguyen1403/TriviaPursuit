@@ -55,8 +55,8 @@ class PlayerManager(TileSubscriber):
         for player in self.players:
             player.update(new_position)
 
-    # def get_current_player(self):
-    #     return self.current_player
+    def get_current_player(self):
+        return self.current_player
     
     def get_current_player_position(self):
         return self.current_player.get_position()

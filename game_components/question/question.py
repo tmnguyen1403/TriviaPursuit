@@ -1,9 +1,9 @@
 from enum import Enum
 
 class QuestionType(Enum):
-    TEXT = "text"
-    AUDIO = "audio"
-    VIDEO = "video"
+    TEXT = "Text"
+    AUDIO = "Audio"
+    VIDEO = "Vidoe"
 class Question:
     def __init__(self, data):
         question_text, mime_type, link, answer, category = data

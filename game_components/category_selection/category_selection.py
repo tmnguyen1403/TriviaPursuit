@@ -1,4 +1,11 @@
 import pygame
+from utils import Color
+
+
+
+
+
+print("Check string enum: ", str(Color.RED))
 pygame.init()
 
 screen_width = 800
@@ -7,12 +14,12 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Trivial Pursuit")
 
 category_data = [
-        {"category": "Sport", "color_name": "Red", "color_code": (255, 0, 0)},
-        {"category": "History", "color_name": "Green", "color_code": (0, 255, 0)},
-        {"category": "Math", "color_name": "Blue", "color_code": (0, 0, 255)},
-        {"category": "Movie", "color_name": "Orange", "color_code": (255, 165, 0)},
-        {"category": "Geography", "color_name": "Magenta", "color_code": (255, 0, 255)},
-        {"category": "Biology", "color_name": "Cyan", "color_code": (0, 255, 255)},
+        {"category": "Sport", "color_name": Color.RED, "color_code": Color.RED.value},
+        {"category": "History", "color_name": "Green", "color_code": Color.GREEN.value},
+        {"category": "Math", "color_name": "Blue", "color_code": Color.BLUE.value},
+        {"category": "Movie", "color_name": "Orange", "color_code": Color.ORANGE.value},
+        {"category": "Geography", "color_name": "Magenta", "color_code": Color.MAGENTA.value},
+        {"category": "Biology", "color_name": "Cyan", "color_code": Color.CYAN.value},
 ]
 
 def show_category_selection(selected_categories, category_data):
@@ -110,3 +117,13 @@ def get_game_categories(game_categories):
             game_categories[color_name] = category
 
     return game_categories
+
+'''
+Comment:
+The selection looks very nice. However, we will have many categories but only 4 playable categories at a time. 
+Note for Lin:
+1. Add category image for each category instead of using Color
+2. Assign category color from only 4 default color (red, green)
+3. Turn this into a class so it can be used in the main screen
+ 
+'''

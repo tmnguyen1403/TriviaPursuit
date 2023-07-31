@@ -1,7 +1,7 @@
 from enum import Enum
-from utils import Color
+from utils_local import Color
 from buttons import Button, ButtonRenderer
-from utils import is_point_inside_rect
+from utils_local import is_point_inside_rect
 
 
 class InternalState(Enum):

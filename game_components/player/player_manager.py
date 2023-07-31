@@ -1,6 +1,6 @@
 from typing import List
 from interface import TileSubscriber
-from utils import Color
+from utils_local import Color
 from .score_box import Score_Box
 from gameboard import TileType
 class PlayerManager(TileSubscriber):

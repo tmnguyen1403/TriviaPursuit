@@ -1,8 +1,8 @@
 import sys
 from enum import Enum
-from utils import Color
+from utils_local import Color
 from buttons import Button, ButtonRenderer
-from utils import is_point_inside_rect
+from utils_local import is_point_inside_rect
 import pygame
 import webbrowser
 from game_manager import GameState

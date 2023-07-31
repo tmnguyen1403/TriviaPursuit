@@ -1,5 +1,5 @@
 from enum import Enum
-from utils import Color
+from utils_local import Color
 class TileType(Enum):
     NORMAL=1
     HEADQUATER=2

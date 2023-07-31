@@ -24,7 +24,7 @@ from dice import Dice, DiceManager, DiceRenderer
 from game_manager import GameManager, GameState
 from question import Question, QuestionManager, QuestionRenderer, AnswerRenderer
 from buttons import Button, ButtonManager, ButtonRenderer
-from utils import Color
+from utils_local import Color
 from question_display_screen import QuestionDisplayScreen
 from landing_screen import LandingScreen
 from trivial_compute_select_screen import TrivialComputeSelectScreen

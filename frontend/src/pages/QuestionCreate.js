@@ -13,7 +13,7 @@ const QuestionCreate = () => {
     link: "",
     question: "",
     answer: "",
-    user_id: "64b38cd889ebea252ec03ab2"
+    user_id: "64b38cd889ebea252ec03ab2",
   });
 
   const handleInput = (event) => {
@@ -70,7 +70,9 @@ const QuestionCreate = () => {
               <div className="card-body">
                 <form onSubmit={saveQuestion}>
                   <div className="mb-3">
-                    <label>Category <span style={{color:'red'}}>*</span></label>
+                    <label>
+                      Category <span style={{ color: "red" }}>*</span>
+                    </label>
                     <select
                       type="text"
                       name="category"
@@ -88,7 +90,9 @@ const QuestionCreate = () => {
                     </select>
                   </div>
                   <div className="mb-3">
-                    <label>Type <span style={{color:'red'}}>*</span></label>
+                    <label>
+                      Type <span style={{ color: "red" }}>*</span>
+                    </label>
                     <select
                       type="text"
                       name="type"
@@ -100,20 +104,49 @@ const QuestionCreate = () => {
                       <option value="Text">Text</option>
                       <option value="Video">Video</option>
                       <option value="Audio">Audio</option>
+                      <option value="Other">Other</option>
                     </select>
                   </div>
+                  {content.type === "Video" && (
+                    <div className="mb-3">
+                      <label>Link</label>
+                      <input
+                        type="text"
+                        name="link"
+                        value={content.link}
+                        onChange={handleInput}
+                        className="form-control"
+                      />
+                    </div>
+                  )}
+                  {content.type === "Audio" && (
+                    <div className="mb-3">
+                      <label>Link</label>
+                      <input
+                        type="text"
+                        name="link"
+                        value={content.link}
+                        onChange={handleInput}
+                        className="form-control"
+                      />
+                    </div>
+                  )}
+                  {content.type === "Other" && (
+                    <div className="mb-3">
+                      <label>Link</label>
+                      <input
+                        type="text"
+                        name="link"
+                        value={content.link}
+                        onChange={handleInput}
+                        className="form-control"
+                      />
+                    </div>
+                  )}
                   <div className="mb-3">
-                    <label>Link</label>
-                    <input
-                      type="text"
-                      name="link"
-                      value={content.link}
-                      onChange={handleInput}
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <label>Question <span style={{color:'red'}}>*</span></label>
+                    <label>
+                      Question <span style={{ color: "red" }}>*</span>
+                    </label>
                     <input
                       type="text"
                       name="question"
@@ -123,7 +156,9 @@ const QuestionCreate = () => {
                     />
                   </div>
                   <div className="mb-3">
-                    <label>Answer <span style={{color:'red'}}>*</span></label>
+                    <label>
+                      Answer <span style={{ color: "red" }}>*</span>
+                    </label>
                     <input
                       type="text"
                       name="answer"
@@ -133,7 +168,9 @@ const QuestionCreate = () => {
                     />
                   </div>
                   <div>
-                    <p style={{color: 'red', textAlign:'right'}}>* Required</p>
+                    <p style={{ color: "red", textAlign: "right" }}>
+                      * Required
+                    </p>
                   </div>
                   <div class="mb-3">
                     <button type="submit" className="btn btn-primary">

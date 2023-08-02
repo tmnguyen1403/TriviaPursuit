@@ -20,18 +20,18 @@ class TileGenerator:
         self.trivial_compute_map = trivial_compute_map
     
     def generate(self):
-        nb_rows = len(self.tile_matrix)
-        nb_cols = len(self.tile_matrix[0])
+        nb_rows = len(self.tile_matrix) + 1
+        nb_cols = len(self.tile_matrix[0]) + 1
         x_start,y_start,board_width,board_height = self.board_rect
         tile_width = board_width // nb_cols
         tile_height = board_height // nb_rows
-        #border_size = 5
+        border_size = tile_width // nb_cols
         tiles = []
         tile_map = dict() #Use to lookup tile object based on its position in the matrix
-        for row in range(nb_rows):
-            for col in range(nb_cols):
-                x = x_start + col * tile_width
-                y = y_start + row * tile_height
+        for row in range(nb_rows - 1):
+            for col in range(nb_cols - 1):
+                x = x_start + (col * tile_width) + ((col+1) * border_size)
+                y = y_start + (row * tile_height) + ((row+1) * border_size)
                 # Border Drawing
                 # inner_x = x + border_size
                 # inner_y = y + border_size

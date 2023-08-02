@@ -19,7 +19,7 @@ import pygame
 import asyncio
 from database import dummy_database, create_with_online_database
 from player import Player, PlayerManager
-from gameboard import Tile, TileType, TileGenerator, Gameboard, MoveCalculator, GameBoardRenderer
+from gameboard import Tile, TileType, TileGenerator, Gameboard, MoveCalculator, GameBoardRenderer, Legend
 from dice import Dice, DiceManager, DiceRenderer
 from game_manager import GameManager, GameState
 from question import Question, QuestionManager, QuestionRenderer, AnswerRenderer
@@ -66,10 +66,10 @@ category_colors = {0: Color.WHITE.value, 1: Color.BLUE.value, 2: Color.YELLOW.va
 categories = {0: "", 1: "Math", 2: "Sport", 3: "History", 4: "Movie", 5: "Random"}
 action_types = {0: TileType.FREEROLL, 1: TileType.NORMAL, 2: TileType.NORMAL, 3: TileType.NORMAL, 4: TileType.NORMAL,
                 5: TileType.TRIVIA_COMPUTE}
-board_x = 100
+board_x = 250
 board_y = 200
-board_width = 600
-board_height = 600
+board_width = 700
+board_height = 700
 board_rect = (board_x, board_y, board_width, board_height)
 tile_generator = TileGenerator(categories=categories, tile_matrix=tile_matrix, colors=category_colors,
                                tile_types=action_types, board_rect=board_rect,
@@ -96,6 +96,8 @@ tile_info = (tile_matrix, head_quater_map, tile_map, tile_objects)
 gameboard = Gameboard(tile_info, move_calculator)
 gameboard_renderer = GameBoardRenderer()
 score_board_rect = (150, 25, 90, 90)
+legend_rect = (25, 250, 200, 500)
+legend = Legend(categories, category_colors, legend_rect)
 player_manager.init_player_score(category_colors=category_colors, rect_size=score_board_rect)
 # Die
 die_width = 100
@@ -114,7 +116,7 @@ player_manager.update_all(gameboard.get_center())
 # Can only have one screen, create another screen will overide existing screen
 screen = pygame.display.set_mode((screen_width, screen_height))
 # Create the game board surface
-pygame.display.set_caption("Board Game Board")
+pygame.display.set_caption("Trivial Compute Game Board")
 running = True
 roll = False
 game_manager = GameManager()
@@ -251,7 +253,22 @@ while running:
         screen.fill(Color.DEFAULT_SCREEN.value)
         init_board = False
         dice_manager.draw(screen=screen)
-        pygame.draw.rect(screen, Color.WHITE.value, (board_x, board_y, board_width, board_height))
+
+        #draw the legend
+        legend.draw(engine=pygame, screen=screen)
+
+         # # Draw the big black box to be the game board
+        pygame.draw.rect(screen, Color.BLACK.value, (board_x,board_y,board_width,board_height))
+
+        #draw four white squares to separate spokes
+        w_square_size = (0.32 * board_width)
+        for i in range(2):
+            for j in range(2):
+                w_square_x = board_x + ((0.12 * board_width) * (i+1)) + (w_square_size*i)
+                w_square_y = board_y + ((0.12 * board_width) * (j+1)) + (w_square_size*j)
+
+                pygame.draw.rect(screen, Color.WHITE.value, (w_square_x, w_square_y, 
+                                                    w_square_size, w_square_size))
 
     if update_board:
         gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
@@ -304,6 +321,11 @@ while running:
                 print("We has a winner\n")
                 game_manager.set_state(GameState.END_GAME)
 
+                
+
+   
+
+    
     pygame.display.flip()
     clock.tick(60)
 pygame.quit()

@@ -111,7 +111,6 @@ const getQuestionByCategory = async (req, res, next) => {
     let categoryWithQuestions;
     try {
         categoryWithQuestions = await Question.find({category: questionCategory});
-        console.log("Getting question for ", questionCategory);
     } catch (err) {
         const error = new HttpError(
             'Fetching questions failed, please try again later.', 

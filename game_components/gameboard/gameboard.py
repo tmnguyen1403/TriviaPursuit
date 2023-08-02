@@ -1,6 +1,6 @@
 from interface import TilePublisher
 from typing import List, Tuple
-from utils import is_point_inside_rect
+from utils_local import is_point_inside_rect
 '''
 Applying Observer (Publisher Subscriber pattern) to handle category from gameboard
 

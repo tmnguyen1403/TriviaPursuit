@@ -1,11 +1,11 @@
 import sys
 from enum import Enum
-from utils import Color
+from utils_local import Color
 from buttons import Button, ButtonRenderer
-from utils import is_point_inside_rect
+from utils_local import is_point_inside_rect
 import pygame
 import webbrowser
-
+from game_manager import GameState
 
 class ButtonText(Enum):
     PLAY = "Play"
@@ -19,7 +19,7 @@ class LandingScreen:
     def init_screen(self, screen):
         screen_width, screen_height = screen.get_size()
         self.text_color = Color.BLACK.value
-
+        pygame.font.init()
         font = pygame.font.SysFont(None, 60)
         # Clear the screen
         screen.fill(Color.WHITE.value)
@@ -41,7 +41,10 @@ class LandingScreen:
         self.buttons[text] = button
         return button
         # self.button_renderer.add_button(button)
-        
+
+    def set_manager_state(self, game_state : 'GameState'):
+        self.game_manager.set_state(game_state)
+
     def render_screen(self, pygame, screen, game_manager, question):
         print("Landing Screen")
         
@@ -56,7 +59,7 @@ class LandingScreen:
         #display button options
         play_button = self.buttons.get(ButtonText.PLAY, None)
         if play_button is None:
-            play_button = self.create_button(self.play_button_rect, button_color=Color.BLACK.value,text=ButtonText.PLAY)
+            play_button = self.create_button(self.play_button_rect, button_color=Color.BLACK.value,text=ButtonText.PLAY, action=lambda: self.set_manager_state(GameState.WAIT_ROLL))
         self.button_renderer.draw(screen=screen,button=play_button, font=self.font)
 
         questionManager_button = self.buttons.get(ButtonText.QUESTION_CENTER, None)
@@ -68,7 +71,7 @@ class LandingScreen:
             quit_button = self.create_button(self.quit_button_rect, button_color=Color.BLACK.value,text=ButtonText.QUIT, action=lambda:sys.exit())
         self.button_renderer.draw(screen=screen,button=quit_button, font=self.font)
 
-        while running:
+        while  running or self.game_manager.get_state() == GameState.WAIT_ROLL:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -83,4 +86,6 @@ class LandingScreen:
                                 button.on_click()
                                 print(button.text)
                                 return
+            # if self.game_manager.get_state() == GameState.WAIT_ROLL:
+            #     return
             pygame.display.flip()

@@ -1,5 +1,5 @@
 import random
-from utils import is_point_inside_rect
+from utils_local import is_point_inside_rect
 class DiceManager:
     def __init__(self, dice: 'Dice', dice_renderer: 'DiceRenderer', special_dice_value=6):
         self.dice = dice

@@ -2,3 +2,4 @@ mypy
 pygame
 requests
 httpx
+pywebview

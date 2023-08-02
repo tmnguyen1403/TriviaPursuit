@@ -1,13 +1,13 @@
 from typing import List
 from interface import TileSubscriber
-from utils import Color
+from utils_local import Color
 from .score_box import Score_Box
 from gameboard import TileType
 class PlayerManager(TileSubscriber):
     """Manage Player to communicate with other system about player position
     """    
     def __init__(self, players: List['Player'], start_player = 0) -> None:
-        self.test = 0
+        
         self.players = players
         self.start_player = start_player 
         self.current_player = players[0]
@@ -16,7 +16,7 @@ class PlayerManager(TileSubscriber):
         self.current_tile = None
         #This is used to apply special rule for first turn move
         self.first_turn = [True for _ in range(len(self.players))]
-        self.winners = [1]
+        self.winners = []
         self.last_player_move = False
     def init_player_score(self, category_colors, rect_size):
         index = 0
@@ -60,15 +60,13 @@ class PlayerManager(TileSubscriber):
     
     def get_current_player_position(self):
         return self.current_player.get_position()
-    
-    def move(self, dice_manager: 'DiceManager'):
-        dice_value = dice_manager.dice.get_value()
-        print("inside player manager: ", dice_value)
-        return None
+
+    def get_current_player_tile(self):
+        return self.current_tile
     
     def get_players(self):
         return self.players
-    
+
     def update_player_score(self):
         tile_type = self.current_tile.get_type()
         if tile_type == TileType.HEADQUATER:

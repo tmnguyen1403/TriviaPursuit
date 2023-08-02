@@ -1,4 +1,4 @@
-from utils import Color
+from utils_local import Color
 class GameBoardRenderer:
     def __init__(self):
         pass

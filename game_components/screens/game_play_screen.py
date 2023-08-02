@@ -19,7 +19,7 @@ import pygame
 import asyncio
 from database import dummy_database, create_with_online_database
 from player import Player, PlayerManager
-from gameboard import Tile, TileType, TileGenerator, Gameboard, MoveCalculator, GameBoardRenderer
+from gameboard import Tile, TileType, TileGenerator, Gameboard, MoveCalculator, GameBoardRenderer, Legend
 from dice import Dice, DiceManager, DiceRenderer
 from game_manager import GameManager, GameState
 from question import Question, QuestionManager, QuestionRenderer, AnswerRenderer
@@ -66,10 +66,10 @@ category_colors = {0: Color.WHITE.value, 1: Color.BLUE.value, 2: Color.YELLOW.va
 categories = {0: "", 1: "Math", 2: "Sport", 3: "History", 4: "Movie", 5: "Random"}
 action_types = {0: TileType.FREEROLL, 1: TileType.NORMAL, 2: TileType.NORMAL, 3: TileType.NORMAL, 4: TileType.NORMAL,
                 5: TileType.TRIVIA_COMPUTE}
-board_x = 100
+board_x = 250
 board_y = 200
-board_width = 600
-board_height = 600
+board_width = 700
+board_height = 700
 board_rect = (board_x, board_y, board_width, board_height)
 tile_generator = TileGenerator(categories=categories, tile_matrix=tile_matrix, colors=category_colors,
                                tile_types=action_types, board_rect=board_rect,
@@ -96,6 +96,8 @@ tile_info = (tile_matrix, head_quater_map, tile_map, tile_objects)
 gameboard = Gameboard(tile_info, move_calculator)
 gameboard_renderer = GameBoardRenderer()
 score_board_rect = (150, 25, 90, 90)
+legend_rect = (25, 250, 200, 500)
+legend = Legend(categories, category_colors, legend_rect)
 player_manager.init_player_score(category_colors=category_colors, rect_size=score_board_rect)
 # Die
 die_width = 100
@@ -251,6 +253,9 @@ while running:
         screen.fill(Color.DEFAULT_SCREEN.value)
         init_board = False
         dice_manager.draw(screen=screen)
+
+        #draw the legend
+        legend.draw(engine=pygame, screen=screen)
 
          # # Draw the big black box to be the game board
         pygame.draw.rect(screen, Color.BLACK.value, (board_x,board_y,board_width,board_height))

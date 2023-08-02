@@ -251,7 +251,19 @@ while running:
         screen.fill(Color.DEFAULT_SCREEN.value)
         init_board = False
         dice_manager.draw(screen=screen)
-        pygame.draw.rect(screen, Color.WHITE.value, (board_x,board_y,board_width,board_height))
+
+         # # Draw the big black box to be the game board
+        pygame.draw.rect(screen, Color.BLACK.value, (board_x,board_y,board_width,board_height))
+
+        #draw four white squares to separate spokes
+        w_square_size = (0.32 * board_width)
+        for i in range(2):
+            for j in range(2):
+                w_square_x = board_x + ((0.12 * board_width) * (i+1)) + (w_square_size*i)
+                w_square_y = board_y + ((0.12 * board_width) * (j+1)) + (w_square_size*j)
+
+                pygame.draw.rect(screen, Color.WHITE.value, (w_square_x, w_square_y, 
+                                                    w_square_size, w_square_size))
 
     if update_board:
         gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
@@ -298,10 +310,17 @@ while running:
     if current_state == GameState.RESET_STATE:
         game_manager.reset()
         render_efficient_reset()
-        if player_manager.has_winner() and player_manager.is_last_player_move():
-            print("We has a winner\n")
-            game_manager.set_state(GameState.END_GAME)    
+        if player_manager.has_winner():
+            player_manager.next_player()
+            if player_manager.is_last_player_move():
+                print("We has a winner\n")
+                game_manager.set_state(GameState.END_GAME)
 
+                
+
+   
+
+    
     pygame.display.flip()
     clock.tick(60)
 pygame.quit()

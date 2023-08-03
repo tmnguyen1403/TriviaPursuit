@@ -29,6 +29,8 @@ from question_display_screen import QuestionDisplayScreen
 from landing_screen import LandingScreen
 from trivial_compute_select_screen import TrivialComputeSelectScreen
 
+from play_option_screen import PlayOptionScreen
+
 pygame.init()
 clock = pygame.time.Clock()
 
@@ -153,8 +155,19 @@ def render_efficient_reset():
 Screens Init 
 '''
 landing_screen = LandingScreen()
+landing_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager, question=None)
+
 question_display_screen = QuestionDisplayScreen()
 trivial_compute_select_screen = TrivialComputeSelectScreen()
+'''
+Screen Transition:
+landing_screen
+  play 
+    player_selection
+    category_selection
+      start_game
+      
+'''
 
 '''
 Debug 
@@ -163,6 +176,9 @@ Debug
 DEBUG = False
 DEBUG_WITH_DICE = True
 dice_debug_value = 0
+
+# test_players = PlayOptionScreen()
+# test_players.render_screen(pygame=pygame,screen=screen,game_manager=game_manager)
 
 while running:
     # Without doing pygame.event.get(), the game will not be rendered
@@ -174,66 +190,38 @@ while running:
                 current_state = game_manager.get_state()
                 mouse_pos = pygame.mouse.get_pos()
                 print("Mouse clicking ", current_state)
-                if DEBUG == True:
-                    print("Debugging, bypass everything")
-                    gameboard.move_debug()
+                if current_state == GameState.WAIT_ROLL:
+                    if dice_manager.can_roll(mouse_pos=mouse_pos):
+                        dice_manager.animate(screen=screen, pygame=pygame, clock=clock,
+                                                debug_value=dice_debug_value)
+                        dice_value = dice_manager.roll_value()
+
+                        # First turn and roll 6(default special dice value)
+                        if player_manager.is_first_turn() and dice_manager.is_special_value(dice_value=dice_value):
+                            possible_moves = gameboard.get_headquater_moves()
+                        else:
+                            player_pos = player_manager.get_current_player_position()
+                            possible_moves = gameboard.get_possible_moves(player_pos=player_pos,
+                                                                            dice_value=dice_value)
+                        game_manager.set_state(GameState.MOVE_SELECTION)
+
+                        update_board = True
+                elif current_state == GameState.MOVE_SELECTION:
                     move_success = gameboard.move(mouse_pos=mouse_pos)
-                    if player_manager.player_score_all_category() == True:
-                        print("Player score all, move to next player")
-                        player_manager.next_player()
-                        render_efficient_reset()
-                        continue
                     if move_success:
                         selected_tile = gameboard.get_selected_tile()
                         tile_type = selected_tile.get_type()
                         if tile_type == TileType.FREEROLL:
                             print(f"Land on freeroll tile, player roll again")
+                            game_manager.set_state(GameState.RESET_STATE)
                         elif tile_type == TileType.TRIVIA_COMPUTE:
                             print(f"Land on Trivia Compute")
-                            selected_category = trivial_compute_select_screen.render_screen(pygame=pygame,
-                                                                                            screen=screen,
-                                                                                            categories=category_list,
-                                                                                            current_player=player_manager.get_current_player().get_name(),
-                                                                                            all_scored=player_manager.player_score_all_category())
+                            game_manager.set_state(GameState.TRIVIA_COMPUTE_SELECTION)
                         else:
-                            game_manager.next_state()
+                            game_manager.set_state(GameState.QUESTION_SELECTION)
                         update_board = True
                         print(f"Move success {move_success}")
                         print("Update the player position, reset tile state")
-                        game_manager.set_state(GameState.ACCEPT_ANSWER)
-                else:
-                    if current_state == GameState.WAIT_ROLL:
-                        if dice_manager.can_roll(mouse_pos=mouse_pos):
-                            dice_manager.animate(screen=screen, pygame=pygame, clock=clock,
-                                                 debug_value=dice_debug_value)
-                            dice_value = dice_manager.roll_value()
-
-                            # First turn and roll 6(default special dice value)
-                            if player_manager.is_first_turn() and dice_manager.is_special_value(dice_value=dice_value):
-                                possible_moves = gameboard.get_headquater_moves()
-                            else:
-                                player_pos = player_manager.get_current_player_position()
-                                possible_moves = gameboard.get_possible_moves(player_pos=player_pos,
-                                                                              dice_value=dice_value)
-                            game_manager.set_state(GameState.MOVE_SELECTION)
-
-                            update_board = True
-                    elif current_state == GameState.MOVE_SELECTION:
-                        move_success = gameboard.move(mouse_pos=mouse_pos)
-                        if move_success:
-                            selected_tile = gameboard.get_selected_tile()
-                            tile_type = selected_tile.get_type()
-                            if tile_type == TileType.FREEROLL:
-                                print(f"Land on freeroll tile, player roll again")
-                                game_manager.set_state(GameState.RESET_STATE)
-                            elif tile_type == TileType.TRIVIA_COMPUTE:
-                                print(f"Land on Trivia Compute")
-                                game_manager.set_state(GameState.TRIVIA_COMPUTE_SELECTION)
-                            else:
-                                game_manager.set_state(GameState.QUESTION_SELECTION)
-                            update_board = True
-                            print(f"Move success {move_success}")
-                            print("Update the player position, reset tile state")
 
     current_state = game_manager.get_state()
     if current_state == GameState.LANDING_SCREEN:

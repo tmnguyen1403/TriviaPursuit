@@ -36,27 +36,28 @@ class Gameboard(TilePublisher):
     def move(self, mouse_pos):
         has_move = False
         print("Calling move in gameboard")
+        selected_tile = None
         for move, tile in self.candidate_tiles.items():
             if is_point_inside_rect(mouse_pos, tile.get_rect()):
                 print(f"Tile at {move} is selected. Updating player position")
                 self.category = tile.get_category()
                 has_move = True
-                self.selected_tile = tile
+                selected_tile = tile
                 self.matrix_tile_position = move
                 break
-        if self.selected_tile:
+        if selected_tile:
+            self.selected_tile = selected_tile
             self.notify()
-            self.reset_tiles()
+            self.reset_candidate_tiles()
         return has_move
 
     def get_selected_tile(self):
         return self.selected_tile
     
-    def reset_tiles(self):
+    def reset_candidate_tiles(self):
         for move, tile in self.candidate_tiles.items():
             tile.reset()
         self.candidate_tiles = dict()
-        #self.selected_tile = None
         self.matrix_tile_position = None
 
     def get_possible_moves(self, player_pos, dice_value):

@@ -25,33 +25,18 @@ from question import QuestionManager
 from utils_local import Color
 from question_display_screen import QuestionDisplayScreen
 from trivial_compute_select_screen import TrivialComputeSelectScreen
-
-pygame.init()
-clock = pygame.time.Clock()
-
-# Set screen size
-screen_width = 1200
-screen_height = 1000
-
-# Player Dummy Generator
-nb_player = 4
-players = []
-player_font = pygame.font.Font(None, 32)
-player_colors = {1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value}
-for i in range(4):
-    player_info = {"position": (0, 0), "name": f"P{i + 1}", "token": None, "score": [], "color": player_colors[i + 1]}
-    players.append(Player(player_info))
-player_manager = PlayerManager(players=players)
+from tile_info import TileInfo
 
 '''
 The below is used to generate
 '''
 # Define category_colors
 class GamePlayScreen:
-    def __init__(self) -> None:
+    def __init__(self, game_info: 'GamePlayInfo') -> None:
         self.init_board = True
         self.update_board = True
-
+        self.nb_player = game_info.get_nb_player()
+        self.categories = game_info.get_categories()
 
     def init_screen(self,screen):
         pass
@@ -66,47 +51,67 @@ class GamePlayScreen:
         self.update_board = True
 
     def render_screen(self, pygame, screen):
+
+        # Player Dummy Generator
+        
+        players = []
+        player_colors = {1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value}
+        for i in range(self.nb_player):
+            player_info = {"position": (0, 0), "name": f"P{i + 1}", "token": None, "score": [], "color": player_colors[i + 1]}
+            players.append(Player(player_info))
+        player_manager = PlayerManager(players=players)
+
         tile_matrix = [[0, 2, 1, 4, 3, 2, 1, 4, 0],
-                    [3, -1, -1, -1, 2, -1, -1, -1, 3],
-                    [4, -1, -1, -1, 1, -1, -1, -1, 2],
-                    [1, -1, -1, -1, 4, -1, -1, -1, 1],
-                    [2, 1, 4, 3, 5, 1, 2, 3, 4],
-                    [3, -1, -1, -1, 2, -1, -1, -1, 3],
-                    [4, -1, -1, -1, 3, -1, -1, -1, 2],
-                    [1, -1, -1, -1, 4, -1, -1, -1, 1],
+                    [3, -10, -10, -10, 2, -10, -10, -10, 3],
+                    [4, -10, -10, -10, 1, -10, -10, -10, 2],
+                    [1, -10, -10, -10, 4, -10, -10, -10, 1],
+                    [2, 1, 4, 3, -1, 1, 2, 3, 4],
+                    [3, -10, -10, -10, 2, -10, -10, -10, 3],
+                    [4, -10, -10, -10, 3, -10, -10, -10, 2],
+                    [1, -10, -10, -10, 4, -10, -10, -10, 1],
                     [0, 2, 3, 4, 1, 2, 3, 4, 0]]
         head_quater_map = [(0, 4), (4, 0), (4, 8), (8, 4)]
         trivial_compute_map = [(4, 4)]
-        category_colors = {0: Color.WHITE.value, 1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value,
-                        4: Color.GREEN.value, 5: Color.SPECIAL.value}
-        categories = {0: "", 1: "Math", 2: "Sport", 3: "History", 4: "Movie", 5: "Random"}
-        action_types = {0: TileType.FREEROLL, 1: TileType.NORMAL, 2: TileType.NORMAL, 3: TileType.NORMAL, 4: TileType.NORMAL,
-                        5: TileType.TRIVIA_COMPUTE}
+
+        special_tile_infos = {
+            0: TileInfo(Color.WHITE.value, TileType.FREEROLL),
+            -1: TileInfo(Color.SPECIAL.value, TileType.TRIVIA_COMPUTE),
+        }
+        counter = 1
+       # for category in self.categories.items
+        normal_tile_infos = {
+            1: TileInfo(Color.BLUE.value, TileType.NORMAL),
+            2: TileInfo(Color.YELLOW.value, TileType.NORMAL),
+            3: TileInfo(Color.RED.value, TileType.NORMAL),
+            4: TileInfo(Color.GREEN.value, TileType.NORMAL),
+        }
+
         board_x = 250
         board_y = 200
         board_width = 700
         board_height = 700
         board_rect = (board_x, board_y, board_width, board_height)
-        tile_generator = TileGenerator(categories=categories, tile_matrix=tile_matrix, colors=category_colors,
-                                    tile_types=action_types, board_rect=board_rect,
+        tile_generator = TileGenerator(categories=self.categories, tile_matrix=tile_matrix, normal_info=normal_tile_infos,
+                                    special_info=special_tile_infos, board_rect=board_rect,
                                     head_quater_map=head_quater_map, trivial_compute_map=trivial_compute_map)
         tile_objects, tile_map = tile_generator.generate()
 
-        category_list = []
-        for key, category in categories.items():
-            if category == "Random" or category == "":
-                continue
-            category_list.append(category)
+        #Create category list to use in database
+        # category_list = []
+        # for key, category in self.categories.items():
+        #     if category == "Random" or category == "":
+        #         continue
+        #     category_list.append(category)
 
-        question_database = asyncio.run(self.main_database(category_list))
+        question_database = asyncio.run(self.main_database(self.categories))
 
-        move_calculator = MoveCalculator(-1)
+        move_calculator = MoveCalculator(-10)
         tile_info = (tile_matrix, head_quater_map, tile_map, tile_objects)
         gameboard = Gameboard(tile_info, move_calculator)
         gameboard_renderer = GameBoardRenderer()
         score_board_rect = (150, 25, 90, 90)
-        legend_rect = (25, 250, 200, 500)
-        legend = Legend(categories, category_colors, legend_rect)
+       
+        category_colors = [tile_info.get_color() for tile_info in normal_tile_infos.values()]
         player_manager.init_player_score(category_colors=category_colors, rect_size=score_board_rect)
         
         # Die
@@ -128,51 +133,23 @@ class GamePlayScreen:
         running = True
         game_manager = GameManager()
 
-        # Init Question
-        # question_position = {"x": board_x + board_width, "y": 150}
-        # question_text_color = (0, 0, 0)
-        # question_font = pygame.font.Font(None, 64)
-        # question_renderer = QuestionRenderer(screen=screen, position=question_position, text_color=question_text_color)
         question_manager = QuestionManager(database=question_database)
-
-        # Init Answer
-        # answer_font = pygame.font.Font(None, 50)
-        # answer_position = (question_position["x"], question_position["y"] + 200)
-        # answer_color = (0, 0, 255)
-        # answer_renderer = AnswerRenderer(position=answer_position, text_color=answer_color)
 
         gameboard.subscribe(question_manager)
         gameboard.subscribe(player_manager)
 
 
-        '''
-        Screens Init 
-        '''
-        # landing_screen = LandingScreen()
-        # landing_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager, question=None)
-
         question_display_screen = QuestionDisplayScreen()
-        trivial_compute_select_screen = TrivialComputeSelectScreen()
-        '''
-        Screen Transition:
-        landing_screen
-        play 
-            player_selection
-            category_selection
-            start_game
-
-        '''
+        category_names = [category_info.get_name() for category_info in self.categories]
+        trivial_compute_select_screen = TrivialComputeSelectScreen(categories=category_names)
 
         '''
         Debug 
         '''
-        # game_manager.set_state(GameState.QUESTION_SELECTION)
-        DEBUG = False
         DEBUG_WITH_DICE = True
         dice_debug_value = 0
 
-        # test_players = PlayOptionScreen()
-        # test_players.render_screen(pygame=pygame,screen=screen,game_manager=game_manager)
+        clock = pygame.time.Clock()
 
         while running:
             # Without doing pygame.event.get(), the game will not be rendered
@@ -218,9 +195,6 @@ class GamePlayScreen:
                                 print("Update the player position, reset tile state")
 
             current_state = game_manager.get_state()
-            # if current_state == GameState.LANDING_SCREEN:
-            #     landing_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager, question=None)
-
             # DEBUG
             if DEBUG_WITH_DICE:
                 dice_values = [pygame.K_0 + index for index in range(1, 10)]
@@ -237,6 +211,8 @@ class GamePlayScreen:
                 dice_manager.draw(screen=screen)
 
                 #draw the legend
+                legend_rect = (25, 250, 200, 500)
+                legend = Legend(self.categories, normal_tile_infos, legend_rect)
                 legend.draw(engine=pygame, screen=screen)
 
                 # # Draw the big black box to be the game board
@@ -266,7 +242,7 @@ class GamePlayScreen:
                 
             if current_state == GameState.TRIVIA_COMPUTE_SELECTION:
                 print('TRIVIAL COMPUTE')
-                selected_category = trivial_compute_select_screen.render_screen(pygame=pygame, screen=screen,categories=category_list, current_player=player_manager.get_current_player().get_name(),
+                selected_category = trivial_compute_select_screen.render_screen(pygame=pygame, screen=screen, current_player=player_manager.get_current_player().get_name(),
                 all_scored=player_manager.player_score_all_category())
                 question_manager.set_question(selected_category)
                 current_question = question_manager.get_current_question()

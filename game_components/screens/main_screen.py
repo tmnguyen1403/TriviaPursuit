@@ -23,7 +23,6 @@ from play_option_screen import PlayOptionScreen
 from menu_state import MenuState
 
 pygame.init()
-clock = pygame.time.Clock()
 
 # Set screen size
 screen_width = 1200
@@ -38,7 +37,10 @@ while menu_state != MenuState.EXIT:
         land_screen = LandingScreen()
         menu_state = land_screen.render_screen(pygame, screen=screen)
     if menu_state == MenuState.PLAY_GAME:
-        game_play_screen = GamePlayScreen()
+        play_option_screen = PlayOptionScreen()
+        play_info = play_option_screen.render_screen(pygame, screen=screen)
+        print(f"Play Info {play_info}")
+        game_play_screen = GamePlayScreen(game_info=play_info)
         game_play_screen.render_screen(pygame, screen=screen)
     if menu_state == MenuState.QUESTION_CENTER:
         webbrowser.open_new_tab(question_center_url)

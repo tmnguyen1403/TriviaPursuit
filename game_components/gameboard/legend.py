@@ -2,9 +2,9 @@
 from utils_local import Color
 
 class Legend:
-    def __init__(self, cat_names, cat_colors, rect):
+    def __init__(self, cat_names, cat_infos, rect):
         self.cat_names = cat_names
-        self.cat_colors = cat_colors
+        self.cat_infos = cat_infos
         self.rect = rect
 
 
@@ -25,17 +25,16 @@ class Legend:
         engine.draw.rect(screen, Color.WHITE.value, (ix,iy,iw,ih))
 
         increment = ih //len(self.cat_names)
-        for index in range(len(self.cat_names)):
+        for index in range(1, len(self.cat_names)+1):
             
             #calculate rectangle 
-            cy = iy + (increment * (index)) + 10
+            cy = iy + (increment * (index-1)) + 10
             cx = ix + 10
             cw = 30
             ch = 30
             
-            cat_name =self.cat_names[index]
-            color = self.cat_colors[index]
-            
+            cat_name =self.cat_names[index-1].get_name()
+            color = self.cat_infos[index].get_color()
 
             #draw colored square
             engine.draw.rect(screen, Color.BLACK.value, (cx,cy,cw,ch))

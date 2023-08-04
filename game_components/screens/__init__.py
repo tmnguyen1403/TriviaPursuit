@@ -3,3 +3,5 @@ from question_display_screen import QuestionDisplayScreen
 from landing_screen import LandingScreen
 from game_play_screen import GamePlayScreen
 from menu_state import MenuState
+from game_play_info import GamePlayInfo
+from tile_info import TileInfo

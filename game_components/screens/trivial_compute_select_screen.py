@@ -2,7 +2,7 @@ from enum import Enum
 from utils_local import Color
 from buttons import Button, ButtonRenderer
 from utils_local import is_point_inside_rect
-
+from typing import List
 
 class InternalState(Enum):
     PROMPT_CATEGORY_SELECTION = 0
@@ -11,7 +11,7 @@ class InternalState(Enum):
 
 
 class TrivialComputeSelectScreen:
-    def __init__(self):
+    def __init__(self, categories: List[str]):
         self.font = None
         self.button_renderer = None
         self.category_one_rect = None
@@ -25,6 +25,7 @@ class TrivialComputeSelectScreen:
         self.init_object = False
         self.buttons = {}
         self.selected_category = ''
+        self.categories = categories
 
     def init_screen(self, screen):
         screen_width, screen_height = screen.get_size()
@@ -53,8 +54,7 @@ class TrivialComputeSelectScreen:
         self.state = new_state
         print(f"New SelectScreen state: {self.state}")
 
-    def render_screen(self, pygame, screen, categories, current_player, all_scored):
-        print("Categories: ", categories)
+    def render_screen(self, pygame, screen, current_player, all_scored):
         if not self.init_object:
             self.init_screen(screen=screen)
             self.init_object = True
@@ -88,6 +88,7 @@ class TrivialComputeSelectScreen:
 
                 # Button render
                 show_buttons = self.buttons.get(0, None)
+                categories = self.categories
                 if show_buttons is None:
                     show_buttons = [
                         self.create_button(self.category_one_rect, button_color=Color.BLUE.value, text=categories[0],

@@ -96,5 +96,4 @@ class Gameboard(TilePublisher):
                 if self.tile_map.get(move, None) is None:
                     continue
                 tile = self.tile_map[move]
-                #tile.set_move_candidate(candidate_color = self.candidate_color)
                 self.candidate_tiles[move] = tile

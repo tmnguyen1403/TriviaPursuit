@@ -13,6 +13,7 @@ class Tile:
         self.rect = rect #(x,y,width,height)
         self.type = type #Allows to perform certain action depending on tile
         self.border_info = (2,2, (0,0,0)) #margin_x,margin_y, color,
+        self.move_candidate = False
 
     def get_rect(self):
         return self.rect
@@ -38,6 +39,12 @@ class Tile:
         #inner_y = y + border_y
         #inner_width = width - border_x * 2
         #inner_height = height - border_y * 2
+
+        if self.move_candidate:
+            #draw highlighted border
+            candidate_color = (200, 45, 200)
+            engine.draw.rect(screen, candidate_color, (x-5,y-5,width+10,height+10))
+            engine.draw.rect(screen, Color.BLACK.value, (x-2,y-2,width+4,height+4))
        
         engine.draw.rect(screen, self.color, self.rect)
 
@@ -53,10 +60,18 @@ class Tile:
             hq_text = font.render("TC", True, Color.BLACK.value, None)
             screen.blit(hq_text, (x + width // 3, y + height // 3))
 
-    def set_move_candidate(self, candidate_color = (125,125,125)):
+    def set_move_candidate(self):
+
+        self.move_candidate = True
+
         #print("Tile is move candidate\n")
-        self.origin_color = self.color
-        self.color = candidate_color
+        # self.origin_color = self.color
+        # self.color = candidate_color
     def reset(self):
-        self.color = self.origin_color
+        # self.color = self.origin_color
+        self.move_candidate = False
+
+        #return border color back to black
+        
+
     

@@ -56,6 +56,7 @@ const Question = () => {
             <tr key={index}>
                 <td>{item.category}</td>
                 <td>{item.type}</td>
+                <td>{item.link}</td>
                 <td>{item.question}</td>
                 <td>{item.answer}</td>
                 <td>{item.createdAt}</td>
@@ -89,6 +90,7 @@ const Question = () => {
                     <tr>
                       <th>Category</th>
                       <th>Type</th>
+                      <th>Link</th>
                       <th>Question</th>
                       <th>Answer</th>
                       <th>Created At</th>

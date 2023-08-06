@@ -8,13 +8,14 @@ class Score_Box:
         self.total_score = 0
         self.max_score = len(cat_colors) - 2
         self.generate_score_tiles()
+
     def generate_score_tiles(self):
         x,y,width,height = self.rect
         
         width = width//3
         height = height//3
         #create 4 smaller rectangles inside the larger rectangle
-        k=1
+        k=0
 
         # Make this more dynamic??
         for i in range(2):

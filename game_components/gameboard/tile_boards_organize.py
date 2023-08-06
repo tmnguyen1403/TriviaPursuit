@@ -61,22 +61,42 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     
-    # Fill the board surface with white color
+    # Fill the board surface with grey color
     screen_surface.fill((125,125,125))
+
+    #draw big black box to house the tiles of the game board
     pygame.draw.rect(screen_surface, WHITE, (board_x,board_y,board_width,board_height))
-    #board_surface.fill(WHITE)
+
+    #draw four white squares to separate spokes
+    w_square_size = (0.32 * board_width)
+    for i in range(2):
+        for j in range(2):
+            w_square_x = board_x + ((0.12 * board_width) * (i+1)) + (w_square_size*i)
+            w_square_y = board_y + ((0.12 * board_width) * (j+1)) + (w_square_size*j)
+
+            pygame.draw.rect(screen_surface, WHITE, (w_square_x, w_square_y, 
+                                                    w_square_size, w_square_size))
+
+
+
+
+
 
     # Draw the game board
     for tile in tile_objects:
-        x,y,width,height = tile.rect
-        pygame.draw.rect(screen_surface, BLACK, (x, y, width, height))
+        # x,y,width,height = tile.rect
+
+
+        # pygame.draw.rect(screen_surface, BLACK, (x, y, width, height))
         
-        border_size = 5
-        inner_x = x + border_size
-        inner_y = y + border_size
-        inner_width = width - border_size * 2
-        inner_height = height - border_size * 2
-        pygame.draw.rect(screen_surface, tile.color, (inner_x, inner_y, inner_width, inner_height))
+        # border_size = 5
+        # inner_x = x + border_size
+        # inner_y = y + border_size
+        # inner_width = width - border_size * 2
+        # inner_height = height - border_size * 2
+
+
+        pygame.draw.rect(screen_surface, tile.color, tile.rect)
     # Update the display
     pygame.display.flip()
 

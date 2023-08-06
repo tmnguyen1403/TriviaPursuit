@@ -1,6 +1,6 @@
 from typing import List
 from interface import TileSubscriber
-from utils import Color
+from utils_local import Color
 from .score_box import Score_Box
 from gameboard import TileType
 class PlayerManager(TileSubscriber):
@@ -55,15 +55,18 @@ class PlayerManager(TileSubscriber):
         for player in self.players:
             player.update(new_position)
 
-    # def get_current_player(self):
-    #     return self.current_player
+    def get_current_player(self):
+        return self.current_player
     
     def get_current_player_position(self):
         return self.current_player.get_position()
+
+    def get_current_player_tile(self):
+        return self.current_tile
     
     def get_players(self):
         return self.players
-    
+
     def update_player_score(self):
         tile_type = self.current_tile.get_type()
         if tile_type == TileType.HEADQUARTER:

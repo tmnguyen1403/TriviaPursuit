@@ -38,18 +38,23 @@ async def create_with_online_database(categories = List[str]):
     questions = dict()
     result_questions = dict()
     async with httpx.AsyncClient() as client:
-
+        
+        #Generate api url
         for category in categories:
-            category_api = question_category_url + "/" + category
+            category_name = category.get_name()
+            category_api = question_category_url + "/" + category_name
             print("category_api: ", category_api)
             response = await client.get(category_api)
             res_json = response.json()
-            questions[category] = res_json["questionsByCategory"]
+            questions[category_name] = res_json["questionsByCategory"]
+        
+        #Save question based on category
         for category, questions in questions.items():
             result_questions[category] = list()
             for question in questions:
                 q_obj = Question((question["question"], QuestionType(question["type"]),None, question["answer"], category))
                 result_questions[category].append(q_obj)
+                
     return Database(categories=categories,questions=result_questions)
 def dummy_database():
     from question import Question, QuestionType

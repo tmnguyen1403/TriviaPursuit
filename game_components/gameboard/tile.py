@@ -1,5 +1,5 @@
 from enum import Enum
-from utils import Color
+from utils_local import Color
 class TileType(Enum):
     NORMAL=1
     HEADQUARTER=2
@@ -31,19 +31,27 @@ class Tile:
 
     def draw(self, engine, screen):
         x,y,width,height = self.rect
-        border_x, border_y, border_color = self.border_info
-        inner_x = x + border_x
-        inner_y = y + border_y
-        inner_width = width - border_x * 2
-        inner_height = height - border_y * 2
-        engine.draw.rect(screen,border_color,  (x,y,width, height))
-        engine.draw.rect(screen, self.color, (inner_x,inner_y,inner_width, inner_height))
+
+        #this code to make borders should be obsolete
+        #border_x, border_y, border_color = self.border_info
+        #inner_x = x + border_x
+        #inner_y = y + border_y
+        #inner_width = width - border_x * 2
+        #inner_height = height - border_y * 2
+       
+        engine.draw.rect(screen, self.color, self.rect)
 
         # Draw headquater symbol
         if self.type == TileType.HEADQUARTER:
             font = engine.font.Font(None, 32)
             hq_text = font.render("HQ", True, Color.BLACK.value, None)
-            screen.blit(hq_text, (inner_x + inner_width//3,inner_y+inner_height//3))
+            screen.blit(hq_text, (x + width//3, y + height//3))
+
+        # Draw trivial compute symbol
+        if self.type == TileType.TRIVIA_COMPUTE:
+            font = engine.font.Font(None, 32)
+            hq_text = font.render("TC", True, Color.BLACK.value, None)
+            screen.blit(hq_text, (x + width // 3, y + height // 3))
 
     def set_move_candidate(self, candidate_color = (125,125,125)):
         #print("Tile is move candidate\n")

@@ -21,7 +21,7 @@ from landing_screen import LandingScreen
 from game_play_screen import GamePlayScreen
 from play_option_screen import PlayOptionScreen
 from menu_state import MenuState
-
+from category import CategorySelectionScreen
 pygame.init()
 
 # Set screen size
@@ -38,9 +38,14 @@ while menu_state != MenuState.EXIT:
         menu_state = land_screen.render_screen(pygame, screen=screen)
     if menu_state == MenuState.PLAY_GAME:
         play_option_screen = PlayOptionScreen()
-        play_info = play_option_screen.render_screen(pygame, screen=screen)
-        print(f"Play Info {play_info}")
-        game_play_screen = GamePlayScreen(game_info=play_info)
+        game_play_info = play_option_screen.render_screen(pygame, screen=screen)
+        print(f"Play Info {game_play_info}")
+        category_screen = CategorySelectionScreen(screen=screen)
+        selected_categories = category_screen.run()
+        #print(f"selected category {selected_categories}")
+        game_play_info.set_categories(selected_categories)
+
+        game_play_screen = GamePlayScreen(game_info=game_play_info)
         game_play_screen.render_screen(pygame, screen=screen)
     if menu_state == MenuState.QUESTION_CENTER:
         webbrowser.open_new_tab(question_center_url)

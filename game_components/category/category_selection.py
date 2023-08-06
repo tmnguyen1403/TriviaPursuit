@@ -2,9 +2,9 @@ import pygame
 import sys
 import os
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-sys.path.append(parent_dir)
+# current_dir = os.path.dirname(os.path.abspath(__file__))
+# parent_dir = os.path.dirname(current_dir)
+# sys.path.append(parent_dir)
 
 from utils_local import Color
 
@@ -25,13 +25,14 @@ class CategoryInfo:
     def set_color(self, color):
         self.color = color
 
-class CategorySelection:
+class CategorySelectionScreen:
 
-    def __init__(self):
-        pygame.init()
-        screen_width, screen_height = 800, 600
-        self.screen = pygame.display.set_mode((screen_width, screen_height))
-        pygame.display.set_caption("Category Selection")
+    def __init__(self, screen):
+        # pygame.init()
+        # screen_width, screen_height = 800, 600
+        # self.screen = pygame.display.set_mode((screen_width, screen_height))
+        # pygame.display.set_caption("Category Selection")
+        self.screen = screen
 
         self.categories = ["Sport", "History", "Math", "Movie", "Geography", "Biology"]
 
@@ -132,9 +133,9 @@ class CategorySelection:
 
             pygame.display.flip()
         
-        return self.selected_categories, self.selected_colors
+        return self.get_selected_categories()
     
-    def get_Selected_Categories(self):
+    def get_selected_categories(self):
         for i in range(0, len(self.selected_categories)):
             self.category_list.append(CategoryInfo(self.selected_categories[i], self.selected_colors[i]['color_name']))
         return self.category_list

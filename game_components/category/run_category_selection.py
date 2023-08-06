@@ -1,6 +1,6 @@
-from category_selection import CategorySelection
+from category_selection import CategorySelectionScreen
 
-cs = CategorySelection()
+cs = CategorySelectionScreen()
 cs.run()
 pair = cs.get_Selected_Categories()
 for i in range(0, len(pair)):

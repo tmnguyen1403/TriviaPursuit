@@ -7,7 +7,7 @@ from buttons import Button, ButtonRenderer
 from utils_local import is_point_inside_rect
 import pygame
 import webbrowser
-from game_manager import GameState
+from games import GameState
 
 
 class ButtonText(Enum):

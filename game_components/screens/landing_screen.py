@@ -1,4 +1,3 @@
-import sys
 from enum import Enum
 from utils_local import Color
 from buttons import Button, ButtonRenderer

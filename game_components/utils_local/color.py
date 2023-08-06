@@ -9,3 +9,4 @@ class Color(Enum):
     RED =(255,0,0)
     SPECIAL = (244,88,20)
     DEFAULT_SCREEN = (125,125,125)
+    GRAY = (125,125,125)

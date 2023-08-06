@@ -1,7 +1,7 @@
 from enum import Enum
-from select_number_players import SelectPlayersScreen
-from game_play_info import GamePlayInfo
-from category_info import CategoryInfo
+from select_number_players_screen import SelectPlayersScreen
+from games import GamePlayInfo
+from category import CategoryInfo
 from utils_local import Color
 
 class InternalState(Enum):

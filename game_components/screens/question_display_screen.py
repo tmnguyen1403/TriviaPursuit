@@ -41,7 +41,6 @@ class QuestionDisplayScreen:
         button = Button((x,y),(w,h), button_color, text.value, text_color, action)
         self.buttons[text] = button
         return button
-        # self.button_renderer.add_button(button)
 
     def set_state(self, new_state: 'InternalState'):
         print(f"Current QuestionScreen state: {self.state}")

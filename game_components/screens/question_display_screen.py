@@ -3,6 +3,7 @@ from utils_local import Color
 from buttons import Button, ButtonRenderer
 from question import Question, QuestionManager, QuestionRenderer
 from utils_local import is_point_inside_rect
+import webview
 
 class InternalState(Enum):
     PROMPT_CATEGORY_SELECTION=0
@@ -56,6 +57,8 @@ class QuestionDisplayScreen:
             self.font = pygame.font.Font(None, 32)
         running = True
         self.game_manager = game_manager
+        # video_url = "https://www.youtube.com/embed/XnbCSboujF4"
+        # video_view = webview.create_window("Test webview", video_url)
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -67,12 +70,16 @@ class QuestionDisplayScreen:
                             button = self.buttons[ButtonText.SHOW_ANSWER]
                             if is_point_inside_rect(mouse_pos, button.get_rect()):
                                 button.on_click()
+                                
+                                #webview.start()
+                                
                         elif self.state == InternalState.VOTE:
                             buttons = [self.buttons[ButtonText.ACCEPT], self.buttons[ButtonText.REJECT]]
                             for button in buttons:
                                 if is_point_inside_rect(mouse_pos,button.get_rect()):
                                     button.on_click()
                                     self.set_state(InternalState.SHOW_QUESTION)
+                                    #video_view.destroy()
                                     return
   
             if self.state == InternalState.SHOW_QUESTION:
@@ -93,6 +100,9 @@ class QuestionDisplayScreen:
                     show_button = self.create_button(self.show_answer_button_rect, button_color=Color.BLUE.value,text=ButtonText.SHOW_ANSWER, action=lambda:self.set_state(InternalState.SHOW_ANSWER))
                 self.button_renderer.draw(screen=screen,button=show_button, font=self.font)
 
+                # Show video
+
+
                 self.set_state(InternalState.WAIT_ANSWER)
             elif self.state == InternalState.SHOW_ANSWER:
                 #print("Show Answer State")
@@ -112,5 +122,5 @@ class QuestionDisplayScreen:
                 
                 self.button_renderer.draw(screen=screen,button=accept_button, font=self.font)
                 self.button_renderer.draw(screen=screen,button=reject_button, font=self.font)
-            
+
             pygame.display.flip()

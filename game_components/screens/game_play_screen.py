@@ -18,14 +18,13 @@ sys.path.append(parrent_dir)
 import asyncio
 from database import create_with_online_database
 from player import Player, PlayerManager
-from gameboard import TileType, TileGenerator, Gameboard, MoveCalculator, GameBoardRenderer, Legend
+from gameboard import TileType, TileInfo, TileGenerator, Gameboard, MoveCalculator, GameBoardRenderer, Legend
 from dice import Dice, DiceManager, DiceRenderer
-from game_manager import GameManager, GameState
+from games import GameManager, GameState
 from question import QuestionManager
 from utils_local import Color
 from question_display_screen import QuestionDisplayScreen
 from trivial_compute_select_screen import TrivialComputeSelectScreen
-from tile_info import TileInfo
 
 '''
 The below is used to generate

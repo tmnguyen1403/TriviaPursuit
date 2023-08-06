@@ -1,6 +1,6 @@
 from enum import Enum
-from select_number_players import SelectPlayersScreen
-from game_play_info import GamePlayInfo
+from select_number_players_screen import SelectPlayersScreen
+from games import GamePlayInfo
 from category import CategoryInfo
 from utils_local import Color
 

@@ -1,10 +1,6 @@
-from enum import Enum
+from .tile_type import TileType
 from utils_local import Color
-class TileType(Enum):
-    NORMAL=1
-    HEADQUARTER=2
-    FREEROLL=3
-    TRIVIA_COMPUTE=4 
+
 class Tile:
     def __init__(self, category, color, rect, type):
         self.category = category

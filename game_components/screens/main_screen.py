@@ -39,7 +39,7 @@ while menu_state != MenuState.EXIT:
     if menu_state == MenuState.PLAY_GAME:
         play_option_screen = PlayOptionScreen()
         game_play_info = play_option_screen.render_screen(pygame, screen=screen)
-        print(f"Play Info {game_play_info}")
+        #print(f"Play Info {game_play_info}")
         category_screen = CategorySelectionScreen(screen=screen)
         selected_categories = category_screen.run(engine=pygame)
         #print(f"selected category {selected_categories}")

@@ -16,7 +16,7 @@ class PlayerManager(TileSubscriber):
         self.current_tile = None
         #This is used to apply special rule for first turn move
         self.first_turn = [True for _ in range(len(self.players))]
-        self.winners = [0]
+        self.winners = [0,1,3]
         self.last_player_move = False
     def init_player_score(self, category_colors, rect_size):
         index = 0

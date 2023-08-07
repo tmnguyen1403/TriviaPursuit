@@ -54,36 +54,34 @@ class GamePlayScreen:
         # Player Dummy Generator
         
         players = []
-        player_colors = {1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value}
+        player_colors = {1: Color.BLUE.value, 2: Color.YELLOW.value, 2: Color.RED.value, 4: Color.GREEN.value}
         for i in range(self.nb_player):
             player_info = {"position": (0, 0), "name": f"P{i + 1}", "token": None, "score": [], "color": player_colors[i + 1]}
             players.append(Player(player_info))
         player_manager = PlayerManager(players=players)
 
-        tile_matrix = [[0, 2, 1, 4, 3, 2, 1, 4, 0],
-                    [3, -10, -10, -10, 2, -10, -10, -10, 3],
-                    [4, -10, -10, -10, 1, -10, -10, -10, 2],
-                    [1, -10, -10, -10, 4, -10, -10, -10, 1],
-                    [2, 1, 4, 3, -1, 1, 2, 3, 4],
-                    [3, -10, -10, -10, 2, -10, -10, -10, 3],
-                    [4, -10, -10, -10, 3, -10, -10, -10, 2],
-                    [1, -10, -10, -10, 4, -10, -10, -10, 1],
-                    [0, 2, 3, 4, 1, 2, 3, 4, 0]]
+        tile_matrix = [[-1, 1, 0, 3, 2, 1, 0, 3, -1],
+                    [2, -10, -10, -10, 1, -10, -10, -10, 2],
+                    [3, -10, -10, -10, 0, -10, -10, -10, 1],
+                    [1, -10, -10, -10, 3, -10, -10, -10, 0],
+                    [2, 0, 3, 2, -2, 0, 1, 2, 3],
+                    [2, -10, -10, -10, 1, -10, -10, -10, 2],
+                    [3, -10, -10, -10, 2, -10, -10, -10, 1],
+                    [1, -10, -10, -10, 3, -10, -10, -10, 0],
+                    [-1, 1, 2, 3, 0, 1, 2, 3, -1]]
         head_quater_map = [(0, 4), (4, 0), (4, 8), (8, 4)]
         trivial_compute_map = [(4, 4)]
 
         special_tile_infos = {
-            0: TileInfo(Color.WHITE.value, TileType.FREEROLL),
-            -1: TileInfo(Color.SPECIAL.value, TileType.TRIVIA_COMPUTE),
+            -1: TileInfo(Color.WHITE.value, TileType.FREEROLL),
+            -2: TileInfo(Color.SPECIAL.value, TileType.TRIVIA_COMPUTE),
         }
-        counter = 1
-       # for category in self.categories.items
-        normal_tile_infos = {
-            1: TileInfo(Color.BLUE.value, TileType.NORMAL),
-            2: TileInfo(Color.YELLOW.value, TileType.NORMAL),
-            3: TileInfo(Color.RED.value, TileType.NORMAL),
-            4: TileInfo(Color.GREEN.value, TileType.NORMAL),
-        }
+       
+        # for category in self.categories.items
+        normal_tile_infos = {}
+        for index, category in enumerate(self.categories):
+            color = category.get_color()
+            normal_tile_infos[index] = TileInfo(color=color, tile_type=TileType.NORMAL)
 
         board_x = 250
         board_y = 200
@@ -211,7 +209,7 @@ class GamePlayScreen:
 
                 #draw the legend
                 legend_rect = (25, 250, 200, 500)
-                legend = Legend(self.categories, normal_tile_infos, legend_rect)
+                legend = Legend(self.categories, legend_rect)
                 legend.draw(engine=pygame, screen=screen)
 
                 # # Draw the big black box to be the game board

@@ -7,31 +7,11 @@ from utils_local import create_button, is_point_inside_rect
 # sys.path.append(parent_dir)
 from buttons import ButtonRenderer
 from utils_local import Color
-
-class CategoryInfo:
-    def __init__(self, name, color):
-        self.name = name
-        self.color = color
-
-    def get_name(self):
-        return self.name
-    
-    def get_name(self):
-        return self.name 
-    
-    def set_name(self, name):
-        self.name = name
-    
-    def set_color(self, color):
-        self.color = color
+from .category_info import CategoryInfo
 
 class CategorySelectionScreen:
 
     def __init__(self, screen):
-        # pygame.init()
-        # screen_width, screen_height = 800, 600
-        # self.screen = pygame.display.set_mode((screen_width, screen_height))
-        # pygame.display.set_caption("Category Selection")
         self.screen = screen
 
         self.categories = ["Sport", "History", "Math", "Movie", "Geography", "Biology"]

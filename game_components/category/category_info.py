@@ -6,8 +6,8 @@ class CategoryInfo:
     def get_name(self):
         return self.name
     
-    def get_name(self):
-        return self.name 
+    def get_color(self):
+        return self.color 
     
     def set_name(self, name):
         self.name = name

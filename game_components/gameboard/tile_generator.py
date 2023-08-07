@@ -43,9 +43,9 @@ class TileGenerator:
                 tile_rect = (x,y,tile_width,tile_height)
                 info = self.special_info
                 category = None
-                if index > 0:
+                if index >= 0:
                     info = self.normal_info
-                    category_info = self.categories[index-1]
+                    category_info = self.categories[index]
                     category = category_info.get_name()
                 color,tile_type = info[index].get_color(),info[index].get_type()
                 if (row,col) in self.head_quater_map:

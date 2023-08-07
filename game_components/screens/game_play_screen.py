@@ -150,6 +150,9 @@ class GamePlayScreen:
         clock = pygame.time.Clock()
 
         in_game_menu = InGameMenu(screen=screen)
+        tile_animation_clock = None
+        animation_update_time = 0.5
+        animation_time_pass = 0
         while running:
             # Without doing pygame.event.get(), the game will not be rendered
             for event in pygame.event.get():
@@ -179,6 +182,7 @@ class GamePlayScreen:
                                                                                     dice_value=dice_value)
                                 game_manager.set_state(GameState.MOVE_SELECTION)
 
+                                tile_animation_clock = pygame.time.Clock()
                                 self.update_board = True
                         elif current_state == GameState.MOVE_SELECTION:
                             move_success = gameboard.move(mouse_pos=mouse_pos)
@@ -243,6 +247,12 @@ class GamePlayScreen:
                                                 player_manager=player_manager)
                 gameboard_renderer.render_player_score(engine=pygame, screen=screen, player_manager=player_manager)
                 self.update_board = False
+            
+            if tile_animation_clock and game_manager.get_state() == GameState.MOVE_SELECTION:
+                dt = tile_animation_clock.tick(60)/1000
+                #print(f"dt passed: {dt}")
+                for tile in tile_objects:
+                    tile.draw_move_candidate(pygame, screen, dt)
 
             current_state = game_manager.get_state()
 

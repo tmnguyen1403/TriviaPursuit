@@ -14,6 +14,44 @@ class Tile:
         self.type = type #Allows to perform certain action depending on tile
         self.border_info = (2,2, (0,0,0)) #margin_x,margin_y, color,
         self.move_candidate = False
+        self.alpha = 255
+
+        #Move animation
+        self.animation_start_time_second = 0
+        self.transition_duration_second = 0.5
+        self.current_frame = -1
+        self.shrink_width = 10
+        self.shrink_height = 10
+        self.animation_direction = 1
+
+    def get_radiant_color(self):
+        if self.alpha > 50 and self.animation_direction == 0:
+            self.alpha -= 20
+        else:
+            #self.animation_direction = 1
+            self.alpha += 20
+            if self.alpha >= 255:
+                #self.animation_direction =0
+                self.alpha = 255
+        r,g,b,_ = self.color
+        return (r,g,b,self.alpha)
+    
+    def get_animate_rect(self):
+        x,y,width,height = self.rect
+        inner_rect = (x+self.shrink_width//2,y+self.shrink_height//2,width-self.shrink_width, height-self.shrink_height)
+        if self.animation_direction == 0:
+            self.shrink_width -= 10
+            self.shrink_height -= 10
+            if self.shrink_width < 30:
+                self.animation_direction = 1
+        else:
+            self.shrink_width += 10
+            self.shrink_height += 10
+            if self.shrink_width >= width - 30:
+                self.animation_direction =0
+
+        
+        return inner_rect
 
     def get_rect(self):
         return self.rect
@@ -47,7 +85,8 @@ class Tile:
             
             #draw the square
             high_rect = (x+5,y+5,width-10, height-10)
-            engine.draw.rect(screen, self.color, high_rect)
+            radiant_color = self.get_radiant_color()
+            engine.draw.rect(screen, radiant_color, high_rect)
         else:
             engine.draw.rect(screen, self.color, self.rect)
 
@@ -63,18 +102,44 @@ class Tile:
             hq_text = font.render("TC", True, Color.BLACK.value, None)
             screen.blit(hq_text, (x + width // 3, y + height // 3))
 
-    def set_move_candidate(self):
+    def draw_move_candidate(self, engine, screen, animation_duration):
+        if self.move_candidate:
+            self.update_animation_time_second(animation_duration)
+            if not self.should_transition():
+                return
+            self.current_frame += 1
+            # Fill the screen            
+            engine.draw.rect(screen, Color.BLACK.value,self.rect)
+            #draw the square
+            animate_rect = self.get_animate_rect()
+            radiant_color = self.get_radiant_color()
+            #print(f"draw_move: {radiant_color}")
+            #print(f"draw_move rect: {animate_rect}")
 
+            engine.draw.rect(screen, radiant_color, animate_rect)
+            engine.display.flip()
+
+    def clear_animation(self):
+        self.animation_start_time_second = 0
+        self.current_frame = -1
+        self.alpha = 255
+        self.shrink_width = 10
+        self.shrink_height = 10
+
+    def update_animation_time_second(self, duration):
+        self.animation_start_time_second += duration
+
+    def should_transition(self):
+        next_frame = int(self.animation_start_time_second // self.transition_duration_second)
+        return next_frame > self.current_frame
+    
+    def set_move_candidate(self):
         self.move_candidate = True
 
-        #print("Tile is move candidate\n")
-        # self.origin_color = self.color
-        # self.color = candidate_color
     def reset(self):
-        # self.color = self.origin_color
         self.move_candidate = False
+        self.clear_animation()
 
-        #return border color back to black
         
 
     

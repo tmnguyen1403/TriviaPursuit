@@ -26,7 +26,7 @@ from utils_local import Color
 from question_display_screen import QuestionDisplayScreen
 from trivial_compute_select_screen import TrivialComputeSelectScreen
 from intermediate_winner_screen import IntermediateWinnerScreen
-
+from in_game_menu import InGameMenu
 '''
 The below is used to generate
 '''
@@ -149,11 +149,16 @@ class GamePlayScreen:
 
         clock = pygame.time.Clock()
 
+        in_game_menu = InGameMenu(screen=screen)
         while running:
             # Without doing pygame.event.get(), the game will not be rendered
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        print(f"Showing exit menu")
+                        in_game_menu.draw(pygame)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         current_state = game_manager.get_state()
@@ -164,7 +169,7 @@ class GamePlayScreen:
                                 dice_manager.animate(screen=screen, pygame=pygame, clock=clock,
                                                         debug_value=dice_debug_value)
                                 dice_value = dice_manager.roll_value()
-
+                                dice_debug_value = 0
                                 # First turn and roll 6(default special dice value)
                                 if player_manager.is_first_turn() and dice_manager.is_special_value(dice_value=dice_value):
                                     possible_moves = gameboard.get_headquater_moves()
@@ -191,12 +196,18 @@ class GamePlayScreen:
                                 self.update_board = True
                                 print(f"Move success {move_success}")
                                 print("Update the player position, reset tile state")
+                        if in_game_menu.is_active():
+                            print("Check Ingame Menu")
+                            is_handled = in_game_menu.handle_click(pygame)
+                            if is_handled and in_game_menu.is_quit_game():
+                                running = False
+                                return
 
             current_state = game_manager.get_state()
             # DEBUG
+            keys = pygame.key.get_pressed()
             if DEBUG_WITH_DICE:
                 dice_values = [pygame.K_0 + index for index in range(1, 10)]
-                keys = pygame.key.get_pressed()
                 for key_code in dice_values:
                     if keys[key_code]:
                         dice_debug_value = key_code - pygame.K_0

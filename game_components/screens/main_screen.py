@@ -55,6 +55,7 @@ while menu_state != MenuState.EXIT:
 
         game_play_screen = GamePlayScreen(game_info=game_play_info)
         game_play_screen.render_screen(pygame, screen=screen)
+        menu_state = MenuState.WAIT_SELECTION
     if menu_state == MenuState.QUESTION_CENTER:
         webbrowser.open_new_tab(question_center_url)
         menu_state = MenuState.WAIT_SELECTION

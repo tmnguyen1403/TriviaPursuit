@@ -10,3 +10,4 @@ class Color(Enum):
     SPECIAL = (244,88,20)
     DEFAULT_SCREEN = (125,125,125)
     GRAY = (125,125,125)
+    HIGHLIGHT_COLOR = (200, 45, 200)

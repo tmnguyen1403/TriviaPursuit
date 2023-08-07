@@ -54,7 +54,7 @@ class GamePlayScreen:
         # Player Dummy Generator
         
         players = []
-        player_colors = {1: Color.BLUE.value, 2: Color.YELLOW.value, 2: Color.RED.value, 4: Color.GREEN.value}
+        player_colors = {1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value}
         for i in range(self.nb_player):
             player_info = {"position": (0, 0), "name": f"P{i + 1}", "token": None, "score": [], "color": player_colors[i + 1]}
             players.append(Player(player_info))

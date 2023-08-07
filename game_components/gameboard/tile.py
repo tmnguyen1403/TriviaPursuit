@@ -42,11 +42,14 @@ class Tile:
 
         if self.move_candidate:
             #draw highlighted border
-            candidate_color = (200, 45, 200)
-            engine.draw.rect(screen, candidate_color, (x-5,y-5,width+10,height+10))
+            engine.draw.rect(screen, Color.HIGHLIGHT_COLOR.value, (x-5,y-5,width+10,height+10))
             engine.draw.rect(screen, Color.BLACK.value, (x-2,y-2,width+4,height+4))
-       
-        engine.draw.rect(screen, self.color, self.rect)
+            
+            #draw the square
+            high_rect = (x+5,y+5,width-10, height-10)
+            engine.draw.rect(screen, self.color, high_rect)
+        else:
+            engine.draw.rect(screen, self.color, self.rect)
 
         # Draw headquater symbol
         if self.type == TileType.HEADQUATER:

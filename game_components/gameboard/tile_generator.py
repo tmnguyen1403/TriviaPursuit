@@ -28,7 +28,7 @@ class TileGenerator:
         border_size = tile_width // nb_cols
         tiles = []
         tile_map = dict() #Use to lookup tile object based on its position in the matrix
-        EMPTY_CELL=-10
+        EMPTY_CELL=-9
         for row in range(nb_rows - 1):
             for col in range(nb_cols - 1):
                 index = self.tile_matrix[row][col]

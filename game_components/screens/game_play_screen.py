@@ -25,6 +25,7 @@ from question import QuestionManager
 from utils_local import Color
 from question_display_screen import QuestionDisplayScreen
 from trivial_compute_select_screen import TrivialComputeSelectScreen
+from intermediate_winner_screen import IntermediateWinnerScreen
 
 '''
 The below is used to generate
@@ -60,14 +61,14 @@ class GamePlayScreen:
             players.append(Player(player_info))
         player_manager = PlayerManager(players=players)
 
-        tile_matrix = [[-1, 1, 0, 3, 2, 1, 0, 3, -1],
-                    [2, -10, -10, -10, 1, -10, -10, -10, 2],
-                    [3, -10, -10, -10, 0, -10, -10, -10, 1],
-                    [1, -10, -10, -10, 3, -10, -10, -10, 0],
+        tile_matrix = [[-1, 1, 0, 3, 1, 0, 0, 1, -1],
+                    [2, -9, -9, -9, 2, -9, -9, -9, 2],
+                    [3, -9, -9, -9, 0, -9, -9, -9, 1],
+                    [1, -9, -9, -9, 3, -9, -9, -9, 0],
                     [2, 0, 3, 2, -2, 0, 1, 2, 3],
-                    [2, -10, -10, -10, 1, -10, -10, -10, 2],
-                    [3, -10, -10, -10, 2, -10, -10, -10, 1],
-                    [1, -10, -10, -10, 3, -10, -10, -10, 0],
+                    [0, -9, -9, -9, 1, -9, -9, -9, 2],
+                    [3, -9, -9, -9, 2, -9, -9, -9, 1],
+                    [1, -9, -9, -9, 3, -9, -9, -9, 0],
                     [-1, 1, 2, 3, 0, 1, 2, 3, -1]]
         head_quater_map = [(0, 4), (4, 0), (4, 8), (8, 4)]
         trivial_compute_map = [(4, 4)]
@@ -102,7 +103,7 @@ class GamePlayScreen:
 
         question_database = asyncio.run(self.main_database(self.categories))
 
-        move_calculator = MoveCalculator(-10)
+        move_calculator = MoveCalculator(cant_move=-9)
         tile_info = (tile_matrix, head_quater_map, tile_map, tile_objects)
         gameboard = Gameboard(tile_info, move_calculator)
         gameboard_renderer = GameBoardRenderer()
@@ -139,7 +140,7 @@ class GamePlayScreen:
         question_display_screen = QuestionDisplayScreen()
         category_names = [category_info.get_name() for category_info in self.categories]
         trivial_compute_select_screen = TrivialComputeSelectScreen(categories=category_names)
-
+        intermediate_winner_screen = IntermediateWinnerScreen(screen=screen, max_display_time_second=2)
         '''
         Debug 
         '''
@@ -235,6 +236,7 @@ class GamePlayScreen:
             current_state = game_manager.get_state()
 
             if current_state == GameState.END_GAME:
+                #continue
                 print("Render end game state")
                 
             if current_state == GameState.TRIVIA_COMPUTE_SELECTION:
@@ -266,10 +268,15 @@ class GamePlayScreen:
             if current_state == GameState.RESET_STATE:
                 game_manager.reset()
                 self.render_efficient_reset()
-                if player_manager.has_winner():
+                if player_manager.is_current_player_win():
+                    #Display winner text
+                    intermediate_winner_screen.render_screen(pygame)
                     player_manager.next_player()
-                    if player_manager.is_last_player_move():
-                        print("We has a winner\n")
-                        game_manager.set_state(GameState.END_GAME)
+
+                # Finish the game
+                if player_manager.has_winner() and player_manager.is_last_player_move():
+                    print("We finish the game\n")
+                    game_manager.set_state(GameState.END_GAME)
+
             pygame.display.flip()
             clock.tick(60)

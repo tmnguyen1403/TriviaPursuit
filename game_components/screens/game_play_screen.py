@@ -258,6 +258,7 @@ class GamePlayScreen:
 
             if current_state == GameState.END_GAME:
                 #continue
+                in_game_menu.draw(pygame)
                 print("Render end game state")
                 
             if current_state == GameState.TRIVIA_COMPUTE_SELECTION:
@@ -280,24 +281,28 @@ class GamePlayScreen:
                     print("Stay on the current player:")
                     player_manager.update_player_score()
                     game_manager.set_state(GameState.RESET_STATE)
+                    if player_manager.is_current_player_win():
+                        if player_manager.is_last_player_move():
+                            game_manager.set_state(GameState.END_GAME)
+                            
+                        else:
+                            intermediate_winner_screen.render_screen(pygame)
+                        player_manager.next_player()
+                           
+                            
                 elif current_state == GameState.REJECT_ANSWER:
+                    if player_manager.has_winner() and player_manager.is_last_player_move():
+                        game_manager.set_state(GameState.END_GAME)
+                        player_manager.next_player()
+                    else:
+                        game_manager.set_state(GameState.RESET_STATE)
                     player_manager.next_player()
-                    game_manager.set_state(GameState.RESET_STATE)
-        
+
 
             current_state = game_manager.get_state()
             if current_state == GameState.RESET_STATE:
                 game_manager.reset()
                 self.render_efficient_reset()
-                if player_manager.is_current_player_win():
-                    #Display winner text
-                    intermediate_winner_screen.render_screen(pygame)
-                    player_manager.next_player()
-
-                # Finish the game
-                if player_manager.has_winner() and player_manager.is_last_player_move():
-                    print("We finish the game\n")
-                    game_manager.set_state(GameState.END_GAME)
 
             pygame.display.flip()
             clock.tick(60)

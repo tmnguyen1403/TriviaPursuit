@@ -1,23 +1,7 @@
 from typing import Dict, List, Optional
 import requests
 from urllib.parse import urljoin
-'''
-This singleton pattern is created by chatGPT
-'''
-def singleton(cls):
-    instances = {}
 
-    def get_instance(*args, **kwargs):
-        if cls not in instances:
-            instances[cls] = cls(*args, **kwargs)
-        return instances[cls]
-
-    return get_instance
-
-'''
-There can be only one instance of database
-'''
-@singleton
 class Database:
     def __init__(self, categories : List[str], questions : Dict[str, List["Question"]]) -> None:
         self.categories = categories

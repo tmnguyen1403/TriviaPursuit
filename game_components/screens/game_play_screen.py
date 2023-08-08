@@ -259,7 +259,7 @@ class GamePlayScreen:
             if current_state == GameState.END_GAME:
                 #continue
                 in_game_menu.draw(pygame)
-                print("Render end game state")
+                #print("Render end game state")
                 
             if current_state == GameState.TRIVIA_COMPUTE_SELECTION:
                 print('TRIVIAL COMPUTE')
@@ -303,6 +303,7 @@ class GamePlayScreen:
                 game_manager.reset()
                 self.render_efficient_reset()
             elif current_state == GameState.END_GAME:
+                player_manager.set_game_end(True)
                 self.render_efficient_reset()
 
             pygame.display.flip()

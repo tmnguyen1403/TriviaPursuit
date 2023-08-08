@@ -17,7 +17,7 @@ class PlayerManager(TileSubscriber):
         #This is used to apply special rule for first turn move
         self.first_turn = [True for _ in range(len(self.players))]
         self.winners = []
-        self.last_player_move = False
+        self.end_game = False
     def init_player_score(self, category_colors, rect_size):
         index = 0
         sx,sy,sw,sh = rect_size
@@ -32,11 +32,6 @@ class PlayerManager(TileSubscriber):
 
     def next_player(self):
         next_index = (self.current_index + 1)%len(self.players)
-        if next_index == self.start_player:
-            self.last_player_move = True
-        else:
-            self.last_player_move = False
-
         self.current_player = self.players[next_index]
         self.current_index = next_index
         print(f"Next player index: {self.current_index}")
@@ -87,6 +82,9 @@ class PlayerManager(TileSubscriber):
     
     def player_score_all_category(self):
         return self.player_scores[self.current_index].score_all_category()
+    
+    def set_game_end(self, end):
+        self.end_game = end
 
     def draw_score(self, engine, screen):
         for index, score_box in enumerate(self.player_scores):
@@ -111,15 +109,13 @@ class PlayerManager(TileSubscriber):
                 engine.draw.circle(screen, "red", (token_x,token_y), 20)
             
             # Draw Winner
-            if self.is_last_player_move():
-                if index in self.winners:
-                    winner_text = "Winner"
-                    winner_font = engine.font.Font(None, 30)
-                    winner_surface = winner_font.render(winner_text, True, Color.RED.value)
-                    w_x,w_y = token_x - 20, token_y + 20
-                    w_width,w_height = textbox_width, textbox_height
-                    # engine.draw.rect(screen, Color.DEFAULT_SCREEN.value, (w_x, w_y, w_width, w_height))
-                    screen.blit(winner_surface, (w_x, w_y))
+            #if self.end_game:
+            if index in self.winners:
+                winner_text = "Winner"
+                winner_font = engine.font.Font(None, 30)
+                winner_surface = winner_font.render(winner_text, True, Color.RED.value)
+                w_x,w_y = token_x - 20, token_y + 20
+                screen.blit(winner_surface, (w_x, w_y))
 
 
 

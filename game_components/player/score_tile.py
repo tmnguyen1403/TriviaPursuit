@@ -14,8 +14,7 @@ class Score_Tile:
     
     def draw(self, engine, screen):
         if self.scored == 1:
-            print("Draw tile when player scored")
+            #print("Draw tile when player scored")
             engine.draw.rect(screen, self.category_color, self.rect)
-
         else:
             engine.draw.rect(screen, (255,255,255), self.rect)

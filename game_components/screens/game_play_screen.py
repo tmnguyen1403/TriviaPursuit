@@ -61,7 +61,7 @@ class GamePlayScreen:
             players.append(Player(player_info))
         player_manager = PlayerManager(players=players)
 
-        tile_matrix = [[-1, 1, 0, 3, 1, 0, 0, 1, -1],
+        tile_matrix = [[-1, 1, 0, 3, 1, 2, 0, 1, -1],
                     [2, -9, -9, -9, 2, -9, -9, -9, 2],
                     [3, -9, -9, -9, 0, -9, -9, -9, 1],
                     [1, -9, -9, -9, 3, -9, -9, -9, 0],

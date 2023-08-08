@@ -19,15 +19,20 @@ class GameManager:
         print("current state: ", self.current_state)
         self.current_state = GameState(self.current_state.value + 1)
         print("new state: ", self.current_state)
+
     def set_state(self, state):
         self.current_state = state
+
     def accept(self):
         print("Accept state: ")
         self.current_state = GameState.ACCEPT_ANSWER
+
     def reject(self):
         print("Reject state: ")
         self.current_state = GameState.REJECT_ANSWER
+
     def reset(self):
         self.current_state = GameState.WAIT_ROLL
+        
     def get_state(self):
         return self.current_state

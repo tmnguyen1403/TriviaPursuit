@@ -6,7 +6,7 @@ class Score_Box:
         self.cat_colors = cat_colors
         self.score_tiles = dict()
         self.total_score = 0
-        self.max_score = len(cat_colors) - 2
+        self.max_score = len(cat_colors)
         self.generate_score_tiles()
 
     def generate_score_tiles(self):

@@ -283,8 +283,7 @@ class GamePlayScreen:
                     game_manager.set_state(GameState.RESET_STATE)
                     if player_manager.is_current_player_win():
                         if player_manager.is_last_player_move():
-                            game_manager.set_state(GameState.END_GAME)
-                            
+                            game_manager.set_state(GameState.END_GAME)      
                         else:
                             intermediate_winner_screen.render_screen(pygame)
                         player_manager.next_player()
@@ -302,6 +301,8 @@ class GamePlayScreen:
             current_state = game_manager.get_state()
             if current_state == GameState.RESET_STATE:
                 game_manager.reset()
+                self.render_efficient_reset()
+            elif current_state == GameState.END_GAME:
                 self.render_efficient_reset()
 
             pygame.display.flip()

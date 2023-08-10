@@ -27,6 +27,7 @@ from question_display_screen import QuestionDisplayScreen
 from trivial_compute_select_screen import TrivialComputeSelectScreen
 from intermediate_winner_screen import IntermediateWinnerScreen
 from in_game_menu import InGameMenu
+from sounds import Sound
 '''
 The below is used to generate
 '''
@@ -124,6 +125,9 @@ class GamePlayScreen:
         dice_renderer = DiceRenderer(pygame, die_font)
         dice_manager = DiceManager(dice=dice, dice_renderer=dice_renderer)
 
+        # Music
+        music_handler = Sound(screen)
+
         player_manager.update_all(gameboard.get_center())
 
         # Create the game board surface
@@ -167,6 +171,7 @@ class GamePlayScreen:
                         current_state = game_manager.get_state()
                         mouse_pos = pygame.mouse.get_pos()
                         print("Mouse clicking ", current_state)
+                        music_handler.handle_click(pygame)
                         if current_state == GameState.WAIT_ROLL:
                             if dice_manager.can_roll(mouse_pos=mouse_pos):
                                 dice_manager.animate(screen=screen, pygame=pygame, clock=clock,
@@ -305,6 +310,9 @@ class GamePlayScreen:
             elif current_state == GameState.END_GAME:
                 player_manager.set_game_end(True)
                 self.render_efficient_reset()
+
+            # Mute button
+            music_handler.draw(pygame)
 
             pygame.display.flip()
             clock.tick(60)

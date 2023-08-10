@@ -34,6 +34,7 @@ menu_state = MenuState.WAIT_SELECTION
 running = True
 question_center_url = "http://localhost:3000"
 DEBUG = False
+
 while menu_state != MenuState.EXIT:
     if menu_state == MenuState.WAIT_SELECTION:
         land_screen = LandingScreen()

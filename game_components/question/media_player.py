@@ -1,7 +1,7 @@
 import webview
 import multiprocessing
 
-class VideoPlayer:
+class MediaPlayer:
     def __init__(self):
         self.window = None
         self.webview_process = None
@@ -34,6 +34,22 @@ class VideoPlayer:
         self.window = webview.create_window('Question Video', width=600, height=400, html=html)
         webview.start()
 
+    def show_image(self, img_url):
+        #ChatGPT reference
+        html = """
+            <html>
+                <head>
+                    <title>Question Image</title>
+                <head/>
+                <body>
+                    <img src="IMAGE_HTML_SRC" width="560" height="315"
+                </body>
+            </html>
+        """
+        html = html.replace("IMAGE_HTML_SRC", img_url)
+        self.window = webview.create_window('Question Image', width=600, height=400, html=html)
+        webview.start()
+
     def reset_view(self):
         if self.webview_process != None and self.webview_process.is_alive():
             self.webview_process.kill()
@@ -51,6 +67,17 @@ class VideoPlayer:
         self.is_playing = True
         return True
     
+    def start_imageview(self,image_url):
+        print(f"start imageview at {image_url}")
+        if self.webview_process != None and self.webview_process.is_alive():
+            self.webview_process.kill()
+            self.webview_process = None
+            self.is_playing = False
+        self.webview_process = multiprocessing.Process(target=self.show_image, args=(image_url,))
+        self.webview_process.start()
+        self.is_playing = True
+        return True
+    
     def play_video(self, video_url) -> bool:
         if self.webview_process and not self.webview_process.is_alive():
             print("Reset video")
@@ -60,4 +87,15 @@ class VideoPlayer:
             print("Video is already playing")
             return False
         status = self.start_webview(video_url=video_url)
+        return status
+    
+    def play_image(self, image_url) -> bool:
+        if self.webview_process and not self.webview_process.is_alive():
+            print("Reset view")
+            self.reset_view()
+
+        if self.is_playing:
+            print("Image is already displayed")
+            return False
+        status = self.start_imageview(image_url=image_url)
         return status

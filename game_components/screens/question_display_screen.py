@@ -7,7 +7,7 @@ sys.path.append(parrent_dir)
 from enum import Enum
 from utils_local import Color
 from buttons import Button, ButtonRenderer
-from question import Question, VideoPlayer, QuestionType
+from question import Question, MediaPlayer, QuestionType, ImagePlayer
 from utils_local import is_point_inside_rect
 from games import GameState
 class InternalState(Enum):
@@ -22,14 +22,14 @@ class ButtonText(Enum):
     ACCEPT = "Accept"
     REJECT = "Reject"
     PLAY_MEDIA = "Play Media"
-
+    SHOW_IMAGE = "Show Image"
 class QuestionDisplayScreen:
     def __init__(self):
         self.state = InternalState.SHOW_QUESTION
         self.init_object = False
         self.buttons = {}
-        self.video_player = VideoPlayer()
-
+        self.video_player = MediaPlayer()
+        
     def init_screen(self, screen):
         screen_width, screen_height = screen.get_size()
         self.question_position = (screen_width//4, screen_height//4)
@@ -37,6 +37,7 @@ class QuestionDisplayScreen:
         q_w, q_h = self.question_position
         self.category_position = (screen_width//2, q_h - 50)
         self.answer_position = (q_w, 50 + q_h)
+        
 
         #Button setting
         b_w, b_h = q_w//2, q_h//6
@@ -45,6 +46,9 @@ class QuestionDisplayScreen:
         self.play_media_button_rect = (0, 50 + q_h + 2*b_h, b_w, b_h)
         self.accept_button_rect = (0 + q_w, 100 + q_h, b_w, b_h)
         self.reject_button_rect = (0 + q_w*2, 100 + q_h, b_w, b_h)
+
+        # Image position on screen
+        self.image_rect = (0 + q_w, 100 + q_h*2, 200, 200)
 
     def create_button(self, rect, button_color, text:ButtonText,text_color=Color.WHITE.value, action = None):
         x,y,w,h = rect
@@ -63,6 +67,7 @@ class QuestionDisplayScreen:
     def render_screen(self, pygame, screen, question):
         print("Render question")
         if not self.init_object:
+            self.image_player = ImagePlayer(engine=pygame, screen=screen)
             self.init_screen(screen=screen)
             self.init_object = True
             self.button_renderer = ButtonRenderer(pygame)
@@ -118,17 +123,24 @@ class QuestionDisplayScreen:
 
                 #Media Button
                 media_button = self.buttons.get(ButtonText.PLAY_MEDIA, None)
-                if question.get_type() != QuestionType.TEXT:
+                question_type =  question.get_type()
+                if question_type in [QuestionType.AUDIO, QuestionType.VIDEO, QuestionType.IMAGE]:
                     video_url = question.get_link()
                     media_action = lambda url=video_url:self.video_player.play_video(url)
+                    if question_type == QuestionType.IMAGE:
+                        media_action = lambda url=video_url:self.video_player.play_image(url)
+
                     if media_button is None:
                         media_button = self.create_button(self.play_media_button_rect, button_color=Color.RED.value,text=ButtonText.PLAY_MEDIA, action=media_action)
                     else:
                         media_button.action = media_action
                         media_button.reveal()
+                    media_button.update_text(ButtonText.SHOW_IMAGE.value if question_type == QuestionType.IMAGE else ButtonText.PLAY_MEDIA.value)
+
                     self.button_renderer.draw(screen=screen,button=media_button, font=self.font)
-                elif media_button:
-                    media_button.hide()
+                else:
+                    if media_button:
+                        media_button.hide()
 
                 self.set_state(InternalState.WAIT_ANSWER)
             elif self.state == InternalState.SHOW_ANSWER:
@@ -163,8 +175,18 @@ if __name__ == "__main__":
     question_data = ("Test media player?",QuestionType.VIDEO.value, "https://www.youtube.com/embed/XnbCSboujF4", "You are always wrong!!",  "Music")
     question = Question(data=question_data)
     qscreen.render_screen(pygame=pygame, screen=screen,question=question)
-    question.link = "https://www.youtube.com/embed/NzjF1pdlK7Y"
-    question.mime_type = QuestionType.TEXT
+
+    # Test Image
+    question.link = "https://www.splashlearn.com/math-vocabulary/wp-content/uploads/2022/05/isosceles_triangles-6-01.png"
+    question.mime_type = QuestionType.IMAGE
     qscreen.render_screen(pygame=pygame, screen=screen,question=question)
+
+    #Test Video
+    qscreen.render_screen(pygame=pygame, screen=screen,question=question)
+    question.link = "https://www.youtube.com/embed/NzjF1pdlK7Y"
+    #question.mime_type = QuestionType.TEXT
+    #qscreen.render_screen(pygame=pygame, screen=screen,question=question)
+    
+    #Test Audio
     question.mime_type = QuestionType.AUDIO
     qscreen.render_screen(pygame=pygame, screen=screen,question=question)

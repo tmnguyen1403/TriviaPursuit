@@ -104,6 +104,7 @@ const QuestionCreate = () => {
                       <option value="Text">Text</option>
                       <option value="Video">Video</option>
                       <option value="Audio">Audio</option>
+                      <option value="Image">Image</option>
                       <option value="Other">Other</option>
                     </select>
                   </div>
@@ -120,6 +121,18 @@ const QuestionCreate = () => {
                     </div>
                   )}
                   {content.type === "Audio" && (
+                    <div className="mb-3">
+                      <label>Link</label>
+                      <input
+                        type="text"
+                        name="link"
+                        value={content.link}
+                        onChange={handleInput}
+                        className="form-control"
+                      />
+                    </div>
+                  )}
+                  {content.type === "Image" && (
                     <div className="mb-3">
                       <label>Link</label>
                       <input

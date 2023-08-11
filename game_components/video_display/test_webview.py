@@ -7,6 +7,14 @@ def start_video(video_url):
     #ChatGPT reference
     html = """
         <html>
+            <head>
+                <style>
+                img {
+                    max-width: 300px;
+                    max-height: 200px;
+                }
+            </style>
+        <head/>
         <body>
             <iframe id="youtube_player" width="560" height="315" src="VIDEO_SRC" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             <script>
@@ -22,6 +30,8 @@ def start_video(video_url):
             window.addEventListener('beforeunload', function (event) {
                 stopVideoOnWindowClose();
             });
+            <p>Hello image</p>
+            <img src="https://www.splashlearn.com/math-vocabulary/wp-content/uploads/2022/05/isosceles_triangles-6-01.png" alt="Image">
         </script>
         </body>
         </html>

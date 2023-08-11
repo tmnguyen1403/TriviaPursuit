@@ -36,3 +36,6 @@ class Button:
     def is_disable(self):
         return self.is_hidden
     
+    def update_text(self, text):
+        self.text = text
+    

@@ -108,6 +108,8 @@ const getQuestionByUserId = async (req, res, next) => {
 
 const getQuestionByCategory = async (req, res, next) => {
     const questionCategory = req.params.cid;
+    console.log("Get question for ", questionCategory)
+
     let categoryWithQuestions;
     try {
         categoryWithQuestions = await Question.find({category: questionCategory});

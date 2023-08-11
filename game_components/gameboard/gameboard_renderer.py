@@ -10,7 +10,7 @@ class GameBoardRenderer:
         players = player_manager.get_players()
         tile_map = gameboard.get_tile_map()
         player_tile = dict()
-        font = engine.font.Font(None, 24)
+        
         for player in players:
             pos = player.get_position()
             if player_tile.get(pos, None) is None:
@@ -35,9 +35,11 @@ class GameBoardRenderer:
                 padding_x, padding_y = arrangements[index]
                 print("Player color: ", color)
                 px,py = x+w//2 + padding_x, y + h//2 + padding_y
-                engine.draw.circle(screen, color, (px, py),12)
+                font = engine.font.Font(None, 20)
+                engine.draw.circle(screen, Color.BLACK.value, (px, py),(w//4)-3)
+                engine.draw.circle(screen, color, (px, py),(w//4)-5)
                 player_text = font.render(name,True,Color.BLACK.value, None)
-                screen.blit(player_text,(px-5,py-5))
+                screen.blit(player_text,(px-8,py-6))
     
     def render_player_score(self, engine: 'pygame', screen, player_manager):
         player_manager.draw_score(engine, screen)

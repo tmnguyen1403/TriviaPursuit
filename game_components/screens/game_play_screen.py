@@ -25,7 +25,9 @@ from question import QuestionManager
 from utils_local import Color
 from question_display_screen import QuestionDisplayScreen
 from trivial_compute_select_screen import TrivialComputeSelectScreen
-
+from intermediate_winner_screen import IntermediateWinnerScreen
+from in_game_menu import InGameMenu
+from sounds import Sound
 '''
 The below is used to generate
 '''
@@ -60,30 +62,28 @@ class GamePlayScreen:
             players.append(Player(player_info))
         player_manager = PlayerManager(players=players)
 
-        tile_matrix = [[0, 2, 1, 4, 3, 2, 1, 4, 0],
-                    [3, -10, -10, -10, 2, -10, -10, -10, 3],
-                    [4, -10, -10, -10, 1, -10, -10, -10, 2],
-                    [1, -10, -10, -10, 4, -10, -10, -10, 1],
-                    [2, 1, 4, 3, -1, 1, 2, 3, 4],
-                    [3, -10, -10, -10, 2, -10, -10, -10, 3],
-                    [4, -10, -10, -10, 3, -10, -10, -10, 2],
-                    [1, -10, -10, -10, 4, -10, -10, -10, 1],
-                    [0, 2, 3, 4, 1, 2, 3, 4, 0]]
+        tile_matrix = [[-1, 1, 0, 3, 1, 2, 0, 1, -1],
+                    [2, -9, -9, -9, 2, -9, -9, -9, 2],
+                    [3, -9, -9, -9, 0, -9, -9, -9, 1],
+                    [1, -9, -9, -9, 3, -9, -9, -9, 0],
+                    [2, 0, 3, 2, -2, 0, 1, 2, 3],
+                    [0, -9, -9, -9, 1, -9, -9, -9, 2],
+                    [3, -9, -9, -9, 2, -9, -9, -9, 1],
+                    [1, -9, -9, -9, 3, -9, -9, -9, 0],
+                    [-1, 1, 2, 3, 0, 1, 2, 3, -1]]
         head_quater_map = [(0, 4), (4, 0), (4, 8), (8, 4)]
         trivial_compute_map = [(4, 4)]
 
         special_tile_infos = {
-            0: TileInfo(Color.WHITE.value, TileType.FREEROLL),
-            -1: TileInfo(Color.SPECIAL.value, TileType.TRIVIA_COMPUTE),
+            -1: TileInfo(Color.WHITE.value, TileType.FREEROLL),
+            -2: TileInfo(Color.SPECIAL.value, TileType.TRIVIA_COMPUTE),
         }
-        counter = 1
-       # for category in self.categories.items
-        normal_tile_infos = {
-            1: TileInfo(Color.BLUE.value, TileType.NORMAL),
-            2: TileInfo(Color.YELLOW.value, TileType.NORMAL),
-            3: TileInfo(Color.RED.value, TileType.NORMAL),
-            4: TileInfo(Color.GREEN.value, TileType.NORMAL),
-        }
+       
+        # for category in self.categories.items
+        normal_tile_infos = {}
+        for index, category in enumerate(self.categories):
+            color = category.get_color()
+            normal_tile_infos[index] = TileInfo(color=color, tile_type=TileType.NORMAL)
 
         board_x = 250
         board_y = 200
@@ -104,7 +104,7 @@ class GamePlayScreen:
 
         question_database = asyncio.run(self.main_database(self.categories))
 
-        move_calculator = MoveCalculator(-10)
+        move_calculator = MoveCalculator(cant_move=-9)
         tile_info = (tile_matrix, head_quater_map, tile_map, tile_objects)
         gameboard = Gameboard(tile_info, move_calculator)
         gameboard_renderer = GameBoardRenderer()
@@ -125,6 +125,9 @@ class GamePlayScreen:
         dice_renderer = DiceRenderer(pygame, die_font)
         dice_manager = DiceManager(dice=dice, dice_renderer=dice_renderer)
 
+        # Music
+        music_handler = Sound(screen)
+
         player_manager.update_all(gameboard.get_center())
 
         # Create the game board surface
@@ -141,7 +144,7 @@ class GamePlayScreen:
         question_display_screen = QuestionDisplayScreen()
         category_names = [category_info.get_name() for category_info in self.categories]
         trivial_compute_select_screen = TrivialComputeSelectScreen(categories=category_names)
-
+        intermediate_winner_screen = IntermediateWinnerScreen(screen=screen, max_display_time_second=2)
         '''
         Debug 
         '''
@@ -150,22 +153,31 @@ class GamePlayScreen:
 
         clock = pygame.time.Clock()
 
+        in_game_menu = InGameMenu(screen=screen)
+        tile_animation_clock = None
+        animation_update_time = 0.5
+        animation_time_pass = 0
         while running:
             # Without doing pygame.event.get(), the game will not be rendered
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        print(f"Showing exit menu")
+                        in_game_menu.draw(pygame)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         current_state = game_manager.get_state()
                         mouse_pos = pygame.mouse.get_pos()
                         print("Mouse clicking ", current_state)
+                        music_handler.handle_click(pygame)
                         if current_state == GameState.WAIT_ROLL:
                             if dice_manager.can_roll(mouse_pos=mouse_pos):
                                 dice_manager.animate(screen=screen, pygame=pygame, clock=clock,
                                                         debug_value=dice_debug_value)
                                 dice_value = dice_manager.roll_value()
-
+                                dice_debug_value = 0
                                 # First turn and roll 6(default special dice value)
                                 if player_manager.is_first_turn() and dice_manager.is_special_value(dice_value=dice_value):
                                     possible_moves = gameboard.get_headquater_moves()
@@ -175,6 +187,7 @@ class GamePlayScreen:
                                                                                     dice_value=dice_value)
                                 game_manager.set_state(GameState.MOVE_SELECTION)
 
+                                tile_animation_clock = pygame.time.Clock()
                                 self.update_board = True
                         elif current_state == GameState.MOVE_SELECTION:
                             move_success = gameboard.move(mouse_pos=mouse_pos)
@@ -192,12 +205,18 @@ class GamePlayScreen:
                                 self.update_board = True
                                 print(f"Move success {move_success}")
                                 print("Update the player position, reset tile state")
+                        if in_game_menu.is_active():
+                            print("Check Ingame Menu")
+                            is_handled = in_game_menu.handle_click(pygame)
+                            if is_handled and in_game_menu.is_quit_game():
+                                running = False
+                                return
 
             current_state = game_manager.get_state()
             # DEBUG
+            keys = pygame.key.get_pressed()
             if DEBUG_WITH_DICE:
                 dice_values = [pygame.K_0 + index for index in range(1, 10)]
-                keys = pygame.key.get_pressed()
                 for key_code in dice_values:
                     if keys[key_code]:
                         dice_debug_value = key_code - pygame.K_0
@@ -211,7 +230,7 @@ class GamePlayScreen:
 
                 #draw the legend
                 legend_rect = (25, 250, 200, 500)
-                legend = Legend(self.categories, normal_tile_infos, legend_rect)
+                legend = Legend(self.categories, legend_rect)
                 legend.draw(engine=pygame, screen=screen)
 
                 # # Draw the big black box to be the game board
@@ -233,11 +252,19 @@ class GamePlayScreen:
                                                 player_manager=player_manager)
                 gameboard_renderer.render_player_score(engine=pygame, screen=screen, player_manager=player_manager)
                 self.update_board = False
+            
+            if tile_animation_clock and game_manager.get_state() == GameState.MOVE_SELECTION:
+                dt = tile_animation_clock.tick(60)/1000
+                #print(f"dt passed: {dt}")
+                for tile in tile_objects:
+                    tile.draw_move_candidate(pygame, screen, dt)
 
             current_state = game_manager.get_state()
 
             if current_state == GameState.END_GAME:
-                print("Render end game state")
+                #continue
+                in_game_menu.draw(pygame)
+                #print("Render end game state")
                 
             if current_state == GameState.TRIVIA_COMPUTE_SELECTION:
                 print('TRIVIAL COMPUTE')
@@ -259,19 +286,33 @@ class GamePlayScreen:
                     print("Stay on the current player:")
                     player_manager.update_player_score()
                     game_manager.set_state(GameState.RESET_STATE)
+                    if player_manager.is_current_player_win():
+                        if player_manager.is_last_player_move():
+                            game_manager.set_state(GameState.END_GAME)      
+                        else:
+                            intermediate_winner_screen.render_screen(pygame)
+                        player_manager.next_player()
+                           
+                            
                 elif current_state == GameState.REJECT_ANSWER:
+                    if player_manager.has_winner() and player_manager.is_last_player_move():
+                        game_manager.set_state(GameState.END_GAME)
+                        player_manager.next_player()
+                    else:
+                        game_manager.set_state(GameState.RESET_STATE)
                     player_manager.next_player()
-                    game_manager.set_state(GameState.RESET_STATE)
-        
+
 
             current_state = game_manager.get_state()
             if current_state == GameState.RESET_STATE:
                 game_manager.reset()
                 self.render_efficient_reset()
-                if player_manager.has_winner():
-                    player_manager.next_player()
-                    if player_manager.is_last_player_move():
-                        print("We has a winner\n")
-                        game_manager.set_state(GameState.END_GAME)
+            elif current_state == GameState.END_GAME:
+                player_manager.set_game_end(True)
+                self.render_efficient_reset()
+
+            # Mute button
+            music_handler.draw(pygame)
+
             pygame.display.flip()
             clock.tick(60)

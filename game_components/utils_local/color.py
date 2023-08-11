@@ -13,3 +13,4 @@ class Color(Enum):
     MAGENTA = (255, 0, 255)
     CYAN = (0, 255, 255)
     GRAY = (125,125,125)
+    HIGHLIGHT_COLOR = (200, 45, 200, 255)

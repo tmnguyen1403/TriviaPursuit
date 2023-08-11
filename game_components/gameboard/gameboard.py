@@ -78,7 +78,7 @@ class Gameboard(TilePublisher):
     def set_move_tiles(self, possible_moves):
         for move in possible_moves:
             tile = self.tile_map[move]
-            tile.set_move_candidate(candidate_color = self.candidate_color)
+            tile.set_move_candidate() #candidate_color = self.candidate_color)
             self.candidate_tiles[move] = tile
 
     def notify(self):

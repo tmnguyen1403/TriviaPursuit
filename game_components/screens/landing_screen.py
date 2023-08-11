@@ -24,9 +24,21 @@ class LandingScreen:
         # Clear the screen
         screen.fill(Color.WHITE.value)
 
+        background_image = pygame.image.load("background.jpg") 
+        background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
+        # Display the background image
+        screen.blit(background_image, (0, 0))
+
+        logo_image = pygame.image.load("logo.png") 
+        # Display the logo image
+        logo_width = logo_image.get_width()
+        logo_height = logo_image.get_height()
+        screen.blit(logo_image, (screen_width // 2 - logo_width // 2, 100))
+
+
         # Draw the welcome message
-        welcome_text = font.render("Trivial Compute", True, Color.BLACK.value)
-        screen.blit(welcome_text, (screen_width // 2 - welcome_text.get_width() // 2, 150))
+        #welcome_text = font.render("Trivial Compute", True, Color.BLACK.value)
+        #screen.blit(welcome_text, (screen_width // 2 - welcome_text.get_width() // 2, 150))
 
         # Draw the buttons
         play_button_rect = (screen_width // 2 - 150, 300, 300, 50)

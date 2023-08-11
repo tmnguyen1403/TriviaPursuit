@@ -10,7 +10,7 @@ class Sound:
         screen_width, screen_height = self.screen.get_size()
         self.mute_button_rect = (0, screen_height - 50, 150, 50)
         self.muted = 0
-        sound_path = os.path.join("..", "sounds","background.mp3")
+        sound_path = os.path.join( "game_components", "sounds","background.mp3")
         pygame.mixer.init()
         pygame.mixer.music.load(sound_path)
         pygame.mixer.music.play(-1, 0.0)

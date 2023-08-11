@@ -4,6 +4,7 @@ class QuestionType(Enum):
     TEXT = "Text"
     AUDIO = "Audio"
     VIDEO = "Video"
+    IMAGE = "Image"
 class Question:
     def __init__(self, data):
         question_text, mime_type, link, answer, category = data

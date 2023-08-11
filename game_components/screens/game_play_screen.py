@@ -212,7 +212,6 @@ class GamePlayScreen:
                                 running = False
                                 return
 
-            current_state = game_manager.get_state()
             # DEBUG
             keys = pygame.key.get_pressed()
             if DEBUG_WITH_DICE:
@@ -271,16 +270,18 @@ class GamePlayScreen:
                 selected_category = trivial_compute_select_screen.render_screen(pygame=pygame, screen=screen, current_player=player_manager.get_current_player().get_name(),
                 all_scored=player_manager.player_score_all_category())
                 question_manager.set_question(selected_category)
-                current_question = question_manager.get_current_question()
-                print("Current question: ", current_question)
-                question_display_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager,
-                                                    question=current_question)
+                #current_question = question_manager.get_current_question()
+                # print("Current question: ", current_question)
+                # question_display_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager,
+                #                                     question=current_question)
+                game_manager.set_state(GameState.QUESTION_SELECTION)
 
-            elif current_state == GameState.QUESTION_SELECTION:
+            if current_state == GameState.QUESTION_SELECTION:
                 current_question = question_manager.get_current_question()
                 print("Current question: ", current_question)
-                question_display_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager,
+                new_game_state = question_display_screen.render_screen(pygame=pygame, screen=screen,
                                                     question=current_question)
+                game_manager.set_state(new_game_state)
             else:
                 if current_state == GameState.ACCEPT_ANSWER:
                     print("Stay on the current player:")

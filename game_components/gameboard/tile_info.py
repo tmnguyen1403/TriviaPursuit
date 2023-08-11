@@ -1,4 +1,4 @@
-from gameboard import TileType
+from .tile_type import TileType
 
 class TileInfo:
     def __init__(self, color: 'Color', tile_type: TileType):

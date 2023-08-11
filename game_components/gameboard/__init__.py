@@ -1,4 +1,5 @@
-from .tile import Tile, TileType
+from .tile import Tile
+from .tile_type import TileType
 from .tile_generator import TileGenerator
 from .gameboard import Gameboard
 from .gameboard_renderer import GameBoardRenderer

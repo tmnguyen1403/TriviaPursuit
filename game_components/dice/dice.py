@@ -12,6 +12,7 @@ class Dice:
         self.animation_duration_second = 0.5
         self.transition_duration_second = 0.13
         self.current_frame = -1
+        
     #Handle Animation
     def roll(self, debug_value=0):
         if debug_value > 0:
@@ -19,14 +20,18 @@ class Dice:
             return debug_value
         self.roll_number = random.randint(1, 6)
         return self.roll_number
+    
     def clear_animation(self):
         self.animation_start_time_second = 0
         self.current_frame = -1
+
     def update_animation_time_second(self, duration):
         self.animation_start_time_second += duration
+
     def should_transition(self):
         next_frame = int(self.animation_start_time_second // self.transition_duration_second)
         return next_frame > self.current_frame
+    
     def should_stop_roll(self):
         return self.animation_start_time_second >= self.animation_duration_second
     

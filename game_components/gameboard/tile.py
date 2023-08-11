@@ -1,10 +1,6 @@
-from enum import Enum
+from .tile_type import TileType
 from utils_local import Color
-class TileType(Enum):
-    NORMAL=1
-    HEADQUATER=2
-    FREEROLL=3
-    TRIVIA_COMPUTE=4 
+
 class Tile:
     def __init__(self, category, color, rect, type):
         self.category = category
@@ -91,7 +87,7 @@ class Tile:
             engine.draw.rect(screen, self.color, self.rect)
 
         # Draw headquater symbol
-        if self.type == TileType.HEADQUATER:
+        if self.type == TileType.HEADQUARTER:
             font = engine.font.Font(None, 32)
             hq_text = font.render("HQ", True, Color.BLACK.value, None)
             screen.blit(hq_text, (x + width//3, y + height//3))

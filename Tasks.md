@@ -9,3 +9,9 @@ Create the UI to load question with React (Web Framework) - Teacher, Parents
     # user engagement ??
 ))
  
+## Integrate
+
+1. Add Drew stuff
+2. Fix the color mismatch in category
+3. Inform player when win
+4. Inform player to select move

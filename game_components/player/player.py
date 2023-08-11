@@ -2,14 +2,11 @@ class Player:
     """Manage Player to communicate with other system about player position
     """    
     def __init__(self, info) -> None:
-        
         self.position = info["position"]
         self.name = info["name"]
         self.token = info["token"]
-        self.score = []
         self.color = info["color"]
-    def move(self):
-        return 0
+
     def update(self, new_position):
         print(f"player current position: {self.position}")
         print(f"player new position: {new_position}")

@@ -66,7 +66,7 @@ class Gameboard(TilePublisher):
         return possible_moves
     
 
-    def get_headquater_moves(self):
+    def get_headquarter_moves(self):
         """Use for first turn special rule when player roll 6
 
         Returns:

@@ -7,7 +7,8 @@ class Button:
         self.text = text
         self.text_color = text_color
         self.action = action
-    
+        self.is_hidden = False
+
     def get_rect(self):
         return self.position + self.size
     
@@ -25,3 +26,16 @@ class Button:
         
     def on_click(self):
         self.action()
+    
+    def hide(self):
+        self.is_hidden = True
+    
+    def reveal(self):
+        self.is_hidden = False
+
+    def is_disable(self):
+        return self.is_hidden
+    
+    def update_text(self, text):
+        self.text = text
+    

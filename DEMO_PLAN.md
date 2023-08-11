@@ -8,6 +8,24 @@
 5. Demo a game round - Minh
 6. Demo special tile - free roll - Minh
 
+## Video Outline
+1. Introduction - Adam
+2. Project Management - Adam
+3. Risk - Drew
+    - Git
+    - Emergency
+    - Vacation
+    - Miscommunication
+    - Technical Issue (Windows/Mac trying to install the game and test it)
+4. Front-end/Back-end - Lin
+5. Demo 1 - Nicole
+6. Demo 2 - Minh
+
+## Future Demo
+1.
+ 
+--make sure that click on question center to show 
+the front end connection 
 ## What future features to develop
 Game
 1. Background music

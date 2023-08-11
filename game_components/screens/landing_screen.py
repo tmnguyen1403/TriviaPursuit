@@ -72,8 +72,11 @@ class LandingScreen:
             button = self.create_button(rect, button_color=Color.BLACK.value,text=button_text, action=lambda state=menu_state: self.set_mennu_state(state))
             self.button_renderer.draw(screen=screen,button=button, font=self.font)
 
-        while True:
+        running = True
+        while running:
             for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         mouse_pos = pygame.mouse.get_pos()

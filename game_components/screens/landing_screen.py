@@ -13,10 +13,11 @@ class ButtonText(Enum):
     QUIT = "Quit"
 
 class LandingScreen:
-    def __init__(self):
+    def __init__(self, music_handler):
         self.init_object = False
         self.buttons = {}
         self.menu_state = None
+        self.music_handler = music_handler
     def init_screen(self, screen):
         screen_width, screen_height = screen.get_size()
         self.text_color = Color.BLACK.value
@@ -83,8 +84,12 @@ class LandingScreen:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         mouse_pos = pygame.mouse.get_pos()
+                        self.music_handler.handle_click(pygame)
                         for button_text, button in self.buttons.items():
                             if is_point_inside_rect(mouse_pos,button.get_rect()):
                                 button.on_click()
                                 return self.menu_state
+
+            #Mute button
+            self.music_handler.draw(pygame)
             pygame.display.flip()

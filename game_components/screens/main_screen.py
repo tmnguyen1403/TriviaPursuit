@@ -22,6 +22,7 @@ from game_play_screen import GamePlayScreen
 from play_option_screen import PlayOptionScreen
 from menu_state import MenuState
 from category import CategorySelectionScreen
+from sounds import Sound
 
 pygame.init()
 
@@ -34,10 +35,15 @@ menu_state = MenuState.WAIT_SELECTION
 running = True
 question_center_url = "http://localhost:3000"
 DEBUG = False
+clock = pygame.time.Clock()
+
+# Music
+music_handler = Sound(screen)
+music_handler.play('title')
 
 while menu_state != MenuState.EXIT:
     if menu_state == MenuState.WAIT_SELECTION:
-        land_screen = LandingScreen()
+        land_screen = LandingScreen(music_handler)
         menu_state = land_screen.render_screen(pygame, screen=screen)
     if menu_state == MenuState.PLAY_GAME:
         game_play_info = None
@@ -54,8 +60,11 @@ while menu_state != MenuState.EXIT:
             game_play_info = GamePlayInfo()
             game_play_info.set_debug()
 
+        music_handler.stop()
         game_play_screen = GamePlayScreen(game_info=game_play_info)
         game_play_screen.render_screen(pygame, screen=screen)
+
+        music_handler.play('title')
         menu_state = MenuState.WAIT_SELECTION
     if menu_state == MenuState.QUESTION_CENTER:
         webbrowser.open_new_tab(question_center_url)

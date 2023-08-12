@@ -127,6 +127,7 @@ class GamePlayScreen:
 
         # Music
         music_handler = Sound(screen)
+        music_handler.play('background')
 
         player_manager.update_all(gameboard.get_center())
 
@@ -207,6 +208,7 @@ class GamePlayScreen:
                                 print("Update the player position, reset tile state")
                         if in_game_menu.is_active():
                             print("Check Ingame Menu")
+                            music_handler.stop()
                             is_handled = in_game_menu.handle_click(pygame)
                             if is_handled and in_game_menu.is_quit_game():
                                 running = False

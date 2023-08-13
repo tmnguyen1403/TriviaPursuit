@@ -26,13 +26,13 @@ class LandingScreen:
         # Clear the screen
         screen.fill(Color.WHITE.value)
 
-        background_path = os.path.join("..","..","assets","images","background.jpg")
+        background_path = os.path.join("assets","images","background.jpg")
         background_image = pygame.image.load(background_path) 
         background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
         # Display the background image
         screen.blit(background_image, (0, 0))
 
-        logo_path = os.path.join("..","..","assets","images","logo.png")
+        logo_path = os.path.join("assets","images","logo.png")
         logo_image = pygame.image.load(logo_path) 
         # Display the logo image
         logo_width = logo_image.get_width()

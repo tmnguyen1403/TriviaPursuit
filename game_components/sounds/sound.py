@@ -16,8 +16,8 @@ class Sound:
         self.high_button_rect = (210, screen_height - 50, 50, 50)
         self.mute_button_rect = (265, screen_height - 50, 50, 50)
         self.muted = 0
-        self.sound_title_path = os.path.join("..", "..", "assets", "audios", "title.mp3")
-        self.sound_background_path = os.path.join("..", "..", "assets", "audios", "background.mp3")
+        self.sound_title_path = os.path.join("assets", "audios", "title.mp3")
+        self.sound_background_path = os.path.join("assets", "audios", "background.mp3")
         self.text_color = Color.BLUE.value
         self.current_volume = 0.6
         pygame.mixer.init()

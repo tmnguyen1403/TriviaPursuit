@@ -32,23 +32,9 @@ class QuestionDisplayScreen:
         
     def init_screen(self, screen):
         screen_width, screen_height = screen.get_size()
-        self.question_position = (screen_width//4, screen_height//4)
+        self.q_x, self.q_y = (screen_width//4, screen_height//4)
+        self.mid_x = screen_width//2
         self.text_color = Color.BLACK.value
-        q_w, q_h = self.question_position
-        self.category_position = (screen_width//2, q_h - 50)
-        self.answer_position = (q_w, 50 + q_h)
-        
-
-        #Button setting
-        b_w, b_h = q_w//2, q_h//6
-        self.show_answer_button_rect = (0, 50 + q_h, b_w, b_h)
-        #Can play both video/audio sound track?
-        self.play_media_button_rect = (0, 50 + q_h + 2*b_h, b_w, b_h)
-        self.accept_button_rect = (0 + q_w, 100 + q_h, b_w, b_h)
-        self.reject_button_rect = (0 + q_w*2, 100 + q_h, b_w, b_h)
-
-        # Image position on screen
-        self.image_rect = (0 + q_w, 100 + q_h*2, 200, 200)
 
     def create_button(self, rect, button_color, text:ButtonText,text_color=Color.WHITE.value, action = None):
         x,y,w,h = rect
@@ -63,15 +49,106 @@ class QuestionDisplayScreen:
     
     def set_external_state(self, external_state: 'GameState'):
         self.external_state = external_state
+
+
+    def calc_a_y(self, question):
+        question_text = question.get_text()
+        #code to wrap text around if question is too long
+        #break question into words
+        words = question_text.split( )
+        question_lines = []
+        desired_length = 500
+        #loop through words, building individual lines to be displayed
+        while len(words) > 0:
+            line_words = []
+            while len(words) > 0:
+                line_words += [words[0]]
+                words.remove(words[0])
+                #see if the next word would exceed the desired length
+                fw,fh = self.font.size(' '.join(line_words + words[:1])) 
+                if fw > desired_length:
+                    break
+            question_lines += [' '.join(line_words)]
+            #calculate a_y by caclulating the offset that would be produced by the question text
+            y_offset = 0
+            for line in question_lines:
+                fw, fh = self.font.size(line)
+                y_offset += fh
+        return self.q_y + y_offset
+
+    def render_question(self, screen, pygame, question):
+        screen.fill(Color.DEFAULT_SCREEN.value)
+
+        #draw question box
+        q_box_dim = ((self.mid_x - 300),(self.q_y -100),(600), (self.a_y + 150))
+        qb_x,qb_y,qb_w,qb_h = q_box_dim
+        pygame.draw.rect(screen,Color.BLACK.value,q_box_dim)
+
+        #draw white box interior to larger box
+        pygame.draw.rect(screen,Color.WHITE.value,(qb_x+5,qb_y+5,qb_w-10,qb_h-10))
+        
+        # Render Category
+        category_text = question.get_category()
+        category_source = self.font.render(category_text, True, self.text_color, None)
+        cw,ch = self.font.size(category_text)
+        category_position = (self.mid_x - (cw//2), self.q_y - 50)
+        screen.blit(category_source, category_position)
+        
+        # Render Question
+        question_text = question.get_text()
+        #code to wrap text around if question is too long
+        #break question into words
+        words = question_text.split( )
+        question_lines = []
+        desired_length = 500
+        #loop through words, building individual lines to be displayed
+        while len(words) > 0:
+            line_words = []
+            while len(words) > 0:
+                line_words += [words[0]]
+                words.remove(words[0])
+                #see if the next word would exceed the desired length
+                fw,fh = self.font.size(' '.join(line_words + words[:1])) 
+                if fw > desired_length:
+                    break
+            question_lines += [' '.join(line_words)]
+            #render the question line by line
+            y_offset = 0
+            for line in question_lines:
+                fw, fh = self.font.size(line)
+
+                # (tx, ty) is the top-left of the font surface
+                tx = self.mid_x - fw / 2
+                ty = self.q_y + y_offset
+
+                font_surface = self.font.render(line, True, self.text_color, None)
+                screen.blit(font_surface, (tx, ty))
+
+                y_offset += fh
+
+    def init_rects(self):
+        #Button setting
+        b_w, b_h = self.q_x//2, self.q_y//6 #button size
+
+        #button positions
+        self.show_answer_button_rect = (self.mid_x - (b_w//2), 50+ self.a_y, b_w, b_h)
+        #Can play both video/audio sound track?
+        self.play_media_button_rect = (self.mid_x - (b_w//2), 50 + self.a_y + 2*b_h, b_w, b_h)
+        self.accept_button_rect = (self.mid_x - 3*(b_w//2), 100 + self.a_y, b_w, b_h)
+        self.reject_button_rect = (self.mid_x + (b_w//2), 100 + self.a_y, b_w, b_h)
+
+        # Image position on screen
+        self.image_rect = (self.mid_x -100,  self.q_y, 200, 200)
         
     def render_screen(self, pygame, screen, question):
         print("Render question")
         if not self.init_object:
             self.image_player = ImagePlayer(engine=pygame, screen=screen)
             self.init_screen(screen=screen)
+            self.font = pygame.font.Font(None, 32)
+            self.a_y = self.calc_a_y(question)
             self.init_object = True
             self.button_renderer = ButtonRenderer(pygame)
-            self.font = pygame.font.Font(None, 32)
 
         running = True
         while running:
@@ -104,16 +181,9 @@ class QuestionDisplayScreen:
                                 media_button.on_click()
   
             if self.state == InternalState.SHOW_QUESTION:
-                screen.fill(Color.WHITE.value)
-                # Render Category
-                category_text = question.get_category()
-                category_source = self.font.render(category_text, True, self.text_color, None)
-                screen.blit(category_source, self.category_position)
-        
-                # Render Question
-                question_text = question.get_text()
-                question_source = self.font.render(question_text, True, self.text_color, None)
-                screen.blit(question_source, self.question_position)
+                self.render_question(screen, pygame, question)
+
+                self.init_rects()
                 
                 # Button render
                 show_button = self.buttons.get(ButtonText.SHOW_ANSWER, None)
@@ -145,10 +215,14 @@ class QuestionDisplayScreen:
                 self.set_state(InternalState.WAIT_ANSWER)
             elif self.state == InternalState.SHOW_ANSWER:
                 #print("Show Answer State")
+
+                self.render_question(screen, pygame, question)
                  # Render Answer
                 answer_text = question.get_answer()
                 answer_source = self.font.render(answer_text, True, self.text_color, None)
-                screen.blit(answer_source, self.answer_position)
+                aw,ah = self.font.size(answer_text)
+                answer_position = (self.mid_x - (aw//2), self.a_y+ 50)
+                screen.blit(answer_source, answer_position)
 
                 self.set_state(InternalState.VOTE)
             elif self.state == InternalState.VOTE:

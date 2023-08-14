@@ -1,5 +1,7 @@
 import pygame
-import webview
+from utils_local import is_mac
+if is_mac():
+    import webview
 import time
 import multiprocessing
 

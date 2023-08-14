@@ -241,6 +241,11 @@ class QuestionDisplayScreen:
 
 if __name__ == "__main__":
     import pygame
+    from utils_local import Color, is_mac, is_windows
+    if not is_mac():
+        print("Webgame is not supported on none Mac OS")
+        exit(1)
+    
     pygame.init()
     clock = pygame.time.Clock()
 

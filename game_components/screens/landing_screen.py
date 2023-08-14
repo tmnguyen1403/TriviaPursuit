@@ -1,5 +1,5 @@
 from enum import Enum
-from utils_local import Color
+from utils_local import Color, is_mac, is_windows
 from buttons import Button, ButtonRenderer
 from utils_local import is_point_inside_rect
 import pygame
@@ -25,14 +25,19 @@ class LandingScreen:
         font = pygame.font.SysFont(None, 60)
         # Clear the screen
         screen.fill(Color.WHITE.value)
-
-        background_path = os.path.join("assets","images","background.jpg")
+        background_path = ""
+        logo_path = ""
+        if is_mac():
+            background_path = os.path.join("..","..","assets","images","background.jpg")
+            logo_path = os.path.join("..","..","assets","images","logo.png")
+        elif is_windows():
+            background_path = os.path.join("assets","images","background.jpg")
+            logo_path = os.path.join("assets","images","logo.png")
         background_image = pygame.image.load(background_path) 
         background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
         # Display the background image
         screen.blit(background_image, (0, 0))
 
-        logo_path = os.path.join("assets","images","logo.png")
         logo_image = pygame.image.load(logo_path) 
         # Display the logo image
         logo_width = logo_image.get_width()

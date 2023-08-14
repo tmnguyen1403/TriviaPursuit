@@ -1,4 +1,9 @@
-#import webview
+from utils_local import is_mac, is_windows
+
+if is_mac():
+    import webview
+else:
+    print("Webview is probably not supported on this system. Media questions will no be displayed")
 import multiprocessing
 
 class MediaPlayer:
@@ -31,7 +36,8 @@ class MediaPlayer:
             </html>
         """
         html = html.replace("VIDEO_SRC", video_url)
-        self.window = webview.create_window('Question Video', width=600, height=400, html=html)
+        self.window = webview.create_window('Question Video', width=600, height=400,
+                                            html=html)
         webview.start()
 
     def show_image(self, img_url):
@@ -79,6 +85,7 @@ class MediaPlayer:
         return True
     
     def play_video(self, video_url) -> bool:
+        #self.screen = screen
         if self.webview_process and not self.webview_process.is_alive():
             print("Reset video")
             self.reset_view()

@@ -6,7 +6,9 @@ import pygame
 import webbrowser
 from menu_state import MenuState
 import os
-
+from file_selection import FileSelection
+import multiprocessing
+from wtf import WTF
 class ButtonText(Enum):
     PLAY = "Play"
     QUESTION_CENTER = "Question Center"
@@ -18,6 +20,8 @@ class LandingScreen:
         self.buttons = {}
         self.menu_state = None
         self.music_handler = music_handler
+        self.file_selection = None
+
     def init_screen(self, screen):
         screen_width, screen_height = screen.get_size()
         self.text_color = Color.BLACK.value
@@ -64,6 +68,9 @@ class LandingScreen:
         return button
 
     def set_mennu_state(self, state : MenuState):
+        if state == MenuState.EXIT and self.file_selection is None:
+            self.file_selection = FileSelection()
+            self.file_selection.run()
         self.menu_state = state
 
     def render_screen(self, pygame, screen):
@@ -93,8 +100,15 @@ class LandingScreen:
                         for button_text, button in self.buttons.items():
                             if is_point_inside_rect(mouse_pos,button.get_rect()):
                                 button.on_click()
-                                return self.menu_state
-
+                                running = False
+                                break 
             #Mute button
             self.music_handler.draw(pygame)
             pygame.display.flip()
+        
+        print(f"Can I get value in here: {self.file_selection.file_path}")
+        # self.file_selection.start()
+        # self.file_selection.join()
+        return self.menu_state
+
+

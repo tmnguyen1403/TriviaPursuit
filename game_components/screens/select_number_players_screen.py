@@ -2,7 +2,7 @@ import sys
 import os
 
 from enum import Enum
-from utils_local import Color
+from utils_local import Color, is_mac, is_windows
 from buttons import Button, ButtonRenderer
 from utils_local import is_point_inside_rect
 import pygame
@@ -28,11 +28,21 @@ class SelectPlayersScreen:
         self.text_color = Color.BLACK.value
         pygame.font.init()
         font = pygame.font.SysFont(None, 60)
-        # Clear the screen
+         # Clear the screen
         screen.fill(Color.WHITE.value)
+        background_path = ""
+        logo_path = ""
+        if is_mac():
+            background_path = os.path.join("..","..","assets","images","background.jpg")
+        elif is_windows():
+            background_path = os.path.join("assets","images","background.jpg")
+        background_image = pygame.image.load(background_path) 
+        background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
+        # Display the background image
+        screen.blit(background_image, (0, 0))
 
         # Draw the welcome message
-        welcome_text = font.render("Select Number of Players", True, Color.BLACK.value)
+        welcome_text = font.render("Select Number of Players", True, Color.WHITE.value)
         screen.blit(welcome_text, (screen_width // 2 - welcome_text.get_width() // 2, 150))
 
         self.player_options = {2: ButtonText.TWO_PLAYER, 3: ButtonText.THREE_PLAYER, 4: ButtonText.FOUR_PLAYER}

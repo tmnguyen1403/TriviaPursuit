@@ -52,35 +52,42 @@ class QuestionDisplayScreen:
 
 
     def calc_a_y(self, question):
-        question_text = question.get_text()
-        #code to wrap text around if question is too long
-        #break question into words
-        words = question_text.split( )
-        question_lines = []
-        desired_length = 500
-        #loop through words, building individual lines to be displayed
-        while len(words) > 0:
-            line_words = []
+        if question.get_type() in [QuestionType.AUDIO, QuestionType.VIDEO, QuestionType.IMAGE]:
+            print("Image question")
+            a_y = self.q_y + 500
+
+        else:
+            question_text = question.get_text()
+            #code to wrap text around if question is too long
+            #break question into words
+            words = question_text.split( )
+            question_lines = []
+            desired_length = 500
+            #loop through words, building individual lines to be displayed
             while len(words) > 0:
-                line_words += [words[0]]
-                words.remove(words[0])
-                #see if the next word would exceed the desired length
-                fw,fh = self.font.size(' '.join(line_words + words[:1])) 
-                if fw > desired_length:
-                    break
-            question_lines += [' '.join(line_words)]
-            #calculate a_y by caclulating the offset that would be produced by the question text
-            y_offset = 0
-            for line in question_lines:
-                fw, fh = self.font.size(line)
-                y_offset += fh
-        return self.q_y + y_offset
+                line_words = []
+                while len(words) > 0:
+                    line_words += [words[0]]
+                    words.remove(words[0])
+                    #see if the next word would exceed the desired length
+                    fw,fh = self.font.size(' '.join(line_words + words[:1])) 
+                    if fw > desired_length:
+                        break
+                question_lines += [' '.join(line_words)]
+                #calculate a_y by caclulating the offset that would be produced by the question text
+                y_offset = 0
+                for line in question_lines:
+                    fw, fh = self.font.size(line)
+                    y_offset += fh
+                a_y = self.q_y + y_offset
+        return a_y
 
     def render_question(self, screen, pygame, question):
         screen.fill(Color.DEFAULT_SCREEN.value)
-
+        self.a_y = self.calc_a_y(question)
         #draw question box
-        q_box_dim = ((self.mid_x - 300),(self.q_y -100),(600), (self.a_y + 150))
+        print(f"Question a_y:{self.a_y} q_y: {self.q_y}")
+        q_box_dim = ((self.mid_x - 350),(self.q_y -100),(700), (self.a_y + 100))
         qb_x,qb_y,qb_w,qb_h = q_box_dim
         pygame.draw.rect(screen,Color.BLACK.value,q_box_dim)
 
@@ -95,36 +102,37 @@ class QuestionDisplayScreen:
         screen.blit(category_source, category_position)
         
         # Render Question
-        question_text = question.get_text()
-        #code to wrap text around if question is too long
-        #break question into words
-        words = question_text.split( )
-        question_lines = []
-        desired_length = 500
-        #loop through words, building individual lines to be displayed
-        while len(words) > 0:
-            line_words = []
+        if question.get_type() == QuestionType.TEXT:
+            question_text = question.get_text()
+            #code to wrap text around if question is too long
+            #break question into words
+            words = question_text.split( )
+            question_lines = []
+            desired_length = 500
+            #loop through words, building individual lines to be displayed
             while len(words) > 0:
-                line_words += [words[0]]
-                words.remove(words[0])
-                #see if the next word would exceed the desired length
-                fw,fh = self.font.size(' '.join(line_words + words[:1])) 
-                if fw > desired_length:
-                    break
-            question_lines += [' '.join(line_words)]
-            #render the question line by line
-            y_offset = 0
-            for line in question_lines:
-                fw, fh = self.font.size(line)
+                line_words = []
+                while len(words) > 0:
+                    line_words += [words[0]]
+                    words.remove(words[0])
+                    #see if the next word would exceed the desired length
+                    fw,fh = self.font.size(' '.join(line_words + words[:1])) 
+                    if fw > desired_length:
+                        break
+                question_lines += [' '.join(line_words)]
+                #render the question line by line
+                y_offset = 0
+                for line in question_lines:
+                    fw, fh = self.font.size(line)
 
-                # (tx, ty) is the top-left of the font surface
-                tx = self.mid_x - fw / 2
-                ty = self.q_y + y_offset
+                    # (tx, ty) is the top-left of the font surface
+                    tx = self.mid_x - fw / 2
+                    ty = self.q_y + y_offset
 
-                font_surface = self.font.render(line, True, self.text_color, None)
-                screen.blit(font_surface, (tx, ty))
+                    font_surface = self.font.render(line, True, self.text_color, None)
+                    screen.blit(font_surface, (tx, ty))
 
-                y_offset += fh
+                    y_offset += fh
 
     def init_rects(self):
         #Button setting
@@ -133,7 +141,7 @@ class QuestionDisplayScreen:
         #button positions
         self.show_answer_button_rect = (self.mid_x - (b_w//2), 50+ self.a_y, b_w, b_h)
         #Can play both video/audio sound track?
-        self.play_media_button_rect = (self.mid_x - (b_w//2), 50 + self.a_y + 2*b_h, b_w, b_h)
+        self.play_media_button_rect = (self.mid_x - (b_w//2), 50 + self.a_y + 1.5*b_h, b_w, b_h)
         self.accept_button_rect = (self.mid_x - 3*(b_w//2), 100 + self.a_y, b_w, b_h)
         self.reject_button_rect = (self.mid_x + (b_w//2), 100 + self.a_y, b_w, b_h)
 
@@ -182,7 +190,6 @@ class QuestionDisplayScreen:
   
             if self.state == InternalState.SHOW_QUESTION:
                 self.render_question(screen, pygame, question)
-
                 self.init_rects()
                 
                 # Button render

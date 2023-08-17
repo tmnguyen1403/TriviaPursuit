@@ -145,7 +145,7 @@ class GamePlayScreen:
         question_display_screen = QuestionDisplayScreen()
         category_names = [category_info.get_name() for category_info in self.categories]
         trivial_compute_select_screen = TrivialComputeSelectScreen(categories=category_names)
-        intermediate_winner_screen = IntermediateWinnerScreen(screen=screen, max_display_time_second=2)
+        intermediate_winner_screen = IntermediateWinnerScreen(screen=screen, max_display_time_second=3)
         '''
         Debug 
         '''
@@ -293,7 +293,7 @@ class GamePlayScreen:
                         if player_manager.is_last_player_move():
                             game_manager.set_state(GameState.END_GAME)      
                         else:
-                            intermediate_winner_screen.render_screen(pygame)
+                            intermediate_winner_screen.render_screen(pygame, screen)
                         player_manager.next_player()
                            
                             

@@ -9,6 +9,7 @@ class GameState(Enum):
     REJECT_ANSWER = 5
     RESET_STATE = 6
     END_GAME = 7
+    OPTIONS = 8
     
 class GameManager:
     def __init__(self):

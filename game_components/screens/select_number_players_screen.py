@@ -35,7 +35,7 @@ class SelectPlayersScreen:
         if is_mac():
             background_path = os.path.join("..","..","assets","images","background.jpg")
         elif is_windows():
-            background_path = os.path.join("assets","images","background.jpg")
+            background_path = os.path.join("..","..","assets","images","background.jpg")
         background_image = pygame.image.load(background_path) 
         background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
         # Display the background image

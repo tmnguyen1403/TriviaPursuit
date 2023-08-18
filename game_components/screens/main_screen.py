@@ -20,6 +20,7 @@ import webbrowser
 from landing_screen import LandingScreen
 from game_play_screen import GamePlayScreen
 from play_option_screen import PlayOptionScreen
+from option_screen import OptionScreen
 from menu_state import MenuState
 from category import CategorySelectionScreen
 from sounds import Sound
@@ -65,6 +66,10 @@ while menu_state != MenuState.EXIT:
         game_play_screen.render_screen(pygame, screen=screen)
 
         music_handler.play('title')
+        menu_state = MenuState.WAIT_SELECTION
+    if menu_state == MenuState.OPTIONS:
+        option_screen = OptionScreen(music_handler)
+        option_screen.render_screen(pygame, screen=screen)
         menu_state = MenuState.WAIT_SELECTION
     if menu_state == MenuState.QUESTION_CENTER:
         webbrowser.open_new_tab(question_center_url)

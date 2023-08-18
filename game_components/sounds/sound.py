@@ -9,44 +9,42 @@ class Sound:
         self.init = False
         self.screen = screen
         screen_width, screen_height = self.screen.get_size()
-        self.label_position = (0, screen_height - 25)
-        self.copyright_label_position = (320, screen_height - 25)
-        self.low_button_rect = (100, screen_height - 50, 50, 50)
-        self.med_button_rect = (155, screen_height - 50, 50, 50)
-        self.high_button_rect = (210, screen_height - 50, 50, 50)
-        self.mute_button_rect = (265, screen_height - 50, 50, 50)
+        self.label_position = (screen_width // 2 - 150, 420)
+        self.copyright_label_position = (screen_width // 2 + 160, 420)
+        self.low_button_rect = (screen_width // 2 - 50, 400, 50, 50)
+        self.med_button_rect = (screen_width // 2, 400, 50, 50)
+        self.high_button_rect = (screen_width // 2 + 50, 400, 50, 50)
+        self.mute_button_rect = (screen_width // 2 + 100, 400, 50, 50)
         self.muted = 0
-        # if is_mac():
-        #     self.sound_title_path = os.path.join("..","..","assets", "audios", "title.mp3")
-        #     self.sound_background_path = os.path.join("..","..","assets", "audios", "background.mp3")
-        # elif is_windows():
-        self.sound_title_path = os.path.join("assets", "audios", "title.mp3")
-        self.sound_background_path = os.path.join("assets", "audios", "background.mp3")
-        self.text_color = Color.BLUE.value
+        if is_mac():
+            self.sound_title_path = os.path.join("..","..","assets", "audios", "title.mp3")
+            self.sound_background_path = os.path.join("..","..","assets", "audios", "background.mp3")
+        elif is_windows():
+            self.sound_title_path = os.path.join("..", "..", "assets", "audios", "title.mp3")
+            self.sound_background_path = os.path.join("..", "..", "assets", "audios", "background.mp3")
+        self.text_color = Color.WHITE.value
         self.current_volume = 0.6
         pygame.mixer.init()
         pygame.mixer.music.stop()
 
     def draw(self, engine):
-        if not self.init:
-            self.button_renderer = ButtonRenderer(engine)
-            self.low_button = create_button(self.low_button_rect, Color.GREEN.value, "Low",
+        self.button_renderer = ButtonRenderer(engine)
+        self.low_button = create_button(self.low_button_rect, Color.GREEN.value, "Low",
                                             Color.BLACK.value)
-            self.med_button = create_button(self.med_button_rect, Color.BLUE.value, "Med",
+        self.med_button = create_button(self.med_button_rect, Color.BLUE.value, "Med",
                                             Color.BLACK.value)
-            self.high_button = create_button(self.high_button_rect, Color.RED.value, "High",
+        self.high_button = create_button(self.high_button_rect, Color.RED.value, "High",
                                              Color.BLACK.value)
-            self.mute_button = create_button(self.mute_button_rect, Color.MAGENTA.value, "Mute",
+        self.mute_button = create_button(self.mute_button_rect, Color.MAGENTA.value, "Mute",
                                              Color.BLACK.value)
-            self.buttons = [self.low_button, self.med_button, self.high_button, self.mute_button]
-            self.font = engine.font.SysFont(None, 24)
-            self.init = True
+        self.buttons = [self.low_button, self.med_button, self.high_button, self.mute_button]
+        self.font = engine.font.SysFont(None, 24)
 
-            label_source = self.font.render('Music Vol: ', True, self.text_color, None)
-            self.screen.blit(label_source, self.label_position)
+        label_source = self.font.render('Music Vol: ', True, self.text_color, None)
+        self.screen.blit(label_source, self.label_position)
 
-            copyright_label_source = self.font.render('Music from https://www.zapsplat.com', True, self.text_color, None)
-            self.screen.blit(copyright_label_source, self.copyright_label_position)
+        copyright_label_source = self.font.render('Music from https://www.zapsplat.com', True, self.text_color, None)
+        self.screen.blit(copyright_label_source, self.copyright_label_position)
 
         for button in self.buttons:
             self.button_renderer.draw(self.screen, button=button, font=self.font)

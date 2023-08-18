@@ -28,6 +28,7 @@ from trivial_compute_select_screen import TrivialComputeSelectScreen
 from intermediate_winner_screen import IntermediateWinnerScreen
 from in_game_menu import InGameMenu
 from sounds import Sound
+from games import GamePlayInfo
 '''
 The below is used to generate
 '''
@@ -38,6 +39,7 @@ class GamePlayScreen:
         self.update_board = True
         self.nb_player = game_info.get_nb_player()
         self.categories = game_info.get_categories()
+        self.player_names = game_info.get_player_names()
 
     def init_screen(self,screen):
         pass
@@ -58,7 +60,7 @@ class GamePlayScreen:
         players = []
         player_colors = {1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value}
         for i in range(self.nb_player):
-            player_info = {"position": (0, 0), "name": f"P{i + 1}", "token": None, "score": [], "color": player_colors[i + 1]}
+            player_info = {"position": (0, 0), "name": self.player_names[i], "token": None, "score": [], "color": player_colors[i + 1]}
             players.append(Player(player_info))
         player_manager = PlayerManager(players=players)
 

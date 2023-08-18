@@ -1,9 +1,12 @@
+import pygame
 from typing import List
 from interface import TileSubscriber
 from utils_local import Color
 from .score_box import Score_Box
 from gameboard import TileType
+
 class PlayerManager(TileSubscriber):
+
     """Manage Player to communicate with other system about player position
     """    
     def __init__(self, players: List['Player'], start_player = 0) -> None:
@@ -18,6 +21,11 @@ class PlayerManager(TileSubscriber):
         self.first_turn = [True for _ in range(len(self.players))]
         self.winners = []
         self.end_game = False
+    
+    # def get_player_names(self):
+    #     game_play_info = GamePlayInfo()
+    #     return game_play_info.get_player_names()
+
     def init_player_score(self, category_colors, rect_size):
         index = 0
         sx,sy,sw,sh = rect_size
@@ -87,12 +95,15 @@ class PlayerManager(TileSubscriber):
         self.end_game = end
 
     def draw_score(self, engine, screen):
+        # names = ['player 1', 'player 2', 'player 3', 'player 4']
+
         for index, score_box in enumerate(self.player_scores):
             score_box.draw(engine, screen)
         
             #draw player name next to score_box:
             x,y,w,h = score_box.get_rect()
-            text = "Player " + str(self.players[index].name) + ":"
+
+            text = str(self.players[index].name) + ":"
             font = engine.font.Font(None, 32)
            # surface_color = (125,125,125) #screen.get_at((x,y))
             text_surface = font.render(text, True, Color.BLACK.value)

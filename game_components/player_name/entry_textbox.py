@@ -7,7 +7,6 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
 from utils_local import Color
-import global_variables
 
 class TextBox:
     def __init__(self, x, y, width, height, player_index):
@@ -32,7 +31,7 @@ class TextBox:
         txt_surface = self.font.render(self.text, True, self.color)
         self.screen.blit(txt_surface, (self.rect.x + 5, self.rect.y + 5))
 
-    def handle_event(self, event):
+    def handle_event(self, event, player_names):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 self.active = not self.active
@@ -44,4 +43,4 @@ class TextBox:
                 self.text = self.text[:-1]
             else:
                 self.text += event.unicode
-            global_variables.player_names[self.player_index] = self.text
+            player_names[self.player_index] = self.text

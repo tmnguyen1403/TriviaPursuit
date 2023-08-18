@@ -9,10 +9,9 @@ sys.path.append(parent_dir)
 from utils_local import Color
 
 class Button:
-    def __init__(self, x, y, width, height, text, action):
+    def __init__(self, x, y, width, height, text):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
-        self.action = action
         self.color = Color.BRIGHT_BLUE.value
         # Screen dimensions
         self.SCREEN_WIDTH = 1200

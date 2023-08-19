@@ -23,58 +23,65 @@ from play_option_screen import PlayOptionScreen
 from option_screen import OptionScreen
 from menu_state import MenuState
 from category import CategorySelectionScreen
-from sounds import Sound
+from sounds import Sound, SoundType
 
-pygame.init()
+if __name__ == "__main__":
+    pygame.init()
 
-# Set screen size
-screen_width = 1200
-screen_height = 1000
-screen = pygame.display.set_mode((screen_width, screen_height))
+    # Set screen size
+    screen_width = 1200
+    screen_height = 1000
+    display_index = 0
+    screen = pygame.display.set_mode((screen_width, screen_height), display=display_index)
+    desktop_size = pygame.display.get_desktop_sizes()
+    display_width, display_height = desktop_size[display_index]
+    x = (display_width - screen_width)//2
+    y = (display_height - screen_height)//2
+    screen_top_left_position = (x,y)
 
-menu_state = MenuState.WAIT_SELECTION
-running = True
-question_center_url = "http://localhost:3000"
-DEBUG = False
-clock = pygame.time.Clock()
+    menu_state = MenuState.WAIT_SELECTION
+    running = True
+    question_center_url = "http://localhost:3000"
+    DEBUG = False
+    clock = pygame.time.Clock()
 
-# Music
-music_handler = Sound(screen)
-music_handler.play('title')
+    # Music
+    music_handler = Sound(screen, screen_position=screen_top_left_position)
+    music_handler.play(SoundType.MENU_MUSIC)
 
-while menu_state != MenuState.EXIT:
-    if menu_state == MenuState.WAIT_SELECTION:
-        land_screen = LandingScreen(music_handler)
-        menu_state = land_screen.render_screen(pygame, screen=screen)
-    if menu_state == MenuState.PLAY_GAME:
-        game_play_info = None
-        if not DEBUG:
-            play_option_screen = PlayOptionScreen()
-            game_play_info = play_option_screen.render_screen(pygame, screen=screen)
+    while menu_state != MenuState.EXIT:
+        if menu_state == MenuState.WAIT_SELECTION:
+            land_screen = LandingScreen(music_handler)
+            menu_state = land_screen.render_screen(pygame, screen=screen)
+        if menu_state == MenuState.PLAY_GAME:
+            game_play_info = None
+            if not DEBUG:
+                play_option_screen = PlayOptionScreen()
+                game_play_info = play_option_screen.render_screen(pygame, screen=screen)
 
-            category_screen = CategorySelectionScreen(screen=screen)
-            selected_categories = category_screen.run(engine=pygame)
-            
-            game_play_info.set_categories(selected_categories)
-        else:
-            from games import GamePlayInfo
-            game_play_info = GamePlayInfo()
-            game_play_info.set_debug()
+                category_screen = CategorySelectionScreen(screen=screen)
+                selected_categories = category_screen.run(engine=pygame)
+                
+                game_play_info.set_categories(selected_categories)
+            else:
+                from games import GamePlayInfo
+                game_play_info = GamePlayInfo()
+                game_play_info.set_debug()
 
-        music_handler.stop()
-        game_play_screen = GamePlayScreen(game_info=game_play_info)
-        game_play_screen.render_screen(pygame, screen=screen)
+            music_handler.stop()
+            game_play_screen = GamePlayScreen(game_info=game_play_info, music_handler=music_handler)
+            game_play_screen.render_screen(pygame, screen=screen)
 
-        music_handler.play('title')
-        menu_state = MenuState.WAIT_SELECTION
-    if menu_state == MenuState.OPTIONS:
-        option_screen = OptionScreen(music_handler)
-        option_screen.render_screen(pygame, screen=screen)
-        menu_state = MenuState.WAIT_SELECTION
-    if menu_state == MenuState.QUESTION_CENTER:
-        webbrowser.open_new_tab(question_center_url)
-        menu_state = MenuState.WAIT_SELECTION
+            music_handler.play(SoundType.MENU_MUSIC)
+            menu_state = MenuState.WAIT_SELECTION
+        if menu_state == MenuState.OPTIONS:
+            option_screen = OptionScreen(music_handler)
+            option_screen.render_screen(pygame, screen=screen)
+            menu_state = MenuState.WAIT_SELECTION
+        if menu_state == MenuState.QUESTION_CENTER:
+            webbrowser.open_new_tab(question_center_url)
+            menu_state = MenuState.WAIT_SELECTION
 
-pygame.quit()
+    pygame.quit()
 
 

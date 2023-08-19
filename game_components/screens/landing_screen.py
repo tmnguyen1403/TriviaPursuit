@@ -3,11 +3,11 @@ from utils_local import Color, is_mac, is_windows
 from buttons import Button, ButtonRenderer
 from utils_local import is_point_inside_rect
 import pygame
-import webbrowser
+# import webbrowser
 from menu_state import MenuState
 import os
-from file_selection import FileSelection
-import multiprocessing
+# from file_selection import FileSelection
+# import multiprocessing
 from wtf import WTF
 class ButtonText(Enum):
     PLAY = "Play"
@@ -70,15 +70,13 @@ class LandingScreen:
         return button
 
     def set_mennu_state(self, state : MenuState):
-        if state == MenuState.EXIT and self.file_selection is None:
-            self.file_selection = FileSelection()
-            self.file_selection.run()
         self.menu_state = state
 
     def render_screen(self, pygame, screen):
         print("Landing Screen")
         
         if not self.init_object:
+            self.engine = pygame
             self.init_screen(screen=screen)
             self.init_object = True
             self.button_renderer = ButtonRenderer(pygame)
@@ -98,17 +96,14 @@ class LandingScreen:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         mouse_pos = pygame.mouse.get_pos()
+                        print(f"Mouse position {mouse_pos}")
                         self.music_handler.handle_click(pygame)
                         for button_text, button in self.buttons.items():
                             if is_point_inside_rect(mouse_pos,button.get_rect()):
                                 button.on_click()
-                                return self.menu_state
+                                running = False
 
             pygame.display.flip()
-        
-        print(f"Can I get value in here: {self.file_selection.file_path}")
-        # self.file_selection.start()
-        # self.file_selection.join()
         return self.menu_state
 
 

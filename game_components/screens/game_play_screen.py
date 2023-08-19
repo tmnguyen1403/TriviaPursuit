@@ -27,22 +27,24 @@ from question_display_screen import QuestionDisplayScreen
 from trivial_compute_select_screen import TrivialComputeSelectScreen
 from intermediate_winner_screen import IntermediateWinnerScreen
 from in_game_menu import InGameMenu
-from sounds import Sound
+from sounds import Sound, SoundType
 from games import GamePlayInfo
 from buttons import Button, ButtonRenderer
 from option_screen import OptionScreen
+
 '''
 The below is used to generate
 '''
 # Define category_colors
 class GamePlayScreen:
-    def __init__(self, game_info: 'GamePlayInfo') -> None:
+    def __init__(self, game_info: 'GamePlayInfo', music_handler: 'Sound') -> None:
         self.init_board = True
         self.update_board = True
         self.nb_player = game_info.get_nb_player()
         self.categories = game_info.get_categories()
         self.player_names = game_info.get_player_names()
         self.button_renderer = ButtonRenderer(pygame)
+        self.music_handler = music_handler
 
     def init_screen(self, screen):
         pass
@@ -133,11 +135,11 @@ class GamePlayScreen:
         dice_manager = DiceManager(dice=dice, dice_renderer=dice_renderer)
 
         # Music
-        music_handler = Sound(screen)
-        music_handler.play('background')
+        # music_handler = Sound(screen)
+        self.music_handler.play(SoundType.GAME_MUSIC)
 
         # Options
-        option_screen = OptionScreen(music_handler)
+        option_screen = OptionScreen(self.music_handler)
         options_button = Button(position=(0, screen_height - 50), size=(100, 50), color=Color.BLACK.value, text='Options', text_color=Color.WHITE.value, action=None)
 
         player_manager.update_all(gameboard.get_center())
@@ -220,10 +222,10 @@ class GamePlayScreen:
                                 print("Update the player position, reset tile state")
                         if in_game_menu.is_active():
                             print("Check Ingame Menu")
-                            music_handler.stop()
                             is_handled = in_game_menu.handle_click(pygame)
                             if is_handled and in_game_menu.is_quit_game():
                                 running = False
+                                self.music_handler.stop()
                                 return
 
             # DEBUG

@@ -22,12 +22,15 @@ from gameboard import TileType, TileInfo, TileGenerator, Gameboard, MoveCalculat
 from dice import Dice, DiceManager, DiceRenderer
 from games import GameManager, GameState
 from question import QuestionManager
-from utils_local import Color
+from utils_local import Color, is_point_inside_rect
 from question_display_screen import QuestionDisplayScreen
 from trivial_compute_select_screen import TrivialComputeSelectScreen
 from intermediate_winner_screen import IntermediateWinnerScreen
 from in_game_menu import InGameMenu
 from sounds import Sound
+from games import GamePlayInfo
+from buttons import Button, ButtonRenderer
+from option_screen import OptionScreen
 '''
 The below is used to generate
 '''
@@ -38,8 +41,10 @@ class GamePlayScreen:
         self.update_board = True
         self.nb_player = game_info.get_nb_player()
         self.categories = game_info.get_categories()
+        self.player_names = game_info.get_player_names()
+        self.button_renderer = ButtonRenderer(pygame)
 
-    def init_screen(self,screen):
+    def init_screen(self, screen):
         pass
     
     async def main_database(self, category_list):
@@ -53,12 +58,14 @@ class GamePlayScreen:
 
     def render_screen(self, pygame, screen):
 
+        screen_width, screen_height = screen.get_size()
+
         # Player Dummy Generator
         
         players = []
         player_colors = {1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value}
         for i in range(self.nb_player):
-            player_info = {"position": (0, 0), "name": f"P{i + 1}", "token": None, "score": [], "color": player_colors[i + 1]}
+            player_info = {"position": (0, 0), "name": self.player_names[i], "token": None, "score": [], "color": player_colors[i + 1]}
             players.append(Player(player_info))
         player_manager = PlayerManager(players=players)
 
@@ -129,6 +136,10 @@ class GamePlayScreen:
         music_handler = Sound(screen)
         music_handler.play('background')
 
+        # Options
+        option_screen = OptionScreen(music_handler)
+        options_button = Button(position=(0, screen_height - 50), size=(100, 50), color=Color.BLACK.value, text='Options', text_color=Color.WHITE.value, action=None)
+
         player_manager.update_all(gameboard.get_center())
 
         # Create the game board surface
@@ -145,7 +156,7 @@ class GamePlayScreen:
         question_display_screen = QuestionDisplayScreen()
         category_names = [category_info.get_name() for category_info in self.categories]
         trivial_compute_select_screen = TrivialComputeSelectScreen(categories=category_names)
-        intermediate_winner_screen = IntermediateWinnerScreen(screen=screen, max_display_time_second=2)
+        intermediate_winner_screen = IntermediateWinnerScreen(screen=screen, max_display_time_second=3)
         '''
         Debug 
         '''
@@ -172,8 +183,9 @@ class GamePlayScreen:
                         current_state = game_manager.get_state()
                         mouse_pos = pygame.mouse.get_pos()
                         print("Mouse clicking ", current_state)
-                        music_handler.handle_click(pygame)
                         if current_state == GameState.WAIT_ROLL:
+                            if is_point_inside_rect(mouse_pos, options_button.get_rect()):
+                                game_manager.set_state(GameState.OPTIONS)
                             if dice_manager.can_roll(mouse_pos=mouse_pos):
                                 dice_manager.animate(screen=screen, pygame=pygame, clock=clock,
                                                         debug_value=dice_debug_value)
@@ -247,6 +259,8 @@ class GamePlayScreen:
                         pygame.draw.rect(screen, Color.WHITE.value, (w_square_x, w_square_y, 
                                                             w_square_size, w_square_size))
 
+                self.button_renderer.draw(screen=screen, button=options_button, font=pygame.font.Font(None, 32))
+
             if self.update_board:
                 gameboard_renderer.render(tile_objects=tile_objects, engine=pygame, screen=screen)
                 gameboard_renderer.render_player(gameboard=gameboard, engine=pygame, screen=screen,
@@ -293,9 +307,8 @@ class GamePlayScreen:
                         if player_manager.is_last_player_move():
                             game_manager.set_state(GameState.END_GAME)      
                         else:
-                            intermediate_winner_screen.render_screen(pygame)
+                            intermediate_winner_screen.render_screen(pygame, screen)
                         player_manager.next_player()
-                           
                             
                 elif current_state == GameState.REJECT_ANSWER:
                     if player_manager.has_winner() and player_manager.is_last_player_move():
@@ -305,7 +318,6 @@ class GamePlayScreen:
                         game_manager.set_state(GameState.RESET_STATE)
                     player_manager.next_player()
 
-
             current_state = game_manager.get_state()
             if current_state == GameState.RESET_STATE:
                 game_manager.reset()
@@ -314,8 +326,11 @@ class GamePlayScreen:
                 player_manager.set_game_end(True)
                 self.render_efficient_reset()
 
-            # Mute button
-            music_handler.draw(pygame)
+            if current_state == GameState.OPTIONS:
+                print(game_manager.get_state())
+                option_screen.render_screen(pygame, screen=screen)
+                game_manager.reset()
+                self.render_efficient_reset()
 
             pygame.display.flip()
             clock.tick(60)

@@ -12,6 +12,7 @@ from wtf import WTF
 class ButtonText(Enum):
     PLAY = "Play"
     QUESTION_CENTER = "Question Center"
+    OPTIONS = "Options"
     QUIT = "Quit"
 
 class LandingScreen:
@@ -35,8 +36,8 @@ class LandingScreen:
             background_path = os.path.join("..","..","assets","images","background.jpg")
             logo_path = os.path.join("..","..","assets","images","logo.png")
         elif is_windows():
-            background_path = os.path.join("assets","images","background.jpg")
-            logo_path = os.path.join("assets","images","logo.png")
+            background_path = os.path.join("..", "..", "assets", "images", "background.jpg")
+            logo_path = os.path.join("..", "..", "assets", "images", "logo.png")
         background_image = pygame.image.load(background_path) 
         background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
         # Display the background image
@@ -56,10 +57,11 @@ class LandingScreen:
         # Draw the buttons
         play_button_rect = (screen_width // 2 - 150, 300, 300, 50)
         question_center_button_rect = (screen_width // 2 - 150, 400, 300, 50)
-        quit_button_rect = (screen_width // 2 - 150, 500, 300, 50)
+        option_button_rect = (screen_width // 2 - 150, 500, 300, 50)
+        quit_button_rect = (screen_width // 2 - 150, 600, 300, 50)
         
-        self.button_labels = [ButtonText.PLAY, ButtonText.QUESTION_CENTER, ButtonText.QUIT]
-        self.button_infos = {ButtonText.PLAY: (play_button_rect, MenuState.PLAY_GAME), ButtonText.QUESTION_CENTER: (question_center_button_rect, MenuState.QUESTION_CENTER),  ButtonText.QUIT: (quit_button_rect, MenuState.EXIT)}
+        self.button_labels = [ButtonText.PLAY, ButtonText.QUESTION_CENTER, ButtonText.OPTIONS, ButtonText.QUIT]
+        self.button_infos = {ButtonText.PLAY: (play_button_rect, MenuState.PLAY_GAME), ButtonText.QUESTION_CENTER: (question_center_button_rect, MenuState.QUESTION_CENTER), ButtonText.OPTIONS: (option_button_rect, MenuState.OPTIONS), ButtonText.QUIT: (quit_button_rect, MenuState.EXIT)}
 
     def create_button(self, rect, button_color, text:ButtonText,text_color=Color.WHITE.value, action = None):
         x,y,w,h = rect
@@ -100,10 +102,8 @@ class LandingScreen:
                         for button_text, button in self.buttons.items():
                             if is_point_inside_rect(mouse_pos,button.get_rect()):
                                 button.on_click()
-                                running = False
-                                break 
-            #Mute button
-            self.music_handler.draw(pygame)
+                                return self.menu_state
+
             pygame.display.flip()
         
         print(f"Can I get value in here: {self.file_selection.file_path}")

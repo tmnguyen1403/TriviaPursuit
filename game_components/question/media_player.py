@@ -1,9 +1,9 @@
 from utils_local import is_mac, is_windows
 
-if is_mac():
-    import webview
-else:
-    print("Webview is probably not supported on this system. Media questions will no be displayed")
+# if is_mac():
+#     import webview
+# else:
+#     print("Webview is probably not supported on this system. Media questions will no be displayed")
 import multiprocessing
 
 class MediaPlayer:

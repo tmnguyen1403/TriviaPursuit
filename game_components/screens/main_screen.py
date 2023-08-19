@@ -20,69 +20,61 @@ import webbrowser
 from landing_screen import LandingScreen
 from game_play_screen import GamePlayScreen
 from play_option_screen import PlayOptionScreen
+from option_screen import OptionScreen
 from menu_state import MenuState
 from category import CategorySelectionScreen
 from sounds import Sound
-import multiprocessing
 
+pygame.init()
 
+# Set screen size
+screen_width = 1200
+screen_height = 1000
+screen = pygame.display.set_mode((screen_width, screen_height))
 
-# def my_thread():
-#     while True:
-#         print("Running my thread")
-#     return
+menu_state = MenuState.WAIT_SELECTION
+running = True
+question_center_url = "http://localhost:3000"
+DEBUG = False
+clock = pygame.time.Clock()
 
-if __name__ == "__main__":
-    pygame.init()
+# Music
+music_handler = Sound(screen)
+music_handler.play('title')
 
-    # Set screen size
-    screen_width = 1200
-    screen_height = 1000
-    screen = pygame.display.set_mode((screen_width, screen_height))
+while menu_state != MenuState.EXIT:
+    if menu_state == MenuState.WAIT_SELECTION:
+        land_screen = LandingScreen(music_handler)
+        menu_state = land_screen.render_screen(pygame, screen=screen)
+    if menu_state == MenuState.PLAY_GAME:
+        game_play_info = None
+        if not DEBUG:
+            play_option_screen = PlayOptionScreen()
+            game_play_info = play_option_screen.render_screen(pygame, screen=screen)
 
-    menu_state = MenuState.WAIT_SELECTION
-    running = True
-    question_center_url = "http://localhost:3000"
-    DEBUG = False
-    clock = pygame.time.Clock()
+            category_screen = CategorySelectionScreen(screen=screen)
+            selected_categories = category_screen.run(engine=pygame)
+            
+            game_play_info.set_categories(selected_categories)
+        else:
+            from games import GamePlayInfo
+            game_play_info = GamePlayInfo()
+            game_play_info.set_debug()
 
-    # Music
-    music_handler = Sound(screen)
-    music_handler.play('title')
-    # if pygame.get_init():
-    #     child_process = multiprocessing.Process(target=my_thread, args=())
-    #     child_process.start()
-    #     child_process.join()
+        music_handler.stop()
+        game_play_screen = GamePlayScreen(game_info=game_play_info)
+        game_play_screen.render_screen(pygame, screen=screen)
 
-    while menu_state != MenuState.EXIT:
-        if menu_state == MenuState.WAIT_SELECTION:
-            land_screen = LandingScreen(music_handler)
-            menu_state = land_screen.render_screen(pygame, screen=screen)
-        if menu_state == MenuState.PLAY_GAME:
-            game_play_info = None
-            if not DEBUG:
-                play_option_screen = PlayOptionScreen()
-                game_play_info = play_option_screen.render_screen(pygame, screen=screen)
+        music_handler.play('title')
+        menu_state = MenuState.WAIT_SELECTION
+    if menu_state == MenuState.OPTIONS:
+        option_screen = OptionScreen(music_handler)
+        option_screen.render_screen(pygame, screen=screen)
+        menu_state = MenuState.WAIT_SELECTION
+    if menu_state == MenuState.QUESTION_CENTER:
+        webbrowser.open_new_tab(question_center_url)
+        menu_state = MenuState.WAIT_SELECTION
 
-                category_screen = CategorySelectionScreen(screen=screen)
-                selected_categories = category_screen.run(engine=pygame)
-                
-                game_play_info.set_categories(selected_categories)
-            else:
-                from games import GamePlayInfo
-                game_play_info = GamePlayInfo()
-                game_play_info.set_debug()
-
-            music_handler.stop()
-            game_play_screen = GamePlayScreen(game_info=game_play_info)
-            game_play_screen.render_screen(pygame, screen=screen)
-
-            music_handler.play('title')
-            menu_state = MenuState.WAIT_SELECTION
-        if menu_state == MenuState.QUESTION_CENTER:
-            webbrowser.open_new_tab(question_center_url)
-            menu_state = MenuState.WAIT_SELECTION
-
-    pygame.quit()
+pygame.quit()
 
 

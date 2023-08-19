@@ -7,9 +7,8 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
 from utils_local import Color
-from submit_button import Button
-from entry_textbox import TextBox
-import global_variables
+from .submit_button import Button
+from .entry_textbox import TextBox
 
 class PlayerNameEntryScreen:
     def __init__(self):
@@ -27,32 +26,27 @@ class PlayerNameEntryScreen:
         # Fonts
         self.font = pygame.font.Font(None, 36)
 
+
     def draw_text(self, text, color, x, y):
         text_surface = self.font.render(text, True, color)
         text_rect = text_surface.get_rect()
         text_rect.topleft = (x, y)
         self.screen.blit(text_surface, text_rect)
 
-    def print_player_names(self):
-        # print(global_variables.player_names)
-        for i in range(len(global_variables.player_names)):
-            print(f"Player {i + 1}: {global_variables.player_names[i]}")
-        pygame.quit()
-        sys.exit()
-
-    def render_player_name_screen(self):
+    def render_player_name_screen(self, num_players):
         running = True
-        text_boxes = [TextBox(540, 258 + i * 70, 200, 32, i) for i in range(global_variables.num_players)]
-        done_button = Button(530, 600, 110, 45, "SUBMIT", self.print_player_names)
+        player_names = [[] for _ in range(num_players)]
+        text_boxes = [TextBox(540, 258 + i * 70, 200, 32, i) for i in range(num_players)]
+        submit_button = Button(530, 600, 110, 45, "SUBMIT")
 
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 for text_box in text_boxes:
-                    text_box.handle_event(event)
+                    text_box.handle_event(event, player_names)
                 if event.type == pygame.MOUSEBUTTONUP:
-                    if done_button.rect.collidepoint(event.pos):
+                    if submit_button.rect.collidepoint(event.pos):
                         running = False
 
             self.screen.fill(Color.WHITE.value)
@@ -61,7 +55,7 @@ class PlayerNameEntryScreen:
                 self.draw_text(f"Player {i + 1}:", Color.BLACK.value, 420, (260 + i * 70))
                 text_box.draw()
  
-            done_button.draw()
+            submit_button.draw()
 
             text_content = "Enter Player Names"
             text_surface = self.font.render(text_content, True, Color.BLACK.value)
@@ -75,7 +69,7 @@ class PlayerNameEntryScreen:
 
             pygame.display.flip()
 
-        return global_variables.player_names
+        return player_names
 
 
 

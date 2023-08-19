@@ -2,12 +2,16 @@ class GamePlayInfo:
     def __init__(self):
         self.nb_player = 4
         self.categories = []
+        self.player_names = []
 
     def set_nb_player(self, nb_player):
         self.nb_player = nb_player
     
     def set_categories(self, categories):
         self.categories = categories
+
+    def set_player_names(self, player_names):
+        self.player_names = player_names
     
     def get_nb_player(self):
         return self.nb_player
@@ -15,6 +19,9 @@ class GamePlayInfo:
     def get_categories(self):
         return self.categories
     
+    def get_player_names(self):
+        return self.player_names
+
     def set_debug(self):
         from category import CategoryInfo
         from utils_local import Color

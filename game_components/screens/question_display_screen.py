@@ -8,7 +8,7 @@ from enum import Enum
 from utils_local import Color
 from buttons import Button, ButtonRenderer
 from question import Question, MediaPlayer, QuestionType, ImagePlayer
-from utils_local import is_point_inside_rect
+from utils_local import is_point_inside_rect, is_mac
 from games import GameState
 class InternalState(Enum):
     PROMPT_CATEGORY_SELECTION=0
@@ -28,7 +28,10 @@ class QuestionDisplayScreen:
         self.state = InternalState.SHOW_QUESTION
         self.init_object = False
         self.buttons = {}
-        self.video_player = MediaPlayer()
+        if is_mac():
+            self.video_player = MediaPlayer()
+        else:
+            self.video_player = None
         
     def init_screen(self, screen):
         screen_width, screen_height = screen.get_size()
@@ -179,7 +182,8 @@ class QuestionDisplayScreen:
                             for button in buttons:
                                 if is_point_inside_rect(mouse_pos,button.get_rect()):
                                     button.on_click()
-                                    self.video_player.reset_view()
+                                    if self.video_player:
+                                        self.video_player.reset_view()
                                     return self.external_state
                                 
                         #Check to play media
@@ -201,7 +205,7 @@ class QuestionDisplayScreen:
                 #Media Button
                 media_button = self.buttons.get(ButtonText.PLAY_MEDIA, None)
                 question_type =  question.get_type()
-                if question_type in [QuestionType.AUDIO, QuestionType.VIDEO, QuestionType.IMAGE]:
+                if question_type in [QuestionType.AUDIO, QuestionType.VIDEO, QuestionType.IMAGE] and self.video_player:
                     video_url = question.get_link()
                     media_action = lambda url=video_url:self.video_player.play_video(url)
                     if question_type == QuestionType.IMAGE:

@@ -1,9 +1,9 @@
-from utils_local import is_mac, is_windows
+from utils_local import is_mac, is_windows, GlobalConfig
 
-# if is_mac():
-#     import webview
-# else:
-#     print("Webview is probably not supported on this system. Media questions will no be displayed")
+if is_mac():
+    import webview
+else:
+    print("Webview is probably not supported on this system. Media questions will no be displayed")
 import multiprocessing
 
 class MediaPlayer:
@@ -11,6 +11,12 @@ class MediaPlayer:
         self.window = None
         self.webview_process = None
         self.is_playing = False
+        x,y = GlobalConfig.screen_top_left_position
+        width,height = GlobalConfig.screen_size
+        self.media_x  = x + width//4
+        self.media_y = y + height//3
+        #print(f"Screen top left position: {GlobalConfig.screen_top_left_position}")
+        self.media_rect = (self.media_x,self.media_y, 600, 400)
 
     def start_video(self, video_url):
         #ChatGPT reference
@@ -36,7 +42,8 @@ class MediaPlayer:
             </html>
         """
         html = html.replace("VIDEO_SRC", video_url)
-        self.window = webview.create_window('Question Video', width=600, height=400,
+        x,y,width,height = self.media_rect
+        self.window = webview.create_window('Question Video', x=x,y=y, width=width, height=height, 
                                             html=html)
         webview.start()
 
@@ -53,7 +60,8 @@ class MediaPlayer:
             </html>
         """
         html = html.replace("IMAGE_HTML_SRC", img_url)
-        self.window = webview.create_window('Question Image', width=600, height=400, html=html)
+        x,y,width,height = self.media_rect
+        self.window = webview.create_window('Question Image', x=x, y=y, width=width, height=height,  html=html)
         webview.start()
 
     def reset_view(self):

@@ -51,6 +51,9 @@ class PlayerManager(TileSubscriber):
             self.first_turn[self.current_index] = False
         self.current_tile = tile
     
+    def is_current_player(self, player):
+        return self.current_player == player
+    
     def is_first_turn(self):
         return self.first_turn[self.current_index]
     
@@ -105,7 +108,6 @@ class PlayerManager(TileSubscriber):
 
             text = str(self.players[index].name) + ":"
             font = engine.font.Font(None, 32)
-           # surface_color = (125,125,125) #screen.get_at((x,y))
             text_surface = font.render(text, True, Color.BLACK.value)
             textbox_x = x - 120
             textbox_width = text_surface.get_width() + 10
@@ -117,7 +119,8 @@ class PlayerManager(TileSubscriber):
             #Draw playing token
             token_x, token_y = x - 60,y + 50
             if self.current_index == index:
-                engine.draw.circle(screen, "red", (token_x,token_y), 20)
+                player_color = self.current_player.get_color()
+                engine.draw.circle(screen, player_color, (token_x,token_y), 20)
             
             # Draw Winner
             #if self.end_game:

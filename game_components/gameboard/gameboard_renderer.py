@@ -1,7 +1,10 @@
 from utils_local import Color
 class GameBoardRenderer:
     def __init__(self):
-        pass
+        self.active_player_color = Color.WHITE.value
+        self.inactive_player_color = Color.BLACK.value
+        self.active_text_color = Color.BLACK.value
+
     def render(self,tile_objects, engine: 'pygame', screen):
         for tile in tile_objects:
             tile.draw(engine, screen)
@@ -36,9 +39,11 @@ class GameBoardRenderer:
                 print("Player color: ", color)
                 px,py = x+w//2 + padding_x, y + h//2 + padding_y
                 font = engine.font.Font(None, 20)
-                engine.draw.circle(screen, Color.BLACK.value, (px, py),(w//4)-3)
-                engine.draw.circle(screen, color, (px, py),(w//4)-5)
-                player_text = font.render(name,True,Color.BLACK.value, None)
+                circle_color = self.active_player_color if player_manager.is_current_player(player) else self.inactive_player_color
+                engine.draw.circle(screen, circle_color, (px, py),(w//4)-3)
+                engine.draw.circle(screen, color, (px, py),(w//4)-6)
+                text_color = self.active_text_color if player_manager.is_current_player(player) else self.inactive_player_color
+                player_text = font.render(name,True,text_color, None)
                 screen.blit(player_text,(px-8,py-6))
     
     def render_player_score(self, engine: 'pygame', screen, player_manager):

@@ -36,7 +36,8 @@ async def create_with_online_database(categories = List[str]):
         for category, questions in questions.items():
             result_questions[category] = list()
             for question in questions:
-                q_obj = Question((question["question"], QuestionType(question["type"]),None, question["answer"], category))
+                link = question.get("link", '')
+                q_obj = Question((question["question"], QuestionType(question["type"]),link, question["answer"], category))
                 result_questions[category].append(q_obj)
                 
     return Database(categories=categories,questions=result_questions)
@@ -62,4 +63,6 @@ def dummy_database():
 
 if __name__ == "__main__":
     categories = ["Math", "Sport", "History", "Movie"]
-    create_with_online_database(categories=categories)
+    # async def test(categories = categories):
+    #     await create_with_online_database(categories=categories)
+    # await test(categories=categories)

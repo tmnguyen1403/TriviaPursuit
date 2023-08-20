@@ -102,37 +102,36 @@ class QuestionDisplayScreen:
         screen.blit(category_source, category_position)
         
         # Render Question
-        if question.get_type() == QuestionType.TEXT:
-            question_text = question.get_text()
-            #code to wrap text around if question is too long
-            #break question into words
-            words = question_text.split( )
-            question_lines = []
-            desired_length = 500
-            #loop through words, building individual lines to be displayed
+        question_text = question.get_text()
+        #code to wrap text around if question is too long
+        #break question into words
+        words = question_text.split()
+        question_lines = []
+        desired_length = 500
+        #loop through words, building individual lines to be displayed
+        while len(words) > 0:
+            line_words = []
             while len(words) > 0:
-                line_words = []
-                while len(words) > 0:
-                    line_words += [words[0]]
-                    words.remove(words[0])
-                    #see if the next word would exceed the desired length
-                    fw,fh = self.font.size(' '.join(line_words + words[:1])) 
-                    if fw > desired_length:
-                        break
-                question_lines += [' '.join(line_words)]
-                #render the question line by line
-                y_offset = 0
-                for line in question_lines:
-                    fw, fh = self.font.size(line)
+                line_words += [words[0]]
+                words.remove(words[0])
+                #see if the next word would exceed the desired length
+                fw,fh = self.font.size(' '.join(line_words + words[:1])) 
+                if fw > desired_length:
+                    break
+            question_lines += [' '.join(line_words)]
+            #render the question line by line
+            y_offset = 0
+            for line in question_lines:
+                fw, fh = self.font.size(line)
 
-                    # (tx, ty) is the top-left of the font surface
-                    tx = self.mid_x - fw / 2
-                    ty = self.q_y + y_offset
+                # (tx, ty) is the top-left of the font surface
+                tx = self.mid_x - fw / 2
+                ty = self.q_y + y_offset
 
-                    font_surface = self.font.render(line, True, self.text_color, None)
-                    screen.blit(font_surface, (tx, ty))
+                font_surface = self.font.render(line, True, self.text_color, None)
+                screen.blit(font_surface, (tx, ty))
 
-                    y_offset += fh
+                y_offset += fh
 
     def init_rects(self):
         #Button setting
@@ -150,6 +149,7 @@ class QuestionDisplayScreen:
         
     def render_screen(self, pygame, screen, question):
         print("Render question")
+        self.set_state(InternalState.SHOW_QUESTION)
         if not self.init_object:
             self.image_player = ImagePlayer(engine=pygame, screen=screen)
             self.init_screen(screen=screen)
@@ -179,7 +179,7 @@ class QuestionDisplayScreen:
                             for button in buttons:
                                 if is_point_inside_rect(mouse_pos,button.get_rect()):
                                     button.on_click()
-                                    self.set_state(InternalState.SHOW_QUESTION)
+                                    self.video_player.reset_view()
                                     return self.external_state
                                 
                         #Check to play media

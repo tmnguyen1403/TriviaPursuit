@@ -36,5 +36,5 @@ class QuestionManager(TileSubscriber):
         print(f"questions: {category_questions}")
         if len(category_questions) > 0:
             return_question = category_questions.pop()
-            category_questions.append(return_question)
+            category_questions.insert(0,return_question)
         return return_question

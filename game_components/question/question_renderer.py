@@ -9,5 +9,5 @@ class QuestionRenderer:
         category_text = font.render(f"Category {question.category}", True, self.text_color, self.background_color)
         self.screen.blit(category_text, (self.position["x"],self.position["y"] - 100))
 
-        message_text = font.render(question.question_text, True, self.text_color, self.background_color)
+        message_text = font.render(question.get_text(), True, self.text_color, self.background_color)
         self.screen.blit(message_text, (self.position["x"],self.position["y"]))

@@ -24,6 +24,7 @@ from option_screen import OptionScreen
 from menu_state import MenuState
 from category import CategorySelectionScreen
 from sounds import Sound, SoundType
+from utils_local import GlobalConfig
 
 if __name__ == "__main__":
     pygame.init()
@@ -34,10 +35,12 @@ if __name__ == "__main__":
     display_index = 0
     screen = pygame.display.set_mode((screen_width, screen_height), display=display_index)
     desktop_size = pygame.display.get_desktop_sizes()
-    display_width, display_height = desktop_size[display_index]
-    x = (display_width - screen_width)//2
-    y = (display_height - screen_height)//2
+    desktop_width, desktop_height = desktop_size[display_index]
+    x = (desktop_width - screen_width)//2
+    y = (desktop_height - screen_height)//2
     screen_top_left_position = (x,y)
+    GlobalConfig.screen_top_left_position = screen_top_left_position
+    GlobalConfig.screen_size = (screen_width, screen_height)
 
     menu_state = MenuState.WAIT_SELECTION
     running = True

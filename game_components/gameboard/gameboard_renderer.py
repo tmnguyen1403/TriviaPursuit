@@ -33,7 +33,7 @@ class GameBoardRenderer:
             arrangements = arrangement_dict[nb_players]
             
             for index, player in enumerate(tile_players):
-                name = player.get_name()
+                name = player.get_short_name()
                 color = player.get_color()
                 padding_x, padding_y = arrangements[index]
                 print("Player color: ", color)

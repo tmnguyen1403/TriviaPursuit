@@ -26,6 +26,8 @@ from utils_local import Color, is_point_inside_rect
 from question_display_screen import QuestionDisplayScreen
 from trivial_compute_select_screen import TrivialComputeSelectScreen
 from intermediate_winner_screen import IntermediateWinnerScreen
+from final_winner_screen import FinalWinnerScreen
+
 from in_game_menu import InGameMenu
 from sounds import Sound, SoundType
 from games import GamePlayInfo
@@ -299,10 +301,6 @@ class GamePlayScreen:
                 selected_category = trivial_compute_select_screen.render_screen(pygame=pygame, screen=screen, current_player=player_manager.get_current_player().get_name(),
                 all_scored=player_manager.player_score_all_category())
                 question_manager.set_question(selected_category)
-                #current_question = question_manager.get_current_question()
-                # print("Current question: ", current_question)
-                # question_display_screen.render_screen(pygame=pygame, screen=screen, game_manager=game_manager,
-                #                                     question=current_question)
                 game_manager.set_state(GameState.QUESTION_SELECTION)
 
             if current_state == GameState.QUESTION_SELECTION:
@@ -337,6 +335,9 @@ class GamePlayScreen:
                 self.render_efficient_reset()
             elif current_state == GameState.END_GAME:
                 player_manager.set_game_end(True)
+                final_winner_screen = FinalWinnerScreen()
+                final_winner_screen.render_screen(pygame, screen, player_manager=player_manager)
+                running = False
                 self.render_efficient_reset()
 
             if current_state == GameState.OPTIONS:

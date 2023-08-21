@@ -84,6 +84,10 @@ class PlayerManager(TileSubscriber):
     def has_winner(self):
         return len(self.winners) > 0
     
+    def get_winners(self):
+        winners = [self.players[index] for index in self.winners]
+        return winners
+     
     def is_current_player_win(self):
         return self.current_index in self.winners
     

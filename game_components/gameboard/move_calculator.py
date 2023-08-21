@@ -3,7 +3,8 @@ from typing import Dict, List, Optional, Tuple
 class MoveCalculator:
     def __init__(self, cant_move):
         self.cant_move = cant_move
-        
+        self.directions = [(0,-1),(0,1),(-1,0),(1,0)]
+
     def change_cant_move(self, cant_move):
         self.cant_move = cant_move
 
@@ -24,23 +25,37 @@ class MoveCalculator:
         value = board_matrix[row][col]
         return value != self.cant_move
     
-    def next_moves(self, board_matrix: List[List[int]], player_pos:Tuple[int,int], dice_value: int, check_move=True):
+    def move_helper(self, current_pos, board_matrix: List[List[int]], moved_matrix, remaining_move, moves):
+        if remaining_move == 0:
+            moves.append(current_pos)
+            return
+
+        #Actual move search
+        current_x, current_y = current_pos
+        for direction in self.directions:
+            x,y = direction
+            #Calculate next move
+            nx,ny = (current_x + x, current_y + y)
+            next_move = (nx,ny)
+            if self.is_movable(board_matrix, next_move) and moved_matrix[nx][ny] == 0:
+                moved_matrix[nx][ny] = 1
+                self.move_helper(next_move, board_matrix, moved_matrix, remaining_move - 1, moves)
+                moved_matrix[nx][ny] = 0
+
+    def next_moves(self, board_matrix: List[List[int]], player_pos:Tuple[int,int], dice_value: int):
         moves = []
-        row, col = player_pos
-        print(f"player pos: {row},{col}")
-        for h in range(dice_value+1):
-            v = dice_value - h
-            for sign_h in [1,-1]:
-                if h == 0 and sign_h == -1:
-                    continue
-                for sign_v in [1,-1]:
-                    if v == 0 and sign_v == -1:
-                        continue
-                    next_row = row + h*sign_h
-                    next_col = col + v*sign_v
-                    if not check_move:
-                        moves.append((next_row,next_col))
-                        continue
-                    if  self.is_movable(board_matrix=board_matrix, position=(next_row,next_col)):
-                        moves.append((next_row,next_col))
+        px, py = player_pos
+        print(f"player pos: {px},{py}")
+        nb_row = len(board_matrix)
+        nb_col = len(board_matrix[0])
+        moved_matrix = [[0 for _ in range(nb_row)] for _ in range(nb_col)]
+        print(moved_matrix)
+        # Mark the current position is taken on moved matrix
+        moved_matrix[px][py] = 1
+        self.move_helper(current_pos=player_pos, board_matrix=board_matrix, moved_matrix=moved_matrix, remaining_move=dice_value, moves=moves)
+
+        print("******All possible moves******")
+        print(moves)
+        print("******END All possible moves END******")
+
         return moves

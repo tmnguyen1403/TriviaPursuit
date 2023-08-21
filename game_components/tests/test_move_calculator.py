@@ -22,7 +22,7 @@ class TestMoveCalculator(unittest.TestCase):
         self.move_calculator.change_cant_move(-100)
         #Dice value cannot be 0 so we don't have to account for 0 value
         for nb_move in range(1,self.max_dice_value + 1):
-            valid_moves = self.move_calculator.next_moves(board_matrix=self.matrix, player_pos=self.center, dice_value=nb_move, check_move=False)
+            valid_moves = self.move_calculator.next_moves(board_matrix=self.matrix, player_pos=self.center, dice_value=nb_move)
             self.assertEqual(len(valid_moves), 4*nb_move)
     def test_start_at_center_valid_check(self):
         #Dice value cannot be 0 so we don't have to account for 0 value

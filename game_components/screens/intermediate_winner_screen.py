@@ -11,28 +11,27 @@ class IntermediateWinnerScreen:
 
     def init_screen(self, screen):
         screen_width, screen_height = screen.get_size()
-        self.text_color = Color.BLACK.value
-        pygame.font.init()
-        font = pygame.font.SysFont(None, 60)
         # Clear the screen
-        screen.fill(Color.WHITE.value)
+        
         background_path = ""
-        logo_path = ""
         if is_mac():
             background_path = os.path.join("..","..","assets","images","WinnerPage.PNG")
         elif is_windows():
             background_path = os.path.join("assets","images","WinnerPage.PNG")
         background_image = pygame.image.load(background_path) 
-        background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
+        self.background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
         # Display the background image
-        screen.blit(background_image, (0, 0))
+       
 
     def render_screen(self, engine, screen):
         print("IntermediateWinnerScreen")
         if not self.init:
             self.init_screen(screen=screen)
             self.init = True
-        
+        #Draw background
+        screen.fill(Color.WHITE.value)
+        screen.blit(self.background_image, (0, 0))
+
         running = True
         display = False
         time_pass = 0

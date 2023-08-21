@@ -69,18 +69,7 @@ class GamePlayScreen:
         players = []
         player_colors = {1: Color.BLUE.value, 2: Color.YELLOW.value, 3: Color.RED.value, 4: Color.GREEN.value}
         for i in range(self.nb_player):
-            player_name = self.player_names[i]
-            if len(player_name) > 2:
-                #Get Initial from First and Last Name if possible
-                names = player_name.split()
-                if len(names) >= 2:
-                    first_initial = names[0][0]
-                    last_initial = names[-1][0]
-                    player_name = first_initial+last_initial
-                else:
-                    player_name = names[0][0:2]
-            player_name = player_name.upper()
-            player_info = {"position": (0, 0), "name": player_name, "token": None, "score": [], "color": player_colors[i + 1]}
+            player_info = {"position": (0, 0), "name": self.player_names[i], "token": None, "score": [], "color": player_colors[i + 1]}
             players.append(Player(player_info))
         player_manager = PlayerManager(players=players)
 
@@ -182,8 +171,6 @@ class GamePlayScreen:
 
         in_game_menu = InGameMenu(screen=screen)
         tile_animation_clock = None
-        animation_update_time = 0.5
-        animation_time_pass = 0
         while running:
             # Without doing pygame.event.get(), the game will not be rendered
             for event in pygame.event.get():
